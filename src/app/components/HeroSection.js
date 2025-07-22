@@ -137,13 +137,13 @@ export default function HeroSection() {
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center px-8">
         {/* Tagline */}
         <h2 
-          className="text-white/80 mb-8 text-lg"
+          className="mb-8 text-lg"
           style={{ 
             fontFamily: "'Dancing Script', cursive",
             fontSize: '24px'
           }}
         >
-          Your Sound, Your Story, Your Stage
+          <span style={{ color: '#646464' }}>Your</span> <span className="text-white">Sound,</span> <span style={{ color: '#646464' }}>Your</span> <span className="text-white">Story,</span> <span style={{ color: '#646464' }}>Your</span> <span className="text-white">Stage</span>
         </h2>
 
         {/* Main Title */}

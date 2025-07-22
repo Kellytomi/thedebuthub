@@ -98,11 +98,12 @@ export default function TopAlbumsSection() {
         {/* Section Title */}
         <div className="text-center mb-16">
           <h2 
-            className="text-white/80 mb-2"
+            className="mb-2"
             style={{ 
               fontFamily: "'Dancing Script', cursive",
               fontSize: '36px',
-              fontWeight: '400'
+              fontWeight: '400',
+              color: '#646464'
             }}
           >
             Top albums
