@@ -1,0 +1,79 @@
+---
+alwaysApply: true
+---
+
+🧱 1. Code Structure & Organisation
+Use the App Router (Next.js 13+) directory structure (app/).
+
+Break layout into reusable components:
+
+AlbumCard, TopTracks, AudioPlayer, MusicPulseSection, etc.
+
+Place components in a components/ directory inside app/.
+
+🎨 2. Styling (Tailwind CSS)
+Use Tailwind CSS classes for all styling (no external CSS files).
+
+Avoid inline styles unless for dynamic conditions.
+
+Make it mobile-first and fully responsive.
+
+Use consistent spacing, font sizes, and colour tokens from Tailwind.
+
+💡 3. Accessibility & Semantics
+Use proper HTML tags:
+
+<section> for sections
+
+<h1> for main heading
+
+<button> for interactive elements like mute
+
+Add aria-labels and alt tags where needed.
+
+Ensure text contrast is WCAG-compliant.
+
+⚙️ 4. API Best Practices (for Spotify or any)
+Use useEffect() to fetch data on client side (if needed).
+
+Store API keys in .env.local and never expose secrets on the client.
+
+Show loading states while fetching data.
+
+Fallback to mock data if API fails.
+
+📈 5. Performance
+Optimise images with Next.js <Image> component.
+
+Avoid unnecessary re-renders by using useMemo and React.memo where needed.
+
+Use lazy loading for non-critical components.
+
+Keep bundle size minimal — no unnecessary dependencies.
+
+🔊 6. Audio Player Rules
+Use <audio> tag for 30s Spotify preview_url.
+
+Add controls: Play/Pause, Mute/Unmute (toggle state).
+
+Only autoplay if user interaction has happened (to comply with browser policies).
+
+Handle errors if preview_url is null.
+
+🧪 7. Testing and Clean Code
+Avoid hardcoding values — use props and dynamic rendering.
+
+Keep code DRY (Don’t Repeat Yourself).
+
+Add basic error handling and check for null or undefined values.
+
+Use meaningful variable and component names.
+
+💬 8. UX/UI Details
+Add hover/active/focus states for buttons and interactive items.
+
+Add smooth animations/transitions with Tailwind (transition, ease-in-out, etc.).
+
+Include a 404 fallback route/page just in case.
+
+Prioritise clean, readable, scalable code. Optimise for performance and user experience. Keep it professional, accessible, and responsive.
