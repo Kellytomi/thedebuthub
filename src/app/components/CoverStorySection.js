@@ -14,7 +14,7 @@ export default function CoverStorySection() {
 
         <IntroBody title ="Cover Story" description = "Meet the artist who broke the charts this week. Get an exclusive look into their journey, inspirations, and what's next for them." />
 
-        <div className="flex items-center justify-center px-16 gap-16">
+        <div className="flex items-center justify-center px-16 mt-16 gap-16">
           <div
             className="relative"
             style={{

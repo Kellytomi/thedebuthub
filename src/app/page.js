@@ -14,7 +14,7 @@ export default function Home() {
       <HeroSection />
       <TopAlbumsSection />
       <CoverStorySection />
-      <AudioPlayerSection />
+      {/* <AudioPlayerSection /> */}
       <MusicPulseSection />
       <OurStorySection />
       <WhoWeAreSection />
