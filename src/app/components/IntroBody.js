@@ -8,7 +8,7 @@ const IntroSection = ({
   return (
     <div>
       {/* Cover Story Header */}
-      <div className="text-center mb-16">
+      <div className="text-center">
         <div className="flex flex-col items-center mb-4">
           <h2 className="text-white font-bold font-montserrat text-[32px] tracking-[-1px]">
             {title}
