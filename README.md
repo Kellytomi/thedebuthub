@@ -2,6 +2,31 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+### 1. Setup Spotify API (Required for Nigerian Albums)
+
+To display real Nigerian albums from Spotify, you need to set up Spotify Web API credentials:
+
+1. Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard)
+2. Log in with your Spotify account
+3. Click "Create app"
+4. Fill in the app details:
+   - App name: "The Debut Hub" (or any name you prefer)
+   - App description: "Music discovery platform"
+   - Website: `http://localhost:3000` (for development)
+   - Redirect URI: `http://localhost:3000` (for development)
+   - Select "Web API" when asked which APIs you're planning to use
+5. After creating the app, copy the **Client ID** and **Client Secret**
+6. Create a `.env.local` file in the project root and add:
+
+```bash
+SPOTIFY_CLIENT_ID=your_client_id_here
+SPOTIFY_CLIENT_SECRET=your_client_secret_here
+```
+
+**Note:** If you don't set up Spotify credentials, the app will use fallback data for Nigerian albums.
+
+### 2. Run the Development Server
+
 First, run the development server:
 
 ```bash
