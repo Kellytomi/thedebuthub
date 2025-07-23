@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import ActionButton from "./ActionButton";
 
 export default function HeroSection() {
   const [isMuted, setIsMuted] = useState(false);
@@ -204,8 +205,7 @@ export default function HeroSection() {
               width: "120px",
               height: "120px",
             }}
-          >
-          </div>
+          ></div>
 
           <div
             className="absolute hidden lg:block"
@@ -301,44 +301,12 @@ export default function HeroSection() {
               width: "120px",
               height: "120px",
             }}
-          >
-          </div>
+          ></div>
         </div>
 
-        {/* Explore More News Button */}
-        <div className="relative">
-          <button
-            className="text-white font-semibold relative overflow-hidden hover:scale-105 transition-transform"
-            style={{
-              width: "220px",
-              height: "50px",
-              borderRadius: "6px",
-              background: "linear-gradient(180deg, #006DFF 0%, #004199 100%)",
-              boxShadow: "0px 2px 7px 0px rgba(87, 87, 87, 0.17)",
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "14px",
-              padding: "8px 16px",
-            }}
-          >
-            {/* Border gradient overlay */}
-            <div
-              className="absolute inset-0 rounded-md p-px"
-              style={{
-                background: "linear-gradient(180deg, #338AFF 0%, #003883 100%)",
-                zIndex: -1,
-              }}
-            >
-              <div
-                className="w-full h-full rounded-md"
-                style={{
-                  background:
-                    "linear-gradient(180deg, #006DFF 0%, #004199 100%)",
-                }}
-              />
-            </div>
-            Explore more news
-          </button>
-        </div>
+        <ActionButton onClick={() => alert("Action triggered!")}>
+          Explore More News
+        </ActionButton>
       </div>
     </section>
   );
