@@ -285,8 +285,131 @@ export async function getNigerianFeaturedPlaylists(limit = 5) {
   }
 }
 
+/**
+ * Get top Nigerian tracks by searching for popular tracks from Nigerian artists
+ * Sorts by popularity score and ensures diversity by getting one track per artist
+ */
+export async function getNigerianTracks(limit = 12) {
+  try {
+    const tracksByArtist = new Map(); // Track one track per artist
+    const seenTracks = new Set();
+    const seenArtists = new Set();
+
+    // Strategy 1: Get recent tracks from each major Nigerian artist
+    for (const artist of NIGERIAN_ARTISTS) {
+      if (tracksByArtist.size >= limit) break;
+      
+      try {
+        const artistSearch = await spotifyFetch(
+          `/search?q=artist%3A"${encodeURIComponent(artist)}"&type=track&market=NG&limit=5`
+        );
+        
+        if (artistSearch.tracks?.items) {
+                     // Find the most popular track from this artist
+           const artistTracks = artistSearch.tracks.items
+             .filter(track => 
+               !seenTracks.has(track.id) && 
+               track.artists[0]?.name && 
+               track.artists[0].name.toLowerCase().includes(artist.toLowerCase())
+             )
+             .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+
+          if (artistTracks.length > 0) {
+            const track = artistTracks[0];
+            const normalizedArtist = track.artists[0].name.toLowerCase();
+            
+            if (!seenArtists.has(normalizedArtist)) {
+              tracksByArtist.set(normalizedArtist, {
+                id: track.id,
+                name: track.name,
+                artist: track.artists[0].name,
+                image: track.album.images[0]?.url,
+                duration: formatDuration(track.duration_ms),
+                preview_url: track.preview_url,
+                external_urls: track.external_urls,
+                album: track.album.name,
+                popularity: track.popularity || 0
+              });
+              seenTracks.add(track.id);
+              seenArtists.add(normalizedArtist);
+            }
+          }
+        }
+      } catch (error) {
+        console.warn(`Track search for ${artist} failed:`, error.message);
+      }
+    }
+
+    // Strategy 2: If we need more tracks, search for Afrobeats tracks
+    if (tracksByArtist.size < limit) {
+      try {
+        const afrobeatsSearch = await spotifyFetch(
+          `/search?q=genre%3Aafrobeat%20OR%20genre%3Aafrobeats&type=track&market=NG&limit=30`
+        );
+        
+        if (afrobeatsSearch.tracks?.items) {
+                     const filteredTracks = afrobeatsSearch.tracks.items
+             .filter(track => 
+               !seenTracks.has(track.id) &&
+               track.artists[0]?.name
+             )
+             .sort((a, b) => (b.popularity || 0) - (a.popularity || 0));
+
+          for (const track of filteredTracks) {
+            if (tracksByArtist.size >= limit) break;
+            
+            const normalizedArtist = track.artists[0].name.toLowerCase();
+            
+            if (!seenArtists.has(normalizedArtist)) {
+              tracksByArtist.set(normalizedArtist, {
+                id: track.id,
+                name: track.name,
+                artist: track.artists[0].name,
+                image: track.album.images[0]?.url,
+                duration: formatDuration(track.duration_ms),
+                preview_url: track.preview_url,
+                external_urls: track.external_urls,
+                album: track.album.name,
+                popularity: track.popularity || 0
+              });
+              seenTracks.add(track.id);
+              seenArtists.add(normalizedArtist);
+            }
+          }
+        }
+      } catch (error) {
+        console.warn('Afrobeats tracks search failed:', error.message);
+      }
+    }
+
+    // Convert to array and sort by popularity (highest first)
+    const tracks = Array.from(tracksByArtist.values())
+      .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+      .slice(0, limit);
+
+    console.log(`Found ${tracks.length} Nigerian tracks from different artists:`, 
+      tracks.map(t => `${t.name} by ${t.artist}`));
+    
+    return tracks;
+
+  } catch (error) {
+    console.error('Error fetching Nigerian tracks:', error);
+    throw new Error('Failed to fetch Nigerian tracks');
+  }
+}
+
+/**
+ * Helper function to format duration from milliseconds to MM:SS
+ */
+function formatDuration(durationMs) {
+  const minutes = Math.floor(durationMs / 60000);
+  const seconds = Math.floor((durationMs % 60000) / 1000);
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
 export default {
   getNigerianAlbums,
   getNigerianNewReleases,
-  getNigerianFeaturedPlaylists
+  getNigerianFeaturedPlaylists,
+  getNigerianTracks
 }; 

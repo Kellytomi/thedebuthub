@@ -136,21 +136,15 @@ export default function TopAlbumsSection() {
                     }}
                   />
                   
-                  {/* Play Button Overlay */}
+                  {/* Hover Effect - Clickable Area */}
                   {album.spotifyUrl && album.spotifyUrl !== '#' && (
-                    <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 rounded-lg">
-                      <a
-                        href={album.spotifyUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-green-500 hover:bg-green-600 rounded-full p-4 transition-colors"
-                        aria-label={`Play ${album.title} on Spotify`}
-                      >
-                        <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
-                          <path d="M8 5v14l11-7z"/>
-                        </svg>
-                      </a>
-                    </div>
+                    <a
+                      href={album.spotifyUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/20 rounded-lg"
+                      aria-label={`View ${album.title} on Spotify`}
+                    />
                   )}
                 </div>
                 
