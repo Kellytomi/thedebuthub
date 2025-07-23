@@ -50,7 +50,7 @@ export default function HeroSection() {
             }}
           >
             <Image
-              src="/logo.svg"
+              src="/images/the debut hub.png"
               alt="The Debut Hub Logo"
               width={36}
               height={39}
