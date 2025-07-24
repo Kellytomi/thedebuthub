@@ -397,11 +397,189 @@ export default function HeroSection() {
           your sound, all in one hub.
         </p>
 
-        {/* Artist Images Layout - Original Design */}
+        {/* Artist Images Layout - Responsive Design */}
         <div className="relative mb-8 sm:mb-12 flex justify-center">
+          
+          {/* Mobile Layout (screens < 640px) */}
+          <div className="block sm:hidden">
+            <div className="relative">
+              {/* Mobile center artist */}
+              <div className="w-[280px] h-[320px] rounded-2xl overflow-hidden border-2 border-white/20 relative">
+                {isLoading ? (
+                  <div className="w-full h-full bg-[#171717] animate-pulse rounded-2xl" />
+                ) : currentArtist ? (
+                  <motion.div
+                    key={`mobile-${currentArtistIndex}`}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    variants={carouselVariants}
+                    className="w-full h-full"
+                  >
+                    <Image
+                      src={currentArtist.image}
+                      alt={`${currentArtist.name} - Featured Nigerian Artist`}
+                      fill
+                      style={{
+                        objectFit: "cover",
+                        objectPosition: "center",
+                      }}
+                      className="absolute inset-0 rounded-2xl"
+                    />
+                  </motion.div>
+                ) : null}
+                
+                {/* Mobile Hot News Badge */}
+                <div className="absolute -top-8 -right-8">
+                  <Image
+                    src="/images/hn-badge.svg"
+                    alt="Hot News Badge"
+                    height={60}
+                    width={60}
+                    className="w-12 h-12"
+                  />
+                </div>
+              </div>
+              
+              {/* Mobile Artist Name */}
+              {!isLoading && currentArtist && (
+                <p className="text-white text-center mt-4 text-lg font-bold font-montserrat">
+                  {currentArtist.name}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Tablet Layout (640px - 1024px) */}
+          <div className="hidden sm:block xl:hidden">
+            <div className="relative">
+              {/* Tablet background cards - smaller and closer */}
+              <div>
+                {/* Back Card 1 - Left rotated */}
+                <motion.div
+                  className="absolute w-[240px] h-[280px] rounded-2xl -rotate-10 -left-5 bottom-8 overflow-hidden"
+                  initial="initial"
+                  animate="animate"
+                  variants={blueBoxVariants}
+                >
+                  {isLoading ? (
+                    <div className="w-full h-full bg-[#171717] animate-pulse rounded-2xl" />
+                  ) : backCard1Artist ? (
+                    <motion.div
+                      key={`tablet-back1-${currentArtistIndex}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                      className="w-full h-full"
+                    >
+                      <Image
+                        src={backCard1Artist.image}
+                        alt={`${backCard1Artist.name} - Nigerian Artist`}
+                        fill
+                        style={{
+                          objectFit: "cover",
+                          objectPosition: "center",
+                        }}
+                        className="absolute inset-0 rounded-2xl"
+                      />
+                    </motion.div>
+                  ) : null}
+                </motion.div>
+                
+                {/* Back Card 2 - Right rotated */}
+                <motion.div
+                  className="absolute w-[240px] h-[280px] rounded-2xl rotate-10 -right-5 bottom-8 overflow-hidden"
+                  initial="initial"
+                  animate="animate"
+                  variants={blueBoxVariants}
+                  transition={{ delay: 0.1 }}
+                >
+                  {isLoading ? (
+                    <div className="w-full h-full bg-[#171717] animate-pulse rounded-2xl" />
+                  ) : backCard2Artist ? (
+                    <motion.div
+                      key={`tablet-back2-${currentArtistIndex}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5 }}
+                      className="w-full h-full"
+                    >
+                      <Image
+                        src={backCard2Artist.image}
+                        alt={`${backCard2Artist.name} - Nigerian Artist`}
+                        fill
+                        style={{
+                          objectFit: "cover",
+                          objectPosition: "center",
+                        }}
+                        className="absolute inset-0 rounded-2xl"
+                      />
+                    </motion.div>
+                  ) : null}
+                </motion.div>
+              </div>
+
+              {/* Tablet center artist */}
+              <motion.div
+                className="relative"
+                style={{ height: "350px", width: "300px" }}
+                initial="initial"
+                animate="animate"
+                variants={imageVariants}
+              >
+                <div className="w-full h-full overflow-hidden relative rounded-2xl">
+                  {isLoading ? (
+                    <div className="w-full h-full bg-[#171717] animate-pulse rounded-2xl" />
+                  ) : currentArtist ? (
+                    <motion.div
+                      key={`tablet-center-${currentArtistIndex}`}
+                      initial="enter"
+                      animate="center"
+                      exit="exit"
+                      variants={carouselVariants}
+                      className="w-full h-full"
+                    >
+                      <Image
+                        src={currentArtist.image}
+                        alt={`${currentArtist.name} - Featured Nigerian Artist`}
+                        fill
+                        style={{
+                          objectFit: "cover",
+                          objectPosition: "center",
+                        }}
+                        className="absolute inset-0 rounded-2xl"
+                      />
+                    </motion.div>
+                  ) : null}
+                </div>
+
+                {/* Tablet Hot News Badge */}
+                <div className="absolute -top-10 -right-10">
+                  <Image
+                    src="/images/hn-badge.svg"
+                    alt="Hot News Badge"
+                    height={80}
+                    width={80}
+                    className="w-16 h-16"
+                  />
+                </div>
+              </motion.div>
+              
+              {/* Tablet Artist Name */}
+              {!isLoading && currentArtist && (
+                <p className="text-white text-center mt-6 text-xl font-bold font-montserrat">
+                  {currentArtist.name}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Desktop Layout (1280px+) - Original Design */}
+          <div className="hidden xl:block">
+          
           {/* Far left artist image */}
           <div
-            className="xl:inline hidden absolute rounded-lg"
+            className="absolute rounded-lg"
             style={{
               top: "100px",
               left: "-450px",
@@ -438,7 +616,7 @@ export default function HeroSection() {
 
           {/* Left main artist image */}
           <div
-            className="absolute hidden lg:block"
+            className="absolute"
             style={{
               top: "80px",
               left: "-300px",
@@ -592,7 +770,7 @@ export default function HeroSection() {
 
           {/* Right main artist image */}
           <div
-            className="absolute hidden lg:block"
+            className="absolute"
             style={{
               top: "80px",
               right: "-300px",
@@ -629,7 +807,7 @@ export default function HeroSection() {
 
           {/* Far right artist image */}
           <div
-            className="xl:inline hidden absolute rounded-lg"
+            className="absolute rounded-lg"
             style={{
               top: "100px",
               right: "-450px",
@@ -663,6 +841,8 @@ export default function HeroSection() {
               ) : null}
             </div>
           </div>
+          
+          </div> {/* End Desktop Layout */}
         </div>
 
         <ActionButton onClick={() => alert("Action triggered!")}>
