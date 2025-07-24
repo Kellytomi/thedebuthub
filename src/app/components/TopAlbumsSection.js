@@ -164,27 +164,19 @@ export default function TopAlbumsSection() {
 
   const AlbumSkeleton = () => (
   <div className="group relative flex flex-col lg:flex-row xl:flex-col w-[370px] lg:w-full lg:justify-center xl:w-[370px] lg:h-auto h-[418px] xl:h-[418px] gap-2">
-    {/* Image Container - identical dimensions and border */}
     <div className="relative w-full lg:w-[370px] xl:w-full h-[350px] overflow-hidden rounded-xl bg-[#171717]">
       <div className="absolute inset-0 bg-[#171717] animate-pulse" />
     </div>
 
-    {/* Text Info - perfect layout clone */}
     <div className="text-white text-[20px] flex flex-col lg:justify-center gap-1">
-      {/* Title */}
       <div className="h-6 w-3/4 bg-[#171717] rounded animate-pulse truncate" />
       
-      {/* Metadata - exact flex structure */}
       <div className="text-sm text-[#CCCCCC] flex flex-row items-center lg:items-start xl:items-center lg:flex-col xl:flex-row gap-2">
-        {/* Artist */}
         <div className="h-4 w-1/3 bg-[#171717] rounded animate-pulse truncate" />
         
-        {/* Tracks + Stream */}
         <div className="flex flex-row items-center gap-2">
-          {/* Tracks */}
           <div className="h-4 w-16 bg-[#171717] rounded animate-pulse flex-shrink-0" />
           
-          {/* Stream Count */}
           <div className="flex items-center gap-1 flex-shrink-0">
             <div className="h-4 w-20 bg-[#171717] rounded animate-pulse" />
           </div>

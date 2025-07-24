@@ -3,7 +3,7 @@ import TopAlbumsSection from './components/TopAlbumsSection';
 import CoverStorySection from './components/CoverStorySection';
 import AudioPlayerSection from './components/AudioPlayerSection';
 import MusicPulseSection from './components/MusicPulseSection';
-import OurStorySection from './components/OurStorySection';
+import OurStorySection from './components/TopTrackSection';
 import WhoWeAreSection from './components/WhoWeAreSection';
 import SocialsSection from './components/SocialsSection';
 import StayInformedSection from './components/StayInformedSection';
