@@ -118,7 +118,6 @@ export default function MusicPulseSection() {
             <motion.div
               variants={cardVariants}
               custom={0}
-              whileHover={{ y: -10 }}
             >
               <Image
                 src="/images/mpulse-card-1.png"
@@ -134,7 +133,6 @@ export default function MusicPulseSection() {
               className="relative hidden xl:block"
               variants={cardVariants}
               custom={1}
-              whileHover={{ y: -10 }}
             >
               <motion.div
                 variants={badgeVariants}
@@ -160,7 +158,6 @@ export default function MusicPulseSection() {
             <motion.div
               variants={cardVariants}
               custom={2}
-              whileHover={{ y: -10 }}
             >
               <Image
                 src="/images/mpulse-card-2.png"
