@@ -51,7 +51,7 @@ export default function SocialsSection() {
               <Link
                 key={social.name}
                 href={social.url}
-                className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white hover:border-[#00ccff]/50 hover:shadow-[0_0_20px_rgba(0,204,255,0.3)] transition-all duration-300 ${social.transform}`}
+                className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white hover:-translate-y-3 hover:border-[#00ccff]/50 hover:shadow-[0_0_20px_rgba(0,204,255,0.3)] transition-all duration-300 ${social.transform}`}
               >
                 <img
                   src={social.icon}
@@ -67,7 +67,7 @@ export default function SocialsSection() {
               <Link
                 key={social.name}
                 href={social.url}
-                className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white hover:border-[#00ccff]/50 hover:shadow-[0_0_20px_rgba(0,204,255,0.3)] transition-all duration-300 ${social.transform}`}
+                className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white hover:-translate-y-3 hover:border-[#00ccff]/50 hover:shadow-[0_0_20px_rgba(0,204,255,0.3)] transition-all duration-300 ${social.transform}`}
               >
                 <img
                   src={social.icon}
