@@ -175,14 +175,18 @@ export default function CoverStorySection() {
             variants={contentVariants}
           >
             {isLoading ? (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div className="h-8 bg-[#171717] animate-pulse rounded w-3/4" />
                 <div className="space-y-2">
                   <div className="h-4 bg-[#171717] animate-pulse rounded" />
                   <div className="h-4 bg-[#171717] animate-pulse rounded" />
                   <div className="h-4 bg-[#171717] animate-pulse rounded w-2/3" />
                 </div>
-                <div className="h-12 bg-[#171717] animate-pulse rounded w-40" />
+                <div className="flex gap-6">
+                  <div className="h-16 w-16 bg-[#171717] animate-pulse rounded" />
+                  <div className="h-16 w-16 bg-[#171717] animate-pulse rounded" />
+                  <div className="h-16 w-16 bg-[#171717] animate-pulse rounded" />
+                </div>
               </div>
             ) : (
               <>
@@ -196,7 +200,7 @@ export default function CoverStorySection() {
 
                 {/* Artist Stats */}
                 {topArtist && (
-                  <div className="flex items-center gap-6 mb-8">
+                  <div className="flex items-center gap-6">
                     <div className="text-center">
                       <div className="text-white text-xl font-bold">#{1}</div>
                       <div className="text-white/60 text-sm">Chart Position</div>
@@ -215,13 +219,6 @@ export default function CoverStorySection() {
                     </div>
                   </div>
                 )}
-
-                <button className="text-white font-semibold relative overflow-hidden hover:scale-105 transition-transform w-[160px] h-[50px] rounded-[6px] bg-gradient-to-b from-[#006DFF] to-[#004199] shadow-[0px_2px_7px_0px_rgba(87,87,87,0.17)] font-dm-sans text-[14px] px-4 py-2">
-                  <div className="absolute inset-0 rounded-md p-px bg-gradient-to-b from-[#338AFF] to-[#003883] -z-10">
-                    <div className="w-full h-full rounded-md bg-gradient-to-b from-[#006DFF] to-[#004199]" />
-                  </div>
-                  Read more
-                </button>
               </>
             )}
           </motion.div>

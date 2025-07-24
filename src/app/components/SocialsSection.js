@@ -7,31 +7,31 @@ export default function SocialsSection() {
   const socialLinks = [
     {
       name: "Twitter",
-      url: "https://twitter.com",
+      url: "https://x.com/thedebuthub?s=21",
       icon: "/socials/twitter-icon.svg",
       transform: "",
     },
     {
       name: "Instagram",
-      url: "https://instagram.com",
+      url: "https://www.instagram.com/thedebuthub?igsh=bnkwdmdjdzNuZmF6",
       icon: "/socials/instagram-icon.svg",
       transform: "transform -rotate-12",
     },
     {
       name: "Facebook",
-      url: "https://facebook.com",
+      url: "https://web.facebook.com/people/The-Debut-Hub/61567008111041/?__mmr=1&_rdc=1&_rdr",
       icon: "/socials/facebook-icon.svg",
       transform: "",
     },
     {
       name: "TikTok",
-      url: "https://tiktok.com",
+      url: "https://www.tiktok.com/@thedebuthub",
       icon: "/socials/tiktok-icon.svg",
       transform: "",
     },
     {
       name: "Gmail",
-      url: "mailto:contact@example.com",
+      url: "mailto:thedebuthub@gmail.com",
       icon: "/socials/gmail-icon.svg",
       transform: "",
     },
@@ -51,7 +51,7 @@ export default function SocialsSection() {
               <Link
                 key={social.name}
                 href={social.url}
-                className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white transition-colors ${social.transform}`}
+                className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white hover:border-[#00ccff]/50 hover:shadow-[0_0_20px_rgba(0,204,255,0.3)] transition-all duration-300 ${social.transform}`}
               >
                 <img
                   src={social.icon}
@@ -67,7 +67,7 @@ export default function SocialsSection() {
               <Link
                 key={social.name}
                 href={social.url}
-                className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white transition-colors ${social.transform}`}
+                className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white hover:border-[#00ccff]/50 hover:shadow-[0_0_20px_rgba(0,204,255,0.3)] transition-all duration-300 ${social.transform}`}
               >
                 <img
                   src={social.icon}
