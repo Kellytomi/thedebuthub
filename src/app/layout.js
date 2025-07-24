@@ -1,5 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AudioProvider } from "./contexts/AudioContext";
+import YouTubeBackgroundPlayer from "./components/YouTubeBackgroundPlayer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,7 +27,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-900`}
       >
-        {children}
+        <AudioProvider>
+          <YouTubeBackgroundPlayer />
+          {children}
+        </AudioProvider>
       </body>
     </html>
   );

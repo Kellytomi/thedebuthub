@@ -83,6 +83,257 @@ const NIGERIAN_ARTISTS = [
 ];
 
 /**
+ * Get most streamed Nigerian albums based on Spotify's official "Top 50 - Nigeria" playlist
+ * This uses real streaming data instead of search guesswork
+ */
+export async function getMostStreamedNigerianAlbums(limit = 3) {
+  try {
+    console.log('🇳🇬 Fetching most streamed albums from Top 50 - Nigeria playlist...');
+    
+    // Step 1: Search for Nigeria Top 50 playlist dynamically
+    console.log('🔍 Searching for Top 50 - Nigeria playlist...');
+    let playlistId = null;
+    
+    try {
+      const playlistSearch = await spotifyFetch('/search?q="Top 50 - Nigeria"&type=playlist&market=NG&limit=10');
+      
+      if (playlistSearch.playlists?.items) {
+        // Find the official Spotify playlist
+        const officialPlaylist = playlistSearch.playlists.items.find(playlist => 
+          playlist.owner?.id === 'spotify' && 
+          (playlist.name.includes('Top 50') || playlist.name.includes('Nigeria'))
+        );
+        
+        if (officialPlaylist) {
+          playlistId = officialPlaylist.id;
+          console.log(`✅ Found official Nigeria playlist: "${officialPlaylist.name}" (ID: ${playlistId})`);
+        } else {
+          // Fallback: use any Nigeria-related playlist
+          const nigeriaPlaylist = playlistSearch.playlists.items.find(playlist =>
+            playlist.name.toLowerCase().includes('nigeria')
+          );
+          if (nigeriaPlaylist) {
+            playlistId = nigeriaPlaylist.id;
+            console.log(`📋 Using Nigeria playlist: "${nigeriaPlaylist.name}" (ID: ${playlistId})`);
+          }
+        }
+      }
+    } catch (searchError) {
+      console.warn('Playlist search failed:', searchError.message);
+    }
+    
+    // Fallback playlist IDs to try
+    const fallbackPlaylistIds = [
+      '37i9dQZEVXbKY7jLzlJ11V', // Original ID
+      '37i9dQZEVXbLRQDuF5jeBp', // Alternative Nigeria charts
+      '37i9dQZEVXbJNjKfUHPuo1', // Africa Now
+    ];
+    
+    if (!playlistId) {
+      console.log('🔄 Trying fallback playlist IDs...');
+      for (const id of fallbackPlaylistIds) {
+        try {
+          const testResponse = await spotifyFetch(`/playlists/${id}?market=NG`);
+          if (testResponse.id) {
+            playlistId = id;
+            console.log(`✅ Using fallback playlist: "${testResponse.name}" (ID: ${playlistId})`);
+            break;
+          }
+        } catch (error) {
+          console.warn(`Playlist ${id} not accessible:`, error.message);
+        }
+      }
+    }
+    
+    if (!playlistId) {
+      throw new Error('Could not find accessible Nigeria playlist');
+    }
+    
+    // Step 2: Fetch the playlist tracks
+    console.log('📋 Fetching playlist tracks...');
+    const playlistResponse = await spotifyFetch(`/playlists/${playlistId}/tracks?market=NG&limit=50`);
+    
+    if (!playlistResponse.items || playlistResponse.items.length === 0) {
+      throw new Error('Playlist has no tracks or is empty');
+    }
+    
+    console.log(`🎵 Found ${playlistResponse.items.length} tracks in Nigeria playlist`);
+    
+    // Step 3: Extract album IDs and count frequency
+    const albumCounts = new Map(); // albumId -> { count, albumInfo }
+    const albumDetails = new Map(); // albumId -> album object
+    
+    for (const item of playlistResponse.items) {
+      if (!item.track || !item.track.album) continue;
+      
+      const track = item.track;
+      const album = track.album;
+      const albumId = album.id;
+      
+      if (albumCounts.has(albumId)) {
+        albumCounts.get(albumId).count++;
+      } else {
+        albumCounts.set(albumId, { 
+          count: 1,
+          albumInfo: {
+            id: album.id,
+            name: album.name,
+            artist: album.artists[0]?.name,
+            image: album.images[0]?.url,
+            total_tracks: album.total_tracks,
+            release_date: album.release_date,
+            album_type: album.album_type || 'album',
+            external_urls: album.external_urls
+          }
+        });
+        albumDetails.set(albumId, album);
+      }
+    }
+    
+    console.log(`📊 Found ${albumCounts.size} unique albums in Top 50`);
+    
+    // Step 3: Sort albums by frequency (most tracks in Top 50 = most streamed)
+    const sortedAlbums = Array.from(albumCounts.entries())
+      .sort((a, b) => b[1].count - a[1].count) // Sort by track count (descending)
+      .slice(0, limit * 2); // Get more than needed for additional processing
+    
+    // Step 4: Fetch full album details for the top albums
+    console.log('📀 Fetching detailed album information...');
+    const detailedAlbums = [];
+    
+    for (const [albumId, { count, albumInfo }] of sortedAlbums) {
+      if (detailedAlbums.length >= limit) break;
+      
+      try {
+        // Fetch full album details
+        const fullAlbum = await spotifyFetch(`/albums/${albumId}?market=NG`);
+        
+        // Calculate a popularity score based on chart position and frequency
+        const chartPosition = sortedAlbums.findIndex(([id]) => id === albumId) + 1;
+        const popularityScore = Math.max(95 - (chartPosition * 5), 50) + (count * 2);
+        
+        let imageUrl = fullAlbum.images[0]?.url;
+        
+        // Fallback images if Spotify image fails
+        if (!imageUrl) {
+          const artistName = fullAlbum.artists[0]?.name.toLowerCase() || '';
+          if (artistName.includes('burna')) {
+            imageUrl = '/images/album3.png';
+          } else if (artistName.includes('wizkid')) {
+            imageUrl = '/images/album1.png';
+          } else {
+            imageUrl = '/images/album2.png';
+          }
+        }
+        
+        const albumData = {
+          id: fullAlbum.id,
+          name: fullAlbum.name,
+          artist: fullAlbum.artists[0]?.name,
+          image: imageUrl,
+          total_tracks: fullAlbum.total_tracks,
+          release_date: fullAlbum.release_date,
+          popularity: popularityScore, // Our calculated popularity based on chart performance
+          album_type: fullAlbum.album_type || 'album',
+          external_urls: fullAlbum.external_urls,
+          tracksInTop50: count // How many tracks from this album are in Top 50
+        };
+        
+        detailedAlbums.push(albumData);
+        
+        console.log(`🏆 #${chartPosition}: ${albumData.artist} - ${albumData.name} (${count} tracks in Top 50, popularity: ${popularityScore})`);
+        
+      } catch (error) {
+        console.warn(`Failed to fetch details for album ${albumId}:`, error.message);
+      }
+    }
+    
+    console.log(`✅ Successfully fetched ${detailedAlbums.length} most streamed albums from Nigeria charts`);
+    return detailedAlbums;
+
+  } catch (error) {
+    console.error('Error fetching most streamed Nigerian albums from charts:', error);
+    console.log('🔄 Falling back to search-based approach...');
+    
+    // Fallback: Use search-based approach if playlist access fails
+    try {
+      const fallbackAlbums = [];
+      const seenAlbums = new Set();
+      
+      // Search for popular albums by top Nigerian artists
+      const topArtists = ['Burna Boy', 'Wizkid', 'Davido', 'Asake', 'Rema'];
+      
+      for (const artist of topArtists) {
+        if (fallbackAlbums.length >= limit * 2) break;
+        
+        try {
+          console.log(`🔍 Searching albums by ${artist}...`);
+          const artistSearch = await spotifyFetch(
+            `/search?q=artist%3A"${encodeURIComponent(artist)}"&type=album&market=NG&limit=10`
+          );
+          
+          if (artistSearch.albums?.items) {
+            // Get the most popular albums from this artist
+            const popularAlbums = artistSearch.albums.items
+              .filter(album => 
+                album.images?.length > 0 && 
+                !seenAlbums.has(album.id) &&
+                album.artists[0]?.name &&
+                album.artists[0].name.toLowerCase().includes(artist.toLowerCase())
+              )
+              .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+              .slice(0, 2); // Top 2 albums per artist
+            
+            for (const album of popularAlbums) {
+              if (fallbackAlbums.length >= limit) break;
+              
+              let imageUrl = album.images[0]?.url;
+              if (!imageUrl) {
+                const artistName = album.artists[0].name.toLowerCase();
+                if (artistName.includes('burna')) {
+                  imageUrl = '/images/album3.png';
+                } else if (artistName.includes('wizkid')) {
+                  imageUrl = '/images/album1.png';
+                } else {
+                  imageUrl = '/images/album2.png';
+                }
+              }
+              
+              fallbackAlbums.push({
+                id: album.id,
+                name: album.name,
+                artist: album.artists[0].name,
+                image: imageUrl,
+                total_tracks: album.total_tracks,
+                release_date: album.release_date,
+                popularity: album.popularity || 75,
+                album_type: album.album_type || 'album',
+                external_urls: album.external_urls,
+                tracksInTop50: 1 // Estimated
+              });
+              
+              seenAlbums.add(album.id);
+              console.log(`📀 Fallback: ${album.artists[0].name} - ${album.name} (popularity: ${album.popularity || 75})`);
+            }
+          }
+        } catch (artistError) {
+          console.warn(`Search for ${artist} failed:`, artistError.message);
+        }
+      }
+      
+      if (fallbackAlbums.length > 0) {
+        console.log(`✅ Fallback search found ${fallbackAlbums.length} albums`);
+        return fallbackAlbums.slice(0, limit);
+      }
+    } catch (fallbackError) {
+      console.error('Fallback search also failed:', fallbackError.message);
+    }
+    
+    return [];
+  }
+}
+
+/**
  * Get Nigerian albums by searching for Afrobeats genre and Nigerian artists
  * Ensures diversity by getting one album per artist
  */
