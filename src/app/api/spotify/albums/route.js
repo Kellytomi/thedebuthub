@@ -26,6 +26,8 @@ export async function GET(request) {
         image: '/images/album3.png',
         total_tracks: 19,
         release_date: '2022-07-08',
+        popularity: 89,
+        album_type: 'album',
         external_urls: { spotify: '#' }
       },
       {
@@ -35,6 +37,8 @@ export async function GET(request) {
         image: '/images/album1.png',
         total_tracks: 14,
         release_date: '2020-10-30',
+        popularity: 92,
+        album_type: 'album',
         external_urls: { spotify: '#' }
       },
       {
@@ -44,6 +48,8 @@ export async function GET(request) {
         image: '/images/album2.png',
         total_tracks: 17,
         release_date: '2020-11-13',
+        popularity: 85,
+        album_type: 'album',
         external_urls: { spotify: '#' }
       }
     ];

@@ -124,6 +124,8 @@ export async function getNigerianAlbums(limit = 12) {
                 image: album.images[0]?.url,
                 total_tracks: album.total_tracks,
                 release_date: album.release_date,
+                popularity: album.popularity || 0,
+                album_type: album.album_type || 'album',
                 external_urls: album.external_urls
               });
               seenAlbums.add(album.id);
@@ -165,6 +167,8 @@ export async function getNigerianAlbums(limit = 12) {
                 image: album.images[0]?.url,
                 total_tracks: album.total_tracks,
                 release_date: album.release_date,
+                popularity: album.popularity || 0,
+                album_type: album.album_type || 'album',
                 external_urls: album.external_urls
               });
               seenAlbums.add(album.id);
@@ -206,6 +210,8 @@ export async function getNigerianAlbums(limit = 12) {
                 image: album.images[0]?.url,
                 total_tracks: album.total_tracks,
                 release_date: album.release_date,
+                popularity: album.popularity || 0,
+                album_type: album.album_type || 'album',
                 external_urls: album.external_urls
               });
               seenAlbums.add(album.id);
