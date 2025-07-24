@@ -2,30 +2,32 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useAnimation } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 import IntroBody from "./IntroBody";
 import IntroTitle from "./IntroTitle";
 
 // Generate dynamic artist story based on artist data
 const generateArtistStory = (artist) => {
-  if (!artist) return {
-    title: "Details about artist's song",
-    description: "Loading artist information..."
-  };
+  if (!artist)
+    return {
+      title: "Details about artist's song",
+      description: "Loading artist information...",
+    };
 
   const stories = [
     {
       title: `${artist.name}'s Chart-Topping Journey`,
-      description: `This week's chartbreaker is ${artist.name}, the Nigerian sensation whose latest releases have dominated streaming platforms worldwide. With millions of streams and a growing international fanbase, ${artist.name} continues to push the boundaries of Afrobeats, blending traditional rhythms with contemporary sounds. Their music represents the new wave of Nigerian artists taking the global stage by storm.`
+      description: `This week's chartbreaker is ${artist.name}, the Nigerian sensation whose latest releases have dominated streaming platforms worldwide. With millions of streams and a growing international fanbase, ${artist.name} continues to push the boundaries of Afrobeats, blending traditional rhythms with contemporary sounds. Their music represents the new wave of Nigerian artists taking the global stage by storm.`,
     },
     {
       title: `Behind the Music with ${artist.name}`,
-      description: `${artist.name} has emerged as the #1 artist this week, captivating audiences with their unique sound and powerful storytelling. From Lagos streets to international stages, their journey embodies the spirit of modern Afrobeats. Each track tells a story of resilience, love, and the vibrant culture of Nigeria, resonating with fans across continents.`
+      description: `${artist.name} has emerged as the #1 artist this week, captivating audiences with their unique sound and powerful storytelling. From Lagos streets to international stages, their journey embodies the spirit of modern Afrobeats. Each track tells a story of resilience, love, and the vibrant culture of Nigeria, resonating with fans across continents.`,
     },
     {
       title: `${artist.name}: Breaking Records and Hearts`,
-      description: `Currently sitting at #1 on the charts, ${artist.name} has become the voice of a generation. Their latest work seamlessly weaves together Afrobeats, R&B, and contemporary sounds, creating music that speaks to both local and global audiences. This week's chart dominance is just another milestone in their incredible artistic journey.`
-    }
+      description: `Currently sitting at #1 on the charts, ${artist.name} has become the voice of a generation. Their latest work seamlessly weaves together Afrobeats, R&B, and contemporary sounds, creating music that speaks to both local and global audiences. This week's chart dominance is just another milestone in their incredible artistic journey.`,
+    },
   ];
 
   // Use artist name to consistently pick the same story variant
@@ -38,37 +40,42 @@ export default function CoverStorySection() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  // Animation controls
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    threshold: 0.1,
+    triggerOnce: false,
+  });
+
   // Fetch the #1 top Nigerian artist
   useEffect(() => {
     async function fetchTopArtist() {
       try {
-        const response = await fetch('/api/spotify/artists?limit=1');
+        const response = await fetch("/api/spotify/artists?limit=1");
         const data = await response.json();
-        
+
         if (data.success && data.artists.length > 0) {
-          setTopArtist(data.artists[0]); // Get the #1 artist
+          setTopArtist(data.artists[0]);
         } else {
-          // Fallback to static artist
           setTopArtist({
-            id: 'fallback-top',
-            name: 'Wizkid',
-            image: '/images/wiz-image.png',
+            id: "fallback-top",
+            name: "Wizkid",
+            image: "/images/wiz-image.png",
             popularity: 95,
             followers: 8000000,
-            genres: ['afrobeats', 'pop']
+            genres: ["afrobeats", "pop"],
           });
         }
       } catch (error) {
-        console.error('Failed to fetch top artist:', error);
+        console.error("Failed to fetch top artist:", error);
         setError(true);
-        // Fallback to static artist
         setTopArtist({
-          id: 'fallback-top',
-          name: 'Wizkid',
-          image: '/images/wiz-image.png',
+          id: "fallback-top",
+          name: "Wizkid",
+          image: "/images/wiz-image.png",
           popularity: 95,
           followers: 8000000,
-          genres: ['afrobeats', 'pop']
+          genres: ["afrobeats", "pop"],
         });
       } finally {
         setIsLoading(false);
@@ -78,12 +85,44 @@ export default function CoverStorySection() {
     fetchTopArtist();
   }, []);
 
+  // Handle inView changes
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    } else {
+      controls.start("hidden");
+    }
+  }, [controls, inView]);
+
   const artistStory = generateArtistStory(topArtist);
 
   // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        when: "beforeChildren",
+      },
+    },
+  };
+
+  const childVariants = {
+    hidden: { y: 30, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        ease: [0.16, 0.77, 0.47, 0.97],
+      },
+    },
+  };
+
   const imageVariants = {
-    initial: { opacity: 0, scale: 0.8 },
-    animate: {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: {
       opacity: 1,
       scale: 1,
       transition: {
@@ -91,31 +130,52 @@ export default function CoverStorySection() {
         ease: "easeOut",
       },
     },
+    hover: {
+      scale: 1.02,
+      transition: { duration: 0.3 },
+    },
   };
 
-  const contentVariants = {
-    initial: { opacity: 0, x: 50 },
-    animate: {
+  const badgeVariants = {
+    hidden: { scale: 0.5, opacity: 0 },
+    visible: {
+      scale: 1,
       opacity: 1,
-      x: 0,
       transition: {
-        duration: 0.6,
-        ease: "easeOut",
+        type: "spring",
+        stiffness: 200,
+        damping: 10,
         delay: 0.3,
       },
     },
   };
 
+  const statsVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.4,
+      },
+    },
+  };
+
   return (
-    <section className="relative overflow-hidden mx-auto w-full h-[1280px] xl:h-[1024px] bg-[#030303]">
+    <motion.section
+      ref={ref}
+      className="relative overflow-hidden mx-auto w-full h-[1280px] xl:h-[1024px] bg-[#030303]"
+      initial="hidden"
+      animate={controls}
+    >
       <div className="absolute w-8 h-[1024px] top-[14px] left-[1298px] bg-[#006DFF] backdrop-blur-[300px] blur-[150px]" />
 
       <div className="relative z-10 h-full">
         <IntroTitle line1="Where words fail," line2="Music speaks" />
 
-        <IntroBody 
-          title="Cover Story" 
-          description="Meet the artist who broke the charts this week. Get an exclusive look into their journey, inspirations, and what's next for them." 
+        <IntroBody
+          title="Cover Story"
+          description="Meet the artist who broke the charts this week. Get an exclusive look into their journey, inspirations, and what's next for them."
         />
 
         <div className="flex flex-col xl:flex-row items-center justify-center px-16 mt-16 gap-16">
@@ -126,9 +186,8 @@ export default function CoverStorySection() {
               height: "427px",
               width: "360px",
             }}
-            initial="initial"
-            animate="animate"
             variants={imageVariants}
+            whileHover="hover"
           >
             <div className="w-full h-full overflow-hidden relative rounded-lg">
               {isLoading ? (
@@ -148,7 +207,12 @@ export default function CoverStorySection() {
             </div>
 
             {/* Top Artist Badge */}
-            <div className="absolute w-full inset-0">
+            <motion.div
+              className="absolute w-full inset-0"
+              initial="hidden"
+              animate={controls}
+              variants={badgeVariants}
+            >
               <Image
                 src="/images/tp-artiste.svg"
                 alt="Top Artist Badge"
@@ -156,23 +220,30 @@ export default function CoverStorySection() {
                 width={100}
                 className="absolute -top-12 -left-12"
               />
-            </div>
+            </motion.div>
 
             {/* Artist Rank Indicator */}
             {!isLoading && topArtist && (
-              <div className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-sm rounded-lg px-3 py-2">
-                <div className="text-[#00ccff] text-sm font-semibold">#1 This Week</div>
+              <motion.div
+                className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-sm rounded-lg px-3 py-2"
+                initial={{ y: 20, opacity: 0 }}
+                animate={inView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <div className="text-[#00ccff] text-sm font-semibold">
+                  #1 This Week
+                </div>
                 <div className="text-white text-xs">{topArtist.name}</div>
-              </div>
+              </motion.div>
             )}
           </motion.div>
 
           {/* Dynamic Artist Details */}
-          <motion.div 
+          <motion.div
             className="flex-1 max-w-xl"
-            initial="initial"
-            animate="animate"
-            variants={contentVariants}
+            initial="hidden"
+            animate={controls}
+            variants={containerVariants}
           >
             {isLoading ? (
               <div className="space-y-6">
@@ -190,40 +261,74 @@ export default function CoverStorySection() {
               </div>
             ) : (
               <>
-                <h3 className="text-white font-bold mb-6 font-montserrat text-[32px] tracking-[-0.5px]">
+                <motion.h3
+                  className="text-white font-bold mb-6 font-montserrat text-[32px] tracking-[-0.5px]"
+                  variants={childVariants}
+                >
                   {artistStory.title}
-                </h3>
+                </motion.h3>
 
-                <p className="text-white/70 mb-8 leading-[1.8] font-dm-sans text-[16px]">
+                <motion.p
+                  className="text-white/70 mb-8 leading-[1.8] font-dm-sans text-[16px]"
+                  variants={childVariants}
+                >
                   {artistStory.description}
-                </p>
+                </motion.p>
 
                 {/* Artist Stats */}
                 {topArtist && (
-                  <div className="flex items-center gap-6">
-                    <div className="text-center">
+                  <motion.div
+                    className="flex items-center gap-6"
+                    initial="hidden"
+                    animate={controls}
+                    variants={statsVariants}
+                  >
+                    <motion.div
+                      className="text-center"
+                      variants={childVariants}
+                    >
                       <div className="text-white text-xl font-bold">#{1}</div>
-                      <div className="text-white/60 text-sm">Chart Position</div>
-                    </div>
-                    <div className="w-px h-8 bg-white/20" />
-                    <div className="text-center">
-                      <div className="text-white text-xl font-bold">{topArtist.popularity || 95}</div>
-                      <div className="text-white/60 text-sm">Popularity Score</div>
-                    </div>
-                    <div className="w-px h-8 bg-white/20" />
-                    <div className="text-center">
+                      <div className="text-white/60 text-sm">
+                        Chart Position
+                      </div>
+                    </motion.div>
+                    <motion.div
+                      className="w-px h-8 bg-white/20"
+                      variants={childVariants}
+                    />
+                    <motion.div
+                      className="text-center"
+                      variants={childVariants}
+                    >
                       <div className="text-white text-xl font-bold">
-                        {topArtist.followers ? `${(topArtist.followers / 1000000).toFixed(1)}M` : '8.0M'}
+                        {topArtist.popularity || 95}
+                      </div>
+                      <div className="text-white/60 text-sm">
+                        Popularity Score
+                      </div>
+                    </motion.div>
+                    <motion.div
+                      className="w-px h-8 bg-white/20"
+                      variants={childVariants}
+                    />
+                    <motion.div
+                      className="text-center"
+                      variants={childVariants}
+                    >
+                      <div className="text-white text-xl font-bold">
+                        {topArtist.followers
+                          ? `${(topArtist.followers / 1000000).toFixed(1)}M`
+                          : "8.0M"}
                       </div>
                       <div className="text-white/60 text-sm">Followers</div>
-                    </div>
-                  </div>
+                    </motion.div>
+                  </motion.div>
                 )}
               </>
             )}
           </motion.div>
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
