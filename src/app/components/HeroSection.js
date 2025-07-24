@@ -16,90 +16,90 @@ export default function HeroSection() {
   useEffect(() => {
     async function fetchArtists() {
       try {
-        const response = await fetch('/api/spotify/artists?limit=7');
+        const response = await fetch("/api/spotify/artists?limit=7");
         const data = await response.json();
-        
+
         if (data.success && data.artists.length > 0) {
           setArtists(data.artists);
         } else {
           // Fallback to static images if API fails
           setArtists([
             {
-              id: 'fallback-1',
-              name: 'Rema',
-              image: '/images/rema-image.png',
+              id: "fallback-1",
+              name: "Rema",
+              image: "/images/rema-image.png",
             },
             {
-              id: 'fallback-2', 
-              name: 'Wizkid',
-              image: '/images/wiz-image.png',
+              id: "fallback-2",
+              name: "Wizkid",
+              image: "/images/wiz-image.png",
             },
             {
-              id: 'fallback-3',
-              name: 'Davido', 
-              image: '/images/david-image.png',
+              id: "fallback-3",
+              name: "Davido",
+              image: "/images/david-image.png",
             },
             {
-              id: 'fallback-4',
-              name: 'Burna Boy', 
-              image: '/images/rema-image.png',
+              id: "fallback-4",
+              name: "Burna Boy",
+              image: "/images/rema-image.png",
             },
             {
-              id: 'fallback-5',
-              name: 'Asake', 
-              image: '/images/wiz-image.png',
+              id: "fallback-5",
+              name: "Asake",
+              image: "/images/wiz-image.png",
             },
             {
-              id: 'fallback-6',
-              name: 'Fireboy DML', 
-              image: '/images/david-image.png',
+              id: "fallback-6",
+              name: "Fireboy DML",
+              image: "/images/david-image.png",
             },
             {
-              id: 'fallback-7',
-              name: 'Omah Lay', 
-              image: '/images/rema-image.png',
-            }
+              id: "fallback-7",
+              name: "Omah Lay",
+              image: "/images/rema-image.png",
+            },
           ]);
         }
       } catch (error) {
-        console.error('Failed to fetch artists:', error);
+        console.error("Failed to fetch artists:", error);
         // Fallback to static images
         setArtists([
           {
-            id: 'fallback-1',
-            name: 'Rema',
-            image: '/images/rema-image.png',
+            id: "fallback-1",
+            name: "Rema",
+            image: "/images/rema-image.png",
           },
           {
-            id: 'fallback-2',
-            name: 'Wizkid', 
-            image: '/images/wiz-image.png',
+            id: "fallback-2",
+            name: "Wizkid",
+            image: "/images/wiz-image.png",
           },
           {
-            id: 'fallback-3',
-            name: 'Davido',
-            image: '/images/david-image.png',
+            id: "fallback-3",
+            name: "Davido",
+            image: "/images/david-image.png",
           },
           {
-            id: 'fallback-4',
-            name: 'Burna Boy', 
-            image: '/images/rema-image.png',
+            id: "fallback-4",
+            name: "Burna Boy",
+            image: "/images/rema-image.png",
           },
           {
-            id: 'fallback-5',
-            name: 'Asake', 
-            image: '/images/wiz-image.png',
+            id: "fallback-5",
+            name: "Asake",
+            image: "/images/wiz-image.png",
           },
           {
-            id: 'fallback-6',
-            name: 'Fireboy DML', 
-            image: '/images/david-image.png',
+            id: "fallback-6",
+            name: "Fireboy DML",
+            image: "/images/david-image.png",
           },
           {
-            id: 'fallback-7',
-            name: 'Omah Lay', 
-            image: '/images/rema-image.png',
-          }
+            id: "fallback-7",
+            name: "Omah Lay",
+            image: "/images/rema-image.png",
+          },
         ]);
       } finally {
         setIsLoading(false);
@@ -114,13 +114,11 @@ export default function HeroSection() {
     if (!isAutoRotating || artists.length === 0) return;
 
     const interval = setInterval(() => {
-      setCurrentArtistIndex(prev => (prev + 1) % artists.length);
+      setCurrentArtistIndex((prev) => (prev + 1) % artists.length);
     }, 4000); // Change every 4 seconds
 
     return () => clearInterval(interval);
   }, [isAutoRotating, artists.length]);
-
-
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
@@ -129,26 +127,21 @@ export default function HeroSection() {
 
   // Get the artists for display - flowing left to right
   const currentArtist = artists[currentArtistIndex]; // Center main
-  const farLeftArtist = artists[(currentArtistIndex - 3 + artists.length) % artists.length] || artists[0]; // Far left (3 positions behind)
-  const leftMainArtist = artists[(currentArtistIndex - 1 + artists.length) % artists.length] || artists[0]; // Left main (1 position behind)
-  const rightMainArtist = artists[(currentArtistIndex + 1) % artists.length] || artists[0]; // Right main (1 position ahead)
-  const farRightArtist = artists[(currentArtistIndex + 3) % artists.length] || artists[0]; // Far right (3 positions ahead)
-  const backCard1Artist = artists[(currentArtistIndex - 2 + artists.length) % artists.length] || artists[0]; // Back card 1 (2 positions behind)
-  const backCard2Artist = artists[(currentArtistIndex + 2) % artists.length] || artists[0]; // Back card 2 (2 positions ahead)
-
-  // Animation variants
-  const blueBoxVariants = {
-    initial: { opacity: 0, y: 20 },
-    animate: {
-      opacity: 1,
-      y: 15,
-      transition: {
-        delay: 0.5,
-        duration: 0.8,
-        ease: "easeOut",
-      },
-    },
-  };
+  const farLeftArtist =
+    artists[(currentArtistIndex - 3 + artists.length) % artists.length] ||
+    artists[0]; // Far left (3 positions behind)
+  const leftMainArtist =
+    artists[(currentArtistIndex - 1 + artists.length) % artists.length] ||
+    artists[0]; // Left main (1 position behind)
+  const rightMainArtist =
+    artists[(currentArtistIndex + 1) % artists.length] || artists[0]; // Right main (1 position ahead)
+  const farRightArtist =
+    artists[(currentArtistIndex + 3) % artists.length] || artists[0]; // Far right (3 positions ahead)
+  const backCard1Artist =
+    artists[(currentArtistIndex - 2 + artists.length) % artists.length] ||
+    artists[0]; // Back card 1 (2 positions behind)
+  const backCard2Artist =
+    artists[(currentArtistIndex + 2) % artists.length] || artists[0]; // Back card 2 (2 positions ahead)
 
   const imageVariants = {
     initial: { opacity: 0, y: 100 },
@@ -164,44 +157,26 @@ export default function HeroSection() {
 
   const carouselVariants = {
     enter: {
+      y: 200,
       opacity: 0,
-      scale: 0.8,
-      rotateY: -90,
     },
     center: {
+      y: 0,
       opacity: 1,
-      scale: 1,
-      rotateY: 0,
       transition: {
         duration: 0.6,
-        ease: "easeInOut",
+        ease: [0.16, 1, 0.3, 1],
       },
     },
     exit: {
+      y: -200,
       opacity: 0,
-      scale: 0.8,
-      rotateY: 90,
       transition: {
         duration: 0.6,
         ease: "easeInOut",
       },
     },
   };
-
-  // const badgeVariants = {
-  //   initial: { opacity: 0, scale: 0, rotate: -30 },
-  //   animate: {
-  //     opacity: 1,
-  //     scale: 1,
-  //     rotate: 0,
-  //     transition: {
-  //       delay: 0.6,
-  //       type: "spring",
-  //       stiffness: 260,
-  //       damping: 20,
-  //     },
-  //   },
-  // };
 
   return (
     <section
@@ -397,8 +372,10 @@ export default function HeroSection() {
           >
             <div className="w-full h-full overflow-hidden relative rounded-lg">
               {isLoading ? (
-                <div className="w-full h-full bg-[#171717] animate-pulse rounded-lg" 
-                     style={{ animationDelay: '0ms' }} />
+                <div
+                  className="w-full h-full bg-[#171717] animate-pulse rounded-lg"
+                  style={{ animationDelay: "0ms" }}
+                />
               ) : farLeftArtist ? (
                 <motion.div
                   key={`far-left-${currentArtistIndex}`}
@@ -434,8 +411,10 @@ export default function HeroSection() {
           >
             <div className="w-full h-full overflow-hidden relative rounded-lg">
               {isLoading ? (
-                <div className="w-full h-full bg-[#171717] animate-pulse rounded-lg" 
-                     style={{ animationDelay: '200ms' }} />
+                <div
+                  className="w-full h-full bg-[#171717] animate-pulse rounded-lg"
+                  style={{ animationDelay: "200ms" }}
+                />
               ) : leftMainArtist ? (
                 <motion.div
                   key={`left-main-${currentArtistIndex}`}
@@ -465,14 +444,40 @@ export default function HeroSection() {
             <div>
               {/* Back Card 1 - Left rotated */}
               <motion.div
-                className="absolute w-[300px] h-[356px] rounded-2xl -rotate-10 -left-7 bottom-10 overflow-hidden"
+                key={`back1-${currentArtistIndex}`}
+                className="absolute w-[300px] h-[356px] rounded-2xl -left-[75px] bottom-0 overflow-hidden"
                 initial="initial"
                 animate="animate"
-                variants={blueBoxVariants}
+                variants={{
+                  initial: {
+                    rotate: 0,
+                    opacity: 0,
+                    x: 60,
+                    transition: { duration: 0 },
+                  },
+                  animate: {
+                    rotate: -12,
+                    opacity: 1,
+                    x: 0,
+                    transition: {
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 15,
+                      mass: 0.5,
+                      delay: 0.1,
+                      restDelta: 0.01,
+                    },
+                  },
+                }}
+                style={{
+                  transformOrigin: "top left",
+                }}
               >
                 {isLoading ? (
-                  <div className="w-full h-full bg-[#171717] animate-pulse rounded-2xl" 
-                       style={{ animationDelay: '300ms' }} />
+                  <div
+                    className="w-full h-full bg-[#171717] animate-pulse rounded-2xl"
+                    style={{ animationDelay: "300ms" }}
+                  />
                 ) : backCard1Artist ? (
                   <motion.div
                     key={`back1-${currentArtistIndex}`}
@@ -494,18 +499,44 @@ export default function HeroSection() {
                   </motion.div>
                 ) : null}
               </motion.div>
-              
+
               {/* Back Card 2 - Right rotated */}
               <motion.div
-                className="absolute w-[300px] h-[356px] rounded-2xl rotate-10 -right-7 bottom-10 overflow-hidden"
+                key={`back2-${currentArtistIndex}`}
+                className="absolute w-[300px] h-[356px] rounded-2xl -right-20 bottom-14 overflow-hidden"
                 initial="initial"
                 animate="animate"
-                variants={blueBoxVariants}
-                transition={{ delay: 0.1 }}
+                exit="exit"
+                variants={{
+                  initial: {
+                    rotate: 0,
+                    opacity: 0,
+                    x: -60,
+                    transition: { duration: 0 },
+                  },
+                  animate: {
+                    rotate: 12,
+                    opacity: 1,
+                    x: 0,
+                    transition: {
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 15, 
+                      mass: 0.5,
+                      delay: 0.1,
+                      restDelta: 0.01,
+                    },
+                  },
+                }}
+                style={{
+                  transformOrigin: "top left",
+                }}
               >
                 {isLoading ? (
-                  <div className="w-full h-full bg-[#171717] animate-pulse rounded-2xl" 
-                       style={{ animationDelay: '500ms' }} />
+                  <div
+                    className="w-full h-full bg-[#171717] animate-pulse rounded-2xl"
+                    style={{ animationDelay: "500ms" }}
+                  />
                 ) : backCard2Artist ? (
                   <motion.div
                     key={`back2-${currentArtistIndex}`}
@@ -536,10 +567,12 @@ export default function HeroSection() {
               animate="animate"
               variants={imageVariants}
             >
-              <div className="w-full h-full overflow-hidden relative rounded-2xl">
+              <div className="w-full h-full overflow-hidden relative rounded-2xl shadow-2xl">
                 {isLoading ? (
-                  <div className="w-full h-full bg-[#171717] animate-pulse rounded-2xl" 
-                       style={{ animationDelay: '400ms' }} />
+                  <div
+                    className="w-full h-full bg-[#171717] animate-pulse rounded-2xl"
+                    style={{ animationDelay: "400ms" }}
+                  />
                 ) : currentArtist ? (
                   <motion.div
                     key={`center-${currentArtistIndex}`}
@@ -588,8 +621,10 @@ export default function HeroSection() {
           >
             <div className="w-full h-full overflow-hidden relative rounded-lg">
               {isLoading ? (
-                <div className="w-full h-full bg-[#171717] animate-pulse rounded-lg" 
-                     style={{ animationDelay: '600ms' }} />
+                <div
+                  className="w-full h-full bg-[#171717] animate-pulse rounded-lg"
+                  style={{ animationDelay: "600ms" }}
+                />
               ) : rightMainArtist ? (
                 <motion.div
                   key={`right-main-${currentArtistIndex}`}
@@ -625,8 +660,10 @@ export default function HeroSection() {
           >
             <div className="w-full h-full overflow-hidden relative rounded-lg">
               {isLoading ? (
-                <div className="w-full h-full bg-[#171717] animate-pulse rounded-lg" 
-                     style={{ animationDelay: '800ms' }} />
+                <div
+                  className="w-full h-full bg-[#171717] animate-pulse rounded-lg"
+                  style={{ animationDelay: "800ms" }}
+                />
               ) : farRightArtist ? (
                 <motion.div
                   key={`far-right-${currentArtistIndex}`}
