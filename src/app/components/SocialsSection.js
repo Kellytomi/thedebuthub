@@ -1,6 +1,7 @@
 "use client";
 import IntroBody from "./IntroBody";
 import Link from "next/link";
+import FlankDecoration from "./FlankDecoration";
 
 export default function SocialsSection() {
   const socialLinks = [
@@ -8,32 +9,32 @@ export default function SocialsSection() {
       name: "Twitter",
       url: "https://twitter.com",
       icon: "/socials/twitter-icon.svg",
-      transform: ""
+      transform: "",
     },
     {
       name: "Instagram",
       url: "https://instagram.com",
       icon: "/socials/instagram-icon.svg",
-      transform: "transform -rotate-12"
+      transform: "transform -rotate-12",
     },
     {
       name: "Facebook",
       url: "https://facebook.com",
       icon: "/socials/facebook-icon.svg",
-      transform: ""
+      transform: "",
     },
     {
       name: "TikTok",
       url: "https://tiktok.com",
       icon: "/socials/tiktok-icon.svg",
-      transform: ""
+      transform: "",
     },
     {
       name: "Gmail",
       url: "mailto:contact@example.com",
       icon: "/socials/gmail-icon.svg",
-      transform: ""
-    }
+      transform: "",
+    },
   ];
 
   return (
@@ -42,8 +43,8 @@ export default function SocialsSection() {
         title="Our Socials"
         description="Be the first to know about chart updates, exclusive artist drops, behind-the-scenes content, and live sessions."
       />
-
-      <div className="flex flex-col items-center mt-28 text-white/80 font-dm-sans text-[18px]">
+      <FlankDecoration />
+      <div className="relative z-20 flex flex-col items-center mt-28 text-white/80 font-dm-sans text-[18px]">
         <div className="flex flex-col gap-28 mb-8 justify-center items-center">
           <div className="flex gap-14">
             {socialLinks.slice(0, 3).map((social) => (
@@ -52,10 +53,10 @@ export default function SocialsSection() {
                 href={social.url}
                 className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white transition-colors ${social.transform}`}
               >
-                <img 
-                  src={social.icon} 
+                <img
+                  src={social.icon}
                   alt={social.name}
-                  className="w-10 h-10" 
+                  className="w-10 h-10"
                 />
                 <span className="text-2xl">{social.name}</span>
               </Link>
@@ -68,10 +69,10 @@ export default function SocialsSection() {
                 href={social.url}
                 className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white transition-colors ${social.transform}`}
               >
-                <img 
-                  src={social.icon} 
+                <img
+                  src={social.icon}
                   alt={social.name}
-                  className="w-10 h-10" 
+                  className="w-10 h-10"
                 />
                 <span className="text-2xl">{social.name}</span>
               </Link>

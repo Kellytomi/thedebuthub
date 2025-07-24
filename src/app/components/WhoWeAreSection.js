@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default function WhoWeAreSection() {
   return (
-    <section className="relative overflow-hidden mx-auto w-full h-[665px] bg-[#030303] pt-20">
+    <section className="relative overflow-hidden mx-auto w-full h-[875px] xl:h-[665px] bg-[#030303] pt-20">
       <Image
         src="/images/star-section-decor.svg"
         alt="grid pattern background"
@@ -21,8 +21,8 @@ export default function WhoWeAreSection() {
           description="DebutHub is a global music community built by artists, for artists. We believe in authenticity, creativity, and giving power back to creators"
         />
 
-        <div className="max-w-[1350px] mx-auto flex h-auto pt-16 gap-20">
-          <div className="flex flex-col items-start justify-center gap-6">
+        <div className="max-w-[1350px] mx-auto flex flex-col xl:flex-row h-auto pt-16 gap-20">
+          <div className="flex flex-col px-10 xl:px-0 items-start justify-center gap-6">
             <h2 className="text-[32px] text-white font-medium">Who We Are</h2>
             <p className="text-white/70 w-[526px] font-dm-sans text-[20px]">
               We’re on a mission to amplify voices in music — whether you're
@@ -40,7 +40,7 @@ export default function WhoWeAreSection() {
                 alt="Asake Tweet Card"
                 width={740}
                 height={367}
-                className="rounded-lg shadow-xl"
+                className="rounded-lg shadow-xl w-[500px] float-right pr-10 xl:w-[740px] xl:h-[367px]"
               />
             </div>
           </div>

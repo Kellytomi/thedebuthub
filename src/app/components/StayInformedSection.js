@@ -35,7 +35,7 @@ export default function StayInformedSection() {
         width={36}
         height={39}
         priority
-        className="absolute w-full h-[1076px] object-contain top-0 left-0 z-0"
+        className="absolute w-full h-full lg:h-[1076px] object-cover lg:object-contain top-0 left-0 z-0"
       />
       <div className="relative max-w-4xl mx-auto flex flex-col justify-center items-center w-full h-full text-center z-20">
         <div className="mb-8">

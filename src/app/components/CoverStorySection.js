@@ -6,7 +6,7 @@ import IntroTitle from "./IntroTitle";
 
 export default function CoverStorySection() {
   return (
-    <section className="relative overflow-hidden mx-auto w-full h-[1024px] bg-[#030303]">
+    <section className="relative overflow-hidden mx-auto w-full h-[1280px] xl:h-[1024px] bg-[#030303]">
       <div className="absolute w-8 h-[1024px] top-[14px] left-[1298px] bg-[#006DFF] backdrop-blur-[300px] blur-[150px]" />
 
       <div className="relative z-10 h-full">
@@ -14,7 +14,7 @@ export default function CoverStorySection() {
 
         <IntroBody title ="Cover Story" description = "Meet the artist who broke the charts this week. Get an exclusive look into their journey, inspirations, and what's next for them." />
 
-        <div className="flex items-center justify-center px-16 mt-16 gap-16">
+        <div className="flex flex-col xl:flex-row items-center justify-center px-16 mt-16 gap-16">
           <div
             className="relative"
             style={{

@@ -3,19 +3,60 @@
 import { useState } from "react";
 import Image from "next/image";
 import ActionButton from "./ActionButton";
+import { motion } from "framer-motion";
 
 export default function HeroSection() {
   const [isMuted, setIsMuted] = useState(false);
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
-    // This will be used later when background music is implemented
     console.log("Background music", isMuted ? "unmuted" : "muted");
   };
 
+  // Animation variants
+  const blueBoxVariants = {
+    initial: { opacity: 0, y: 20 },
+    animate: {
+      opacity: 1,
+      y: 15,
+      transition: {
+        delay: 0.5,
+        duration: 0.8,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const imageVariants = {
+    initial: { opacity: 0, y: 100 },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.7,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    },
+  };
+
+  // const badgeVariants = {
+  //   initial: { opacity: 0, scale: 0, rotate: -30 },
+  //   animate: {
+  //     opacity: 1,
+  //     scale: 1,
+  //     rotate: 0,
+  //     transition: {
+  //       delay: 0.6,
+  //       type: "spring",
+  //       stiffness: 260,
+  //       damping: 20,
+  //     },
+  //   },
+  // };
+
   return (
     <section
-      className="relative xl:h-[1024px]"
+      className="relative h-[1024px]"
       style={{
         width: "100%",
         // maxWidth: "1440px",
@@ -40,7 +81,7 @@ export default function HeroSection() {
 
       {/* Header Navigation */}
       <div className="absolute top-8 left-0 right-0 z-20">
-        <div className="flex justify-between items-center px-12">
+        <div className="flex justify-between items-center px-12 max-w-[1440px] mx-auto">
           {/* Logo */}
           <div
             className="flex items-center"
@@ -198,7 +239,7 @@ export default function HeroSection() {
           {/* Left smaller artist image */}
 
           <div
-            className="absolute bg-[#171717] rounded-lg"
+            className="xl:inline hidden absolute bg-[#171717] rounded-lg"
             style={{
               top: "100px",
               left: "-450px",
@@ -233,15 +274,27 @@ export default function HeroSection() {
           {/* Center main artist image */}
           <div className="relative">
             <div>
-              <div className="absolute w-[300px] h-[356px] bg-[#00ccff] rounded-2xl -rotate-10 -left-7 bottom-10"></div>
-              <div className="absolute w-[300px] h-[356px] bg-[#00ccff] rounded-2xl rotate-10 -right-7 bottom-10"></div>
+              <motion.div
+                className="absolute w-[300px] h-[356px] bg-[#00ccff] rounded-2xl -rotate-10 -left-7 bottom-10"
+                initial="initial"
+                animate="animate"
+                variants={blueBoxVariants}
+              />
+              <motion.div
+                className="absolute w-[300px] h-[356px] bg-[#00ccff] rounded-2xl rotate-10 -right-7 bottom-10"
+                initial="initial"
+                animate="animate"
+                variants={blueBoxVariants}
+                transition={{ delay: 0.1 }}
+              />
             </div>
-            <div
+
+            <motion.div
               className="relative"
-              style={{
-                height: "427px",
-                width: "360px",
-              }}
+              style={{ height: "427px", width: "360px" }}
+              initial="initial"
+              animate="animate"
+              variants={imageVariants}
             >
               <div className="w-full h-full overflow-hidden relative">
                 <Image
@@ -257,7 +310,9 @@ export default function HeroSection() {
               </div>
 
               {/* Hot News Badge */}
-              <div className="absolute w-full inset-0">
+              <div
+                className="absolute w-full inset-0"
+              >
                 <Image
                   src="/images/hn-badge.svg"
                   alt="Main Artist"
@@ -266,7 +321,7 @@ export default function HeroSection() {
                   className="absolute -top-12 -right-12"
                 />
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Right smaller artist image */}
@@ -294,7 +349,7 @@ export default function HeroSection() {
           </div>
 
           <div
-            className="absolute bg-[#171717] rounded-lg"
+            className="xl:inline hidden absolute bg-[#171717] rounded-lg"
             style={{
               top: "100px",
               right: "-450px",

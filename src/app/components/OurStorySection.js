@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import AlbumCard from "./AlbumCard";
+import FlankDecoration from "./FlankDecoration";
 
 export default function TopTracksSection() {
   const [tracks, setTracks] = useState([]);
@@ -94,7 +95,8 @@ export default function TopTracksSection() {
         backgroundColor: "#040507",
       }}
     >
-      <div className="w-full text-center">
+      <FlankDecoration />
+      <div className="relative z-20 w-full text-center">
         <h2
           className="mb-12 text-lg flex flex-col"
           style={{
@@ -112,7 +114,7 @@ export default function TopTracksSection() {
         )}
       </div>
 
-      <div className="flex justify-center gap-[33px] items-center h-auto">
+      <div className="relative z-20 flex justify-center gap-[33px] items-center h-auto">
         {loading || !isClient ? (
           // Show loading skeletons
           [...Array(3)].map((_, index) => (
