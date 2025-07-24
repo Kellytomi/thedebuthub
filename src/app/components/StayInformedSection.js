@@ -1,57 +1,108 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import Image from "next/image";
+import { useState } from "react";
+import ActionButton from "./ActionButton";
+import Link from "next/link";
 
 export default function StayInformedSection() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (email) {
       setIsSubscribed(true);
-      setEmail('');
+      setEmail("");
       // Here you would typically handle the newsletter subscription
       setTimeout(() => setIsSubscribed(false), 3000);
     }
   };
 
+  const footerLinks = [
+    { name: "Service", href: "#" },
+    { name: "Support", href: "#" },
+    { name: "Company", href: "#" },
+    { name: "Legal", href: "#" },
+    { name: "Join Us", href: "#" },
+  ];
+
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-900">
-      <div className="max-w-4xl mx-auto text-center">
-        <div className="mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-6">
-            <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-            </svg>
+    <section className="relative bg-black h-[1076px]">
+      <Image
+        src="/images/grid-layers.svg"
+        alt="grid pattern background"
+        width={36}
+        height={39}
+        priority
+        className="absolute w-full h-[1076px] object-contain top-0 left-0 z-0"
+      />
+      <div className="relative max-w-4xl mx-auto flex flex-col justify-center items-center w-full h-full text-center z-20">
+        <div className="mb-8">
+          <div className="inline-flex items-center justify-center rounded-full mb-6">
+            <Image
+              src="/images/top-game-badge.svg"
+              alt="Main Artist"
+              height={100}
+              width={100}
+              className=""
+            />
           </div>
-          
-          <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+
+          <h2
+            className="mb-8 text-lg"
+            style={{
+              fontFamily: "'Dancing Script', cursive",
+              fontSize: "24px",
+            }}
+          >
+            <span style={{ color: "#646464" }}>Your</span>{" "}
+            <span className="text-white">Sound,</span>{" "}
+            <span style={{ color: "#646464" }}>Your</span>{" "}
+            <span className="text-white">Story,</span>{" "}
+            <span style={{ color: "#646464" }}>Your</span>{" "}
+            <span className="text-white">Stage</span>
+          </h2>
+
+          <h2
+            className="text-white font-bold mb-8"
+            style={{
+              fontFamily: "'Montserrat', sans-serif",
+              fontSize: "clamp(48px, 8vw, 96px)",
+              lineHeight: "1.1",
+              letterSpacing: "-2px",
+            }}
+          >
             Stay Informed
           </h2>
-          <p className="text-xl text-slate-300 max-w-2xl mx-auto mb-8">
-            Get the latest updates on new releases, artist features, and trending music straight to your inbox.
+          <p
+            className="text-white/70 max-w-[741px]"
+            style={{
+              fontFamily: "'DM Sans', sans-serif",
+              fontSize: "18px",
+              lineHeight: "1.6",
+            }}
+          >
+            Get the latest in music news, exclusive features, and insider tips
+            delivered straight to your inbox
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto mb-12">
-          <div className="flex flex-col sm:flex-row gap-4">
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto mb-24">
+          <div className="flex flex-col sm:flex-row gap-3">
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="flex-1 px-6 py-4 bg-slate-800 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+              placeholder="Email address"
+              className="w-[375px] flex-1 px-6 py-4 bg-[#252525]/30 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               required
             />
-            <button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-lg transition-colors whitespace-nowrap"
-            >
+            <ActionButton onClick={() => alert("Action triggered!")}>
               Subscribe
-            </button>
+            </ActionButton>
           </div>
-          
+
           {isSubscribed && (
             <div className="mt-4 p-4 bg-green-600/20 border border-green-600/30 rounded-lg">
               <p className="text-green-400 font-medium">
@@ -60,51 +111,21 @@ export default function StayInformedSection() {
             </div>
           )}
         </form>
-
-        <div className="border-t border-slate-800 pt-12">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-slate-400 text-sm">
-            <div>
-              <h4 className="font-semibold text-white mb-4">ABOUT</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="hover:text-white transition-colors">Our Story</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Team</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold text-white mb-4">ARTISTS</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="hover:text-white transition-colors">Submit Music</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Artist Portal</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Resources</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold text-white mb-4">DISCOVER</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="hover:text-white transition-colors">Charts</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Playlists</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Genres</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h4 className="font-semibold text-white mb-4">SUPPORT</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="hover:text-white transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="mt-12 pt-8 border-t border-slate-800 text-slate-500 text-sm">
-            <p>&copy; 2024 The Debut Hub. All rights reserved.</p>
-          </div>
+        <div className="flex flex-col gap-12">
+          <div className="flex gap-20">
+          {footerLinks.map((link) => (
+            <Link
+              key={link.name}
+              href={link.href}
+              className="text-[18px] hover:text-[#B3B3B3] text-white transition-colors font-medium"
+            >
+              {link.name}
+            </Link>
+          ))}
+        </div>
+        <p className="text-[#92989F] text-[16px]">© {new Date().getFullYear()} The Debut Hub. All rights reserved.</p>
         </div>
       </div>
     </section>
   );
-} 
+}

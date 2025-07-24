@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default function WhoWeAreSection() {
   return (
-    <section className="relative overflow-hidden mx-auto w-full h-[875px] bg-[#030303] pt-20">
+    <section className="relative overflow-hidden mx-auto w-full h-[665px] bg-[#030303] pt-20">
       <Image
         src="/images/star-section-decor.svg"
         alt="grid pattern background"
