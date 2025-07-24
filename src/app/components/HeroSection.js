@@ -445,7 +445,7 @@ export default function HeroSection() {
               {/* Back Card 1 - Left rotated */}
               <motion.div
                 key={`back1-${currentArtistIndex}`}
-                className="absolute w-[300px] h-[356px] rounded-2xl -left-[75px] bottom-0 overflow-hidden"
+                className="absolute hidden md:block w-[300px] h-[356px] rounded-2xl -left-[75px] bottom-0 overflow-hidden"
                 initial="initial"
                 animate="animate"
                 variants={{
@@ -503,7 +503,7 @@ export default function HeroSection() {
               {/* Back Card 2 - Right rotated */}
               <motion.div
                 key={`back2-${currentArtistIndex}`}
-                className="absolute w-[300px] h-[356px] rounded-2xl -right-20 bottom-14 overflow-hidden"
+                className="absolute hidden md:block w-[300px] h-[356px] rounded-2xl -right-20 bottom-14 overflow-hidden"
                 initial="initial"
                 animate="animate"
                 exit="exit"
