@@ -1,17 +1,170 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import ActionButton from "./ActionButton";
 import { motion } from "framer-motion";
 
 export default function HeroSection() {
   const [isMuted, setIsMuted] = useState(false);
+  const [artists, setArtists] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [currentArtistIndex, setCurrentArtistIndex] = useState(0);
+  const [isAutoRotating, setIsAutoRotating] = useState(true);
+  const heroRef = useRef(null);
+  const lastScrollY = useRef(0);
+
+  // Fetch Nigerian artists on component mount
+  useEffect(() => {
+    async function fetchArtists() {
+      try {
+        const response = await fetch('/api/spotify/artists?limit=7');
+        const data = await response.json();
+        
+        if (data.success && data.artists.length > 0) {
+          setArtists(data.artists);
+        } else {
+          // Fallback to static images if API fails
+          setArtists([
+            {
+              id: 'fallback-1',
+              name: 'Rema',
+              image: '/images/rema-image.png',
+            },
+            {
+              id: 'fallback-2', 
+              name: 'Wizkid',
+              image: '/images/wiz-image.png',
+            },
+            {
+              id: 'fallback-3',
+              name: 'Davido', 
+              image: '/images/david-image.png',
+            },
+            {
+              id: 'fallback-4',
+              name: 'Burna Boy', 
+              image: '/images/rema-image.png',
+            },
+            {
+              id: 'fallback-5',
+              name: 'Asake', 
+              image: '/images/wiz-image.png',
+            },
+            {
+              id: 'fallback-6',
+              name: 'Fireboy DML', 
+              image: '/images/david-image.png',
+            },
+            {
+              id: 'fallback-7',
+              name: 'Omah Lay', 
+              image: '/images/rema-image.png',
+            }
+          ]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch artists:', error);
+        // Fallback to static images
+        setArtists([
+          {
+            id: 'fallback-1',
+            name: 'Rema',
+            image: '/images/rema-image.png',
+          },
+          {
+            id: 'fallback-2',
+            name: 'Wizkid', 
+            image: '/images/wiz-image.png',
+          },
+          {
+            id: 'fallback-3',
+            name: 'Davido',
+            image: '/images/david-image.png',
+          },
+          {
+            id: 'fallback-4',
+            name: 'Burna Boy', 
+            image: '/images/rema-image.png',
+          },
+          {
+            id: 'fallback-5',
+            name: 'Asake', 
+            image: '/images/wiz-image.png',
+          },
+          {
+            id: 'fallback-6',
+            name: 'Fireboy DML', 
+            image: '/images/david-image.png',
+          },
+          {
+            id: 'fallback-7',
+            name: 'Omah Lay', 
+            image: '/images/rema-image.png',
+          }
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    fetchArtists();
+  }, []);
+
+  // Auto-rotation carousel effect when idle
+  useEffect(() => {
+    if (!isAutoRotating || artists.length === 0) return;
+
+    const interval = setInterval(() => {
+      setCurrentArtistIndex(prev => (prev + 1) % artists.length);
+    }, 4000); // Change every 4 seconds
+
+    return () => clearInterval(interval);
+  }, [isAutoRotating, artists.length]);
+
+  // Scroll-based parallax effect
+  useEffect(() => {
+    const handleScroll = () => {
+      if (artists.length === 0) return;
+
+      const currentScrollY = window.scrollY;
+      const scrollDifference = Math.abs(currentScrollY - lastScrollY.current);
+      
+      // If significant scroll detected, pause auto-rotation and change artist
+      if (scrollDifference > 50) {
+        setIsAutoRotating(false);
+        
+        // Calculate artist index based on scroll position
+        const scrollPercentage = currentScrollY / (document.body.scrollHeight - window.innerHeight);
+        const targetIndex = Math.floor(scrollPercentage * artists.length) % artists.length;
+        
+        setCurrentArtistIndex(targetIndex);
+        lastScrollY.current = currentScrollY;
+
+        // Resume auto-rotation after 3 seconds of no scrolling
+        setTimeout(() => {
+          setIsAutoRotating(true);
+        }, 3000);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [artists.length]);
 
   const toggleMute = () => {
     setIsMuted(!isMuted);
     console.log("Background music", isMuted ? "unmuted" : "muted");
   };
+
+  // Get the artists for display - flowing left to right
+  const currentArtist = artists[currentArtistIndex]; // Center main
+  const farLeftArtist = artists[(currentArtistIndex - 3 + artists.length) % artists.length] || artists[0]; // Far left (3 positions behind)
+  const leftMainArtist = artists[(currentArtistIndex - 1 + artists.length) % artists.length] || artists[0]; // Left main (1 position behind)
+  const rightMainArtist = artists[(currentArtistIndex + 1) % artists.length] || artists[0]; // Right main (1 position ahead)
+  const farRightArtist = artists[(currentArtistIndex + 3) % artists.length] || artists[0]; // Far right (3 positions ahead)
+  const backCard1Artist = artists[(currentArtistIndex - 2 + artists.length) % artists.length] || artists[0]; // Back card 1 (2 positions behind)
+  const backCard2Artist = artists[(currentArtistIndex + 2) % artists.length] || artists[0]; // Back card 2 (2 positions ahead)
 
   // Animation variants
   const blueBoxVariants = {
@@ -35,6 +188,32 @@ export default function HeroSection() {
       transition: {
         duration: 0.7,
         ease: [0.16, 1, 0.3, 1],
+      },
+    },
+  };
+
+  const carouselVariants = {
+    enter: {
+      opacity: 0,
+      scale: 0.8,
+      rotateY: -90,
+    },
+    center: {
+      opacity: 1,
+      scale: 1,
+      rotateY: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeInOut",
+      },
+    },
+    exit: {
+      opacity: 0,
+      scale: 0.8,
+      rotateY: 90,
+      transition: {
+        duration: 0.6,
+        ease: "easeInOut",
       },
     },
   };
@@ -234,59 +413,146 @@ export default function HeroSection() {
           your sound, all in one hub.
         </p>
 
-        {/* Artist Images Layout */}
-        <div className="relative mb-12">
-          {/* Left smaller artist image */}
-
-          <div
-            className="xl:inline hidden absolute bg-[#171717] rounded-lg"
-            style={{
-              top: "100px",
-              left: "-450px",
-              width: "120px",
-              height: "120px",
-            }}
-          ></div>
-
-          <div
-            className="absolute hidden lg:block"
-            style={{
-              top: "80px",
-              left: "-300px",
-              width: "190px",
-              height: "170px",
-            }}
-          >
-            <div className="w-full h-full overflow-hidden relative">
-              <Image
-                src="/images/rema-image.png"
-                alt="Main Artist"
-                fill
-                style={{
-                  objectFit: "cover",
-                  objectPosition: "center",
-                }}
-                className="absolute inset-0"
-              />
+        {/* Artist Images Layout - Carousel of 7 Nigerian Artists */}
+        <div className="relative mb-12" ref={heroRef}>
+          {/* Far left artist image */}
+          {farLeftArtist && (
+            <div
+              className="xl:inline hidden absolute rounded-lg"
+              style={{
+                top: "100px",
+                left: "-450px",
+                width: "120px",
+                height: "120px",
+              }}
+            >
+              <div className="w-full h-full overflow-hidden relative rounded-lg">
+                {isLoading ? (
+                  <div className="w-full h-full bg-[#171717] animate-pulse rounded-lg" />
+                ) : (
+                  <motion.div
+                    key={`far-left-${currentArtistIndex}`}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full h-full"
+                  >
+                    <Image
+                      src={farLeftArtist.image}
+                      alt={`${farLeftArtist.name} - Nigerian Artist`}
+                      fill
+                      style={{
+                        objectFit: "cover",
+                        objectPosition: "center",
+                      }}
+                      className="absolute inset-0 rounded-lg"
+                    />
+                  </motion.div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Center main artist image */}
+          {/* Left main artist image */}
+          {leftMainArtist && (
+            <div
+              className="absolute hidden lg:block"
+              style={{
+                top: "80px",
+                left: "-300px",
+                width: "190px",
+                height: "170px",
+              }}
+            >
+              <div className="w-full h-full overflow-hidden relative rounded-lg">
+                {isLoading ? (
+                  <div className="w-full h-full bg-[#171717] animate-pulse rounded-lg" />
+                ) : (
+                  <motion.div
+                    key={`left-main-${currentArtistIndex}`}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full h-full"
+                  >
+                    <Image
+                      src={leftMainArtist.image}
+                      alt={`${leftMainArtist.name} - Nigerian Artist`}
+                      fill
+                      style={{
+                        objectFit: "cover",
+                        objectPosition: "center",
+                      }}
+                      className="absolute inset-0 rounded-lg"
+                    />
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Center main artist image with carousel */}
           <div className="relative">
+            {/* Background artist cards */}
             <div>
-              <motion.div
-                className="absolute w-[300px] h-[356px] bg-[#00ccff] rounded-2xl -rotate-10 -left-7 bottom-10"
-                initial="initial"
-                animate="animate"
-                variants={blueBoxVariants}
-              />
-              <motion.div
-                className="absolute w-[300px] h-[356px] bg-[#00ccff] rounded-2xl rotate-10 -right-7 bottom-10"
-                initial="initial"
-                animate="animate"
-                variants={blueBoxVariants}
-                transition={{ delay: 0.1 }}
-              />
+              {/* Back Card 1 - Left rotated */}
+              {backCard1Artist && (
+                <motion.div
+                  className="absolute w-[300px] h-[356px] rounded-2xl -rotate-10 -left-7 bottom-10 overflow-hidden"
+                  initial="initial"
+                  animate="animate"
+                  variants={blueBoxVariants}
+                >
+                  <motion.div
+                    key={`back1-${currentArtistIndex}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full h-full"
+                  >
+                    <Image
+                      src={backCard1Artist.image}
+                      alt={`${backCard1Artist.name} - Nigerian Artist`}
+                      fill
+                      style={{
+                        objectFit: "cover",
+                        objectPosition: "center",
+                      }}
+                      className="absolute inset-0 rounded-2xl"
+                    />
+                  </motion.div>
+                </motion.div>
+              )}
+              
+              {/* Back Card 2 - Right rotated */}
+              {backCard2Artist && (
+                <motion.div
+                  className="absolute w-[300px] h-[356px] rounded-2xl rotate-10 -right-7 bottom-10 overflow-hidden"
+                  initial="initial"
+                  animate="animate"
+                  variants={blueBoxVariants}
+                  transition={{ delay: 0.1 }}
+                >
+                  <motion.div
+                    key={`back2-${currentArtistIndex}`}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full h-full"
+                  >
+                    <Image
+                      src={backCard2Artist.image}
+                      alt={`${backCard2Artist.name} - Nigerian Artist`}
+                      fill
+                      style={{
+                        objectFit: "cover",
+                        objectPosition: "center",
+                      }}
+                      className="absolute inset-0 rounded-2xl"
+                    />
+                  </motion.div>
+                </motion.div>
+              )}
             </div>
 
             <motion.div
@@ -296,26 +562,37 @@ export default function HeroSection() {
               animate="animate"
               variants={imageVariants}
             >
-              <div className="w-full h-full overflow-hidden relative">
-                <Image
-                  src="/images/wiz-image.png"
-                  alt="Main Artist"
-                  fill
-                  style={{
-                    objectFit: "cover",
-                    objectPosition: "center",
-                  }}
-                  className="absolute inset-0"
-                />
+              <div className="w-full h-full overflow-hidden relative rounded-2xl">
+                {isLoading ? (
+                  <div className="w-full h-full bg-[#171717] animate-pulse rounded-2xl" />
+                ) : currentArtist ? (
+                  <motion.div
+                    key={`center-${currentArtistIndex}`}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    variants={carouselVariants}
+                    className="w-full h-full"
+                  >
+                    <Image
+                      src={currentArtist.image}
+                      alt={`${currentArtist.name} - Featured Nigerian Artist`}
+                      fill
+                      style={{
+                        objectFit: "cover",
+                        objectPosition: "center",
+                      }}
+                      className="absolute inset-0 rounded-2xl"
+                    />
+                  </motion.div>
+                ) : null}
               </div>
 
               {/* Hot News Badge */}
-              <div
-                className="absolute w-full inset-0"
-              >
+              <div className="absolute w-full inset-0">
                 <Image
                   src="/images/hn-badge.svg"
-                  alt="Main Artist"
+                  alt="Hot News Badge"
                   height={100}
                   width={100}
                   className="absolute -top-12 -right-12"
@@ -324,39 +601,81 @@ export default function HeroSection() {
             </motion.div>
           </div>
 
-          {/* Right smaller artist image */}
-          <div
-            className="absolute hidden lg:block"
-            style={{
-              top: "80px",
-              right: "-300px",
-              width: "190px",
-              height: "170px",
-            }}
-          >
-            <div className="w-full h-full overflow-hidden relative">
-              <Image
-                src="/images/david-image.png"
-                alt="Main Artist"
-                fill
-                style={{
-                  objectFit: "cover",
-                  objectPosition: "center",
-                }}
-                className="absolute inset-0"
-              />
+          {/* Right main artist image */}
+          {rightMainArtist && (
+            <div
+              className="absolute hidden lg:block"
+              style={{
+                top: "80px",
+                right: "-300px",
+                width: "190px",
+                height: "170px",
+              }}
+            >
+              <div className="w-full h-full overflow-hidden relative rounded-lg">
+                {isLoading ? (
+                  <div className="w-full h-full bg-[#171717] animate-pulse rounded-lg" />
+                ) : (
+                  <motion.div
+                    key={`right-main-${currentArtistIndex}`}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full h-full"
+                  >
+                    <Image
+                      src={rightMainArtist.image}
+                      alt={`${rightMainArtist.name} - Nigerian Artist`}
+                      fill
+                      style={{
+                        objectFit: "cover",
+                        objectPosition: "center",
+                      }}
+                      className="absolute inset-0 rounded-lg"
+                    />
+                  </motion.div>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
-          <div
-            className="xl:inline hidden absolute bg-[#171717] rounded-lg"
-            style={{
-              top: "100px",
-              right: "-450px",
-              width: "120px",
-              height: "120px",
-            }}
-          ></div>
+          {/* Far right artist image */}
+          {farRightArtist && (
+            <div
+              className="xl:inline hidden absolute rounded-lg"
+              style={{
+                top: "100px",
+                right: "-450px",
+                width: "120px",
+                height: "120px",
+              }}
+            >
+              <div className="w-full h-full overflow-hidden relative rounded-lg">
+                {isLoading ? (
+                  <div className="w-full h-full bg-[#171717] animate-pulse rounded-lg" />
+                ) : (
+                  <motion.div
+                    key={`far-right-${currentArtistIndex}`}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="w-full h-full"
+                  >
+                    <Image
+                      src={farRightArtist.image}
+                      alt={`${farRightArtist.name} - Nigerian Artist`}
+                      fill
+                      style={{
+                        objectFit: "cover",
+                        objectPosition: "center",
+                      }}
+                      className="absolute inset-0 rounded-lg"
+                    />
+                  </motion.div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         <ActionButton onClick={() => alert("Action triggered!")}>
