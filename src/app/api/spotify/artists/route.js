@@ -74,7 +74,7 @@ async function spotifyFetch(endpoint, options = {}) {
  * Top Nigerian artists to search for
  */
 const TOP_NIGERIAN_ARTISTS = [
-  'Burna Boy', 'Wizkid', 'Davido', 'Rema', 'Asake', 
+  'Burna Boy', 'Wizkid', '"Davido"', 'Rema', 'Asake', 
   'Fireboy DML', 'Omah Lay', 'Joeboy', 'Kizz Daniel', 
   'Ayra Starr', 'Tiwa Savage', 'Mr Eazi', 'Ruger'
 ];
@@ -100,21 +100,30 @@ async function getTopNigerianArtists(limit = 3) {
           const normalizedName = artist.name.toLowerCase();
           
           // Ensure we don't add duplicate artists and that they have an image
+          // Also verify the image is actually an artist image (not album cover)
           if (!seenArtists.has(normalizedName) && artist.images?.length > 0) {
-            artists.push({
-              id: artist.id,
-              name: artist.name,
-              image: artist.images[0]?.url, // Get the highest resolution image
-              followers: artist.followers?.total || 0,
-              popularity: artist.popularity || 0,
-              external_urls: artist.external_urls,
-              genres: artist.genres || []
-            });
-            seenArtists.add(normalizedName);
+            // Get the highest resolution artist image
+            const artistImage = artist.images[0]?.url;
+            
+            // Verify this is actually the artist we're looking for (not a similar name)
+            const searchName = artistName.replace(/['"]/g, '').toLowerCase();
+            if (normalizedName.includes(searchName) || searchName.includes(normalizedName)) {
+              console.log(`✅ Found ${artist.name} via Spotify API with artist image`);
+              artists.push({
+                id: artist.id,
+                name: artist.name,
+                image: artistImage,
+                followers: artist.followers?.total || 0,
+                popularity: artist.popularity || 0,
+                external_urls: artist.external_urls,
+                genres: artist.genres || []
+              });
+              seenArtists.add(normalizedName);
+            }
           }
         }
       } catch (error) {
-        console.warn(`Search for ${artistName} failed:`, error.message);
+        console.warn(`❌ Search for ${artistName} failed:`, error.message);
       }
     }
 
@@ -144,6 +153,7 @@ export async function GET(request) {
 
   } catch (error) {
     console.error('API Error - Nigerian Artists:', error);
+    console.log('🔄 Using fallback artist images...');
     
     // Return fallback data if Spotify API fails
     const fallbackArtists = [
@@ -168,7 +178,7 @@ export async function GET(request) {
       {
         id: 'fallback-3',
         name: 'Davido',
-        image: '/images/david-image.png',
+        image: '/images/david-image.png', // Note: This may be an album cover - should be replaced with artist photo
         followers: 6000000,
         popularity: 88,
         external_urls: { spotify: '#' },
