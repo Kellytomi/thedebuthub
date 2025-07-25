@@ -47,9 +47,9 @@ export const metadata = {
     siteName: "The Debut Hub",
     images: [
       {
-        url: "/images/The Debut Hub.png",
-        width: 1200,
-        height: 630,
+        url: "/Preview 512x512.png",
+        width: 512,
+        height: 512,
         alt: "The Debut Hub - Nigerian Music Discovery Platform",
       },
       {
@@ -68,7 +68,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "The Debut Hub - Discover Nigerian Music",
     description: "Explore trending music from Nigeria. Emerging artists and the latest hits you need to hear.",
-    images: ["/images/The Debut Hub.png"],
+    images: ["/Preview 512x512.png"],
     creator: "@thedebuthub",
     site: "@thedebuthub",
   },
