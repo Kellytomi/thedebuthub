@@ -195,8 +195,8 @@ export async function getMostStreamedNigerianAlbums(limit = 3) {
     
     console.log(`🎵 Found ${playlistResponse.items.length} tracks in Nigeria playlist`);
     
-    // Step 3: Process albums in actual chart order (not by track count)
-    console.log('📀 Processing albums in actual chart order...');
+    // Step 3: Process albums in actual chart order (filter out singles)
+    console.log('📀 Processing FULL ALBUMS only (filtering out singles)...');
     const detailedAlbums = [];
     const seenAlbums = new Set();
     
@@ -238,30 +238,90 @@ export async function getMostStreamedNigerianAlbums(limit = 3) {
           item.track?.album?.id === albumId
         ).length;
         
-        const albumData = {
-          id: fullAlbum.id,
-          name: fullAlbum.name,
-          artist: fullAlbum.artists[0]?.name,
-          image: imageUrl,
-          total_tracks: fullAlbum.total_tracks,
-          release_date: fullAlbum.release_date,
-          popularity: fullAlbum.popularity || 50, // Use Spotify's actual popularity
-          album_type: fullAlbum.album_type || 'album',
-          external_urls: fullAlbum.external_urls,
-          chartPosition: chartPosition, // Actual chart position based on first appearance
-          tracksInTop50: tracksInPlaylist // Info only - how many tracks from this album are in charts
-        };
+        // Only include FULL ALBUMS (filter out singles and EPs)
+        const isFullAlbum = fullAlbum.total_tracks >= 8 && 
+          (fullAlbum.album_type === 'album' || fullAlbum.total_tracks >= 10);
         
-        detailedAlbums.push(albumData);
-        
-        console.log(`🏆 #${chartPosition}: ${albumData.artist} - ${albumData.name} (first appears at position ${i + 1}, ${tracksInPlaylist} tracks total)`);
+        if (isFullAlbum) {
+          const albumData = {
+            id: fullAlbum.id,
+            name: fullAlbum.name,
+            artist: fullAlbum.artists[0]?.name,
+            image: imageUrl,
+            total_tracks: fullAlbum.total_tracks,
+            release_date: fullAlbum.release_date,
+            popularity: fullAlbum.popularity || 50, // Use Spotify's actual popularity
+            album_type: fullAlbum.album_type || 'album',
+            external_urls: fullAlbum.external_urls,
+            chartPosition: detailedAlbums.length + 1, // Chart position for FULL albums only
+            tracksInTop50: tracksInPlaylist // Info only - how many tracks from this album are in charts
+          };
+          
+          detailedAlbums.push(albumData);
+          console.log(`✅ FULL Album #${detailedAlbums.length}: ${albumData.artist} - ${albumData.name} (${albumData.total_tracks} tracks) [${fullAlbum.album_type}]`);
+        } else {
+          console.log(`⏭️  Skipping single/EP: ${fullAlbum.artists[0]?.name} - ${fullAlbum.name} (${fullAlbum.total_tracks} tracks) [${fullAlbum.album_type}]`);
+        }
         
                       } catch (error) {
           console.warn(`Failed to fetch details for album ${albumId}:`, error.message);
         }
       }
       
-      console.log(`✅ Successfully fetched ${detailedAlbums.length} albums in actual chart order`);
+      console.log(`✅ Successfully fetched ${detailedAlbums.length} FULL ALBUMS (singles filtered out)`);
+      
+      // If we don't have enough full albums, fall back to a broader search
+      if (detailedAlbums.length < limit) {
+        console.log(`⚠️  Only found ${detailedAlbums.length} full albums from charts, need ${limit}. Using fallback...`);
+        
+        // Add well-known full albums as fallback
+        const knownFullAlbums = [
+          {
+            id: 'fallback-full-1',
+            name: 'Love, Damini',
+            artist: 'Burna Boy',
+            image: '/images/album3.png',
+            total_tracks: 19,
+            release_date: '2022-07-08',
+            popularity: 95,
+            album_type: 'album',
+            external_urls: { spotify: '#' },
+            chartPosition: detailedAlbums.length + 1,
+            tracksInTop50: 0
+          },
+          {
+            id: 'fallback-full-2',
+            name: 'Made in Lagos',
+            artist: 'Wizkid',
+            image: '/images/album1.png',
+            total_tracks: 14,
+            release_date: '2020-10-30',
+            popularity: 92,
+            album_type: 'album',
+            external_urls: { spotify: '#' },
+            chartPosition: detailedAlbums.length + 2,
+            tracksInTop50: 0
+          },
+          {
+            id: 'fallback-full-3',
+            name: 'A Better Time',
+            artist: 'Davido',
+            image: '/images/album2.png',
+            total_tracks: 17,
+            release_date: '2020-11-13',
+            popularity: 88,
+            album_type: 'album',
+            external_urls: { spotify: '#' },
+            chartPosition: detailedAlbums.length + 3,
+            tracksInTop50: 0
+          }
+        ];
+        
+        const needed = limit - detailedAlbums.length;
+        detailedAlbums.push(...knownFullAlbums.slice(0, needed));
+        console.log(`✅ Added ${Math.min(needed, knownFullAlbums.length)} fallback full albums`);
+      }
+      
       return detailedAlbums;
 
   } catch (error) {
