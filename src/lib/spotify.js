@@ -450,7 +450,11 @@ export async function getNigerianAlbums(limit = 12) {
             const album = artistAlbums[0];
             const normalizedArtist = album.artists[0].name.toLowerCase();
             
-            if (!seenArtists.has(normalizedArtist)) {
+            // Only include full albums (8+ tracks), not singles or short EPs
+            const isFullAlbum = album.total_tracks >= 8 && 
+              (album.album_type === 'album' || album.total_tracks >= 10);
+            
+            if (!seenArtists.has(normalizedArtist) && isFullAlbum) {
               albumsByArtist.set(normalizedArtist, {
                 id: album.id,
                 name: album.name,
@@ -464,6 +468,9 @@ export async function getNigerianAlbums(limit = 12) {
               });
               seenAlbums.add(album.id);
               seenArtists.add(normalizedArtist);
+              console.log(`✅ Added full album: ${album.artists[0].name} - ${album.name} (${album.total_tracks} tracks)`);
+            } else if (!isFullAlbum) {
+              console.log(`⏭️  Skipped single/EP: ${album.artists[0].name} - ${album.name} (${album.total_tracks} tracks)`);
             }
           }
         }
