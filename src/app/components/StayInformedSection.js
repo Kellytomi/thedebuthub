@@ -65,24 +65,14 @@ export default function StayInformedSection() {
           </h2>
 
           <h2
-            className="text-white font-bold mb-8"
+            className="text-white font-bold mb-8 font-montserrat leading-none tracking-tight"
             style={{
-              fontFamily: "'Montserrat', sans-serif",
               fontSize: "clamp(48px, 8vw, 96px)",
-              lineHeight: "1.1",
-              letterSpacing: "-2px",
             }}
           >
             Stay Informed
           </h2>
-          <p
-            className="text-white/70 max-w-[741px]"
-            style={{
-              fontFamily: "'DM Sans', sans-serif",
-              fontSize: "18px",
-              lineHeight: "1.6",
-            }}
-          >
+          <p className="text-white/70 max-w-[741px] font-dm-sans text-lg leading-relaxed">
             Get the latest in music news, exclusive features, and insider tips
             delivered straight to your inbox
           </p>

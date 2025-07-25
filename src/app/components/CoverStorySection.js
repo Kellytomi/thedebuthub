@@ -262,14 +262,14 @@ export default function CoverStorySection() {
             ) : (
               <>
                 <motion.h3
-                  className="text-white font-bold mb-6 font-montserrat text-[32px] tracking-[-0.5px]"
+                  className="text-white font-bold mb-6 font-montserrat text-[32px] tracking-tight"
                   variants={childVariants}
                 >
                   {artistStory.title}
                 </motion.h3>
 
                 <motion.p
-                  className="text-white/70 mb-8 leading-[1.8] font-dm-sans text-[16px]"
+                  className="text-white/70 mb-8 leading-relaxed font-dm-sans text-[16px]"
                   variants={childVariants}
                 >
                   {artistStory.description}

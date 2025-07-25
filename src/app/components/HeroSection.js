@@ -327,11 +327,10 @@ export default function HeroSection() {
 
             {/* Subscribe Button */}
             <button
-              className="text-white/70 hover:text-white font-medium relative overflow-hidden text-xs sm:text-sm px-3 py-2 sm:px-4 rounded-md h-8 sm:h-9"
+              className="text-white/70 hover:text-white font-medium relative overflow-hidden text-xs sm:text-sm px-3 py-2 sm:px-4 rounded-md h-8 sm:h-9 font-dm-sans"
               style={{
                 background: `linear-gradient(180deg, #1F1F1F 0%, #080808 100%), linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 109, 255, 0.08) 100%)`,
                 boxShadow: "0px 2px 7px 0px rgba(87, 87, 87, 0.17)",
-                fontFamily: "'DM Sans', sans-serif",
               }}
             >
               {/* Border gradient overlay */}
@@ -359,12 +358,7 @@ export default function HeroSection() {
       {/* Main Content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen pt-20 sm:pt-24 pb-12 text-center px-4 sm:px-8 bg-black/50">
         {/* Tagline */}
-        <h2
-          className="mb-6 sm:mb-8 text-lg sm:text-xl lg:text-2xl"
-          style={{
-            fontFamily: "'Dancing Script', cursive",
-          }}
-        >
+        <h2 className="mb-6 sm:mb-8 text-lg sm:text-xl lg:text-2xl font-dancing-script">
           <span style={{ color: "#646464" }}>Your</span>{" "}
           <span className="text-white">Sound,</span>{" "}
           <span style={{ color: "#646464" }}>Your</span>{" "}
@@ -375,24 +369,16 @@ export default function HeroSection() {
 
         {/* Main Title */}
         <h1
-          className="text-white font-bold mb-8"
+          className="text-white font-bold mb-8 font-montserrat leading-none tracking-tight"
           style={{
-            fontFamily: "'Montserrat', sans-serif",
             fontSize: "clamp(48px, 8vw, 96px)",
-            lineHeight: "1.1",
-            letterSpacing: "-2px",
           }}
         >
           The Debut Hub
         </h1>
 
         {/* Description */}
-        <p
-          className="text-white/70 mb-8 sm:mb-12 lg:mb-16 max-w-xs sm:max-w-2xl lg:max-w-4xl text-sm sm:text-base lg:text-lg leading-relaxed"
-          style={{
-            fontFamily: "'DM Sans', sans-serif",
-          }}
-        >
+        <p className="text-white/70 mb-8 sm:mb-12 lg:mb-16 max-w-xs sm:max-w-2xl lg:max-w-4xl text-sm sm:text-base lg:text-lg leading-relaxed font-dm-sans">
           Explore trending music charts, breaking news, and tools to elevate
           your sound, all in one hub.
         </p>
