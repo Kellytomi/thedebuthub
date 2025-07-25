@@ -90,43 +90,68 @@ export async function getMostStreamedNigerianAlbums(limit = 3) {
   try {
     console.log('🇳🇬 Fetching most streamed albums from Top 50 - Nigeria playlist...');
     
-    // Step 1: Search for Nigeria Top 50 playlist dynamically
-    console.log('🔍 Searching for Top 50 - Nigeria playlist...');
+    // Step 1: Search for Nigeria Top 50 playlist dynamically with multiple search terms
+    console.log('🔍 Searching for Nigeria/Afrobeats playlists...');
     let playlistId = null;
     
-    try {
-      const playlistSearch = await spotifyFetch('/search?q="Top 50 - Nigeria"&type=playlist&market=NG&limit=10');
+    const searchTerms = [
+      '"Top 50 - Nigeria"',
+      'Nigeria Top 50',
+      'Afrobeats Hits',
+      'Nigeria Music',
+      'Nigerian Charts'
+    ];
+    
+    for (const searchTerm of searchTerms) {
+      if (playlistId) break; // Stop if we found one
+      
+      try {
+        console.log(`🔍 Trying search: ${searchTerm}`);
+        const playlistSearch = await spotifyFetch(`/search?q=${encodeURIComponent(searchTerm)}&type=playlist&market=NG&limit=15`);
       
       if (playlistSearch.playlists?.items) {
-        // Find the official Spotify playlist
-        const officialPlaylist = playlistSearch.playlists.items.find(playlist => 
-          playlist.owner?.id === 'spotify' && 
-          (playlist.name.includes('Top 50') || playlist.name.includes('Nigeria'))
-        );
+        // Find the official Spotify playlist with proper null checking
+        const officialPlaylist = playlistSearch.playlists.items.find(playlist => {
+          if (!playlist || !playlist.name) return false;
+          
+          // Check owner safely
+          const isSpotifyOwned = playlist.owner && playlist.owner.id === 'spotify';
+          const hasRelevantName = playlist.name.includes('Top 50') || 
+                                 playlist.name.includes('Nigeria') || 
+                                 playlist.name.includes('Afrobeats');
+          
+          return isSpotifyOwned && hasRelevantName;
+        });
         
         if (officialPlaylist) {
           playlistId = officialPlaylist.id;
           console.log(`✅ Found official Nigeria playlist: "${officialPlaylist.name}" (ID: ${playlistId})`);
         } else {
-          // Fallback: use any Nigeria-related playlist
-          const nigeriaPlaylist = playlistSearch.playlists.items.find(playlist =>
-            playlist.name.toLowerCase().includes('nigeria')
-          );
+          // Fallback: use any Nigeria-related playlist with proper validation
+          const nigeriaPlaylist = playlistSearch.playlists.items.find(playlist => {
+            if (!playlist || !playlist.name) return false;
+            const name = playlist.name.toLowerCase();
+            return name.includes('nigeria') || name.includes('afrobeats') || name.includes('naija');
+          });
+          
           if (nigeriaPlaylist) {
             playlistId = nigeriaPlaylist.id;
-            console.log(`📋 Using Nigeria playlist: "${nigeriaPlaylist.name}" (ID: ${playlistId})`);
-          }
-        }
-      }
-    } catch (searchError) {
-      console.warn('Playlist search failed:', searchError.message);
-    }
+                         console.log(`📋 Using Nigeria playlist: "${nigeriaPlaylist.name}" (ID: ${playlistId})`);
+           }
+         }
+       }
+       } catch (searchError) {
+         console.warn(`Playlist search failed for "${searchTerm}":`, searchError.message);
+       }
+     }
     
-    // Fallback playlist IDs to try
+    // Fallback playlist IDs to try - updated with more current options
     const fallbackPlaylistIds = [
-      '37i9dQZEVXbKY7jLzlJ11V', // Original ID
-      '37i9dQZEVXbLRQDuF5jeBp', // Alternative Nigeria charts
+      '37i9dQZEVXbKY7jLzlJ11V', // Top 50 - Nigeria (if still exists)
+      '37i9dQZEVXbNx2OGnb4lSJ', // Afrobeats Hits
+      '37i9dQZEVXbMDoHDwVN2tF', // Global Top 50 (broader fallback)
       '37i9dQZEVXbJNjKfUHPuo1', // Africa Now
+      '37i9dQZEVXbLRQDuF5jeBp', // Alternative Nigeria charts
     ];
     
     if (!playlistId) {
@@ -260,8 +285,18 @@ export async function getMostStreamedNigerianAlbums(limit = 3) {
       const fallbackAlbums = [];
       const seenAlbums = new Set();
       
-      // Search for popular albums by top Nigerian artists
-      const topArtists = ['Burna Boy', 'Wizkid', 'Davido', 'Asake', 'Rema'];
+      // Search for popular albums by top Nigerian artists (dynamically updated list)
+      const topArtists = [
+        'Burna Boy',     // Grammy winner, most popular
+        'Wizkid',        // International success
+        'Davido',        // Chart topper
+        'Asake',         // Rising star  
+        'Rema',          // International breakthrough
+        'Fireboy DML',   // Consistent hits
+        'Omah Lay'       // New generation
+      ];
+      
+      console.log(`🎯 Fallback: Searching albums by ${topArtists.length} top Nigerian artists...`);
       
       for (const artist of topArtists) {
         if (fallbackAlbums.length >= limit * 2) break;
