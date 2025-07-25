@@ -41,10 +41,20 @@ export default function YouTubeBackgroundPlayer() {
       script.src = 'https://www.youtube.com/iframe_api';
       script.async = true;
       
-      // Set up global callback
+      // Set up unique callback to avoid conflicts
+      const callbackName = `onYouTubeIframeAPIReady_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      
+      // Store previous callback if it exists
+      const previousCallback = window.onYouTubeIframeAPIReady;
+      
       window.onYouTubeIframeAPIReady = () => {
         console.log('YouTube IFrame API Ready');
         setIsAPILoaded(true);
+        
+        // Restore previous callback if it existed
+        if (previousCallback && typeof previousCallback === 'function') {
+          previousCallback();
+        }
       };
 
       document.head.appendChild(script);
@@ -54,7 +64,12 @@ export default function YouTubeBackgroundPlayer() {
     hasInitialized.current = true;
 
     return () => {
-      // Cleanup
+      // Cleanup global callback
+      if (window.onYouTubeIframeAPIReady) {
+        window.onYouTubeIframeAPIReady = null;
+      }
+      
+      // Cleanup player
       if (globalYouTubePlayer && typeof globalYouTubePlayer.destroy === 'function') {
         try {
           globalYouTubePlayer.destroy();
@@ -62,6 +77,12 @@ export default function YouTubeBackgroundPlayer() {
         } catch (error) {
           console.warn('Error destroying YouTube player:', error);
         }
+      }
+      
+      // Remove script if we added it
+      const script = document.querySelector('script[src*="youtube.com/iframe_api"]');
+      if (script) {
+        script.remove();
       }
     };
   }, []);

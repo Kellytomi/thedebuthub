@@ -3,8 +3,12 @@
  * Handles authentication and data fetching for Nigerian/Afrobeats music
  */
 
-const CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-const CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
+import { validateEnvironment } from './env-validation.js';
+
+// Validate environment and get config
+const { config, isValid } = validateEnvironment();
+const CLIENT_ID = config.SPOTIFY_CLIENT_ID;
+const CLIENT_SECRET = config.SPOTIFY_CLIENT_SECRET;
 
 // Cache for access token
 let accessToken = null;
@@ -803,10 +807,12 @@ function formatDuration(durationMs) {
   return `${minutes}:${seconds.toString().padStart(2, '0')}`;
 }
 
-export default {
+const spotifyService = {
   getNigerianAlbums,
   getNigerianNewReleases,
   getNigerianFeaturedPlaylists,
   getNigerianTracks,
   getTopNigerianTracksFromCharts
-}; 
+};
+
+export default spotifyService; 

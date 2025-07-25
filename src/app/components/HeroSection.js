@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import ActionButton from "./ActionButton";
 import { motion } from "framer-motion";
 import { useAudio } from "../contexts/AudioContext";
+import { validateApiResponse } from "../../lib/api-validation";
 
 export default function HeroSection() {
   const { isMuted, toggleMute, hasUserInteracted, pendingUnmute } = useAudio();
@@ -13,55 +14,89 @@ export default function HeroSection() {
   const [currentArtistIndex, setCurrentArtistIndex] = useState(0);
   const [isAutoRotating, setIsAutoRotating] = useState(true);
 
-  // Fetch Nigerian artists on component mount
-  useEffect(() => {
-    async function fetchArtists() {
-      try {
-        const response = await fetch("/api/spotify/artists?limit=7");
-        const data = await response.json();
+  // Fetch Nigerian artists on component mount with validation
+  const fetchArtists = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch("/api/spotify/artists?limit=7");
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      if (data.success && data.artists && data.artists.length > 0) {
+        // Apply validation to each artist individually
+        const validatedArtists = data.artists
+          .map(artist => {
+            if (!artist || !artist.name) return null;
+            return {
+              id: artist.id || `artist-${Date.now()}-${Math.random()}`,
+              name: artist.name,
+              image: artist.image || "/images/placeholder.svg",
+              fallback: "/images/placeholder.svg",
+              followers: artist.followers || 0,
+              popularity: artist.popularity || 0,
+              external_urls: artist.external_urls || {},
+              genres: artist.genres || []
+            };
+          })
+          .filter(artist => artist !== null);
 
-        if (data.success && data.artists.length > 0) {
-          setArtists(data.artists);
-        } else {
-          // Fallback to static images if API fails
-          setArtists([
-            {
-              id: "fallback-1",
-              name: "Rema",
-              image: "/images/rema-image.png",
-            },
-            {
-              id: "fallback-2",
-              name: "Wizkid",
-              image: "/images/wiz-image.png",
-            },
-            {
-              id: "fallback-3",
-              name: "Davido",
-              image: "/images/david-image.png",
-            },
-            {
-              id: "fallback-4",
-              name: "Burna Boy",
-              image: "/images/rema-image.png",
-            },
-            {
-              id: "fallback-5",
-              name: "Asake",
-              image: "/images/wiz-image.png",
-            },
-            {
-              id: "fallback-6",
-              name: "Fireboy DML",
-              image: "/images/david-image.png",
-            },
-            {
-              id: "fallback-7",
-              name: "Omah Lay",
-              image: "/images/rema-image.png",
-            },
-          ]);
+        if (validatedArtists.length > 0) {
+          setArtists(validatedArtists);
+          console.log('✅ Successfully loaded', validatedArtists.length, 'artists');
+          return;
         }
+      }
+      
+      // If we get here, fallback to static images
+      console.warn('Failed to fetch artists from API, using fallback data');
+      setArtists([
+        {
+          id: "fallback-1",
+          name: "Rema",
+          image: "/images/rema-image.png",
+          fallback: "/images/placeholder.svg",
+        },
+        {
+          id: "fallback-2",
+          name: "Wizkid", 
+          image: "/images/wiz-image.png",
+          fallback: "/images/placeholder.svg",
+        },
+        {
+          id: "fallback-3",
+          name: "Davido",
+          image: "/images/david-image.png",
+          fallback: "/images/placeholder.svg",
+        },
+        {
+          id: "fallback-4",
+          name: "Burna Boy",
+          image: "/images/rema-image.png", 
+          fallback: "/images/placeholder.svg",
+        },
+        {
+          id: "fallback-5",
+          name: "Asake",
+          image: "/images/wiz-image.png",
+          fallback: "/images/placeholder.svg",
+        },
+        {
+          id: "fallback-6",
+          name: "Fireboy DML",
+          image: "/images/david-image.png",
+          fallback: "/images/placeholder.svg",
+        },
+        {
+          id: "fallback-7",
+          name: "Omah Lay",
+          image: "/images/rema-image.png",
+          fallback: "/images/placeholder.svg",
+        },
+      ]);
       } catch (error) {
         console.error("Failed to fetch artists:", error);
         // Fallback to static images
@@ -70,45 +105,53 @@ export default function HeroSection() {
             id: "fallback-1",
             name: "Rema",
             image: "/images/rema-image.png",
+            fallback: "/images/placeholder.svg",
           },
           {
             id: "fallback-2",
             name: "Wizkid",
             image: "/images/wiz-image.png",
+            fallback: "/images/placeholder.svg",
           },
           {
             id: "fallback-3",
             name: "Davido",
             image: "/images/david-image.png",
+            fallback: "/images/placeholder.svg",
           },
           {
             id: "fallback-4",
             name: "Burna Boy",
             image: "/images/rema-image.png",
+            fallback: "/images/placeholder.svg",
           },
           {
             id: "fallback-5",
             name: "Asake",
             image: "/images/wiz-image.png",
+            fallback: "/images/placeholder.svg",
           },
           {
             id: "fallback-6",
             name: "Fireboy DML",
             image: "/images/david-image.png",
+            fallback: "/images/placeholder.svg",
           },
           {
             id: "fallback-7",
             name: "Omah Lay",
             image: "/images/rema-image.png",
+            fallback: "/images/placeholder.svg",
           },
         ]);
       } finally {
         setIsLoading(false);
       }
-    }
+    }, []);
 
-    fetchArtists();
-  }, []);
+    useEffect(() => {
+      fetchArtists();
+    }, [fetchArtists]);
 
   // Auto-rotation carousel effect when idle
   useEffect(() => {
@@ -121,23 +164,30 @@ export default function HeroSection() {
     return () => clearInterval(interval);
   }, [isAutoRotating, artists.length]);
 
-  // Get the artists for display - flowing left to right
-  const currentArtist = artists[currentArtistIndex]; // Center main
-  const farLeftArtist =
-    artists[(currentArtistIndex - 3 + artists.length) % artists.length] ||
-    artists[0]; // Far left (3 positions behind)
-  const leftMainArtist =
-    artists[(currentArtistIndex - 1 + artists.length) % artists.length] ||
-    artists[0]; // Left main (1 position behind)
-  const rightMainArtist =
-    artists[(currentArtistIndex + 1) % artists.length] || artists[0]; // Right main (1 position ahead)
-  const farRightArtist =
-    artists[(currentArtistIndex + 3) % artists.length] || artists[0]; // Far right (3 positions ahead)
-  const backCard1Artist =
-    artists[(currentArtistIndex - 2 + artists.length) % artists.length] ||
-    artists[0]; // Back card 1 (2 positions behind)
-  const backCard2Artist =
-    artists[(currentArtistIndex + 2) % artists.length] || artists[0]; // Back card 2 (2 positions ahead)
+  // Memoized artist positions for performance optimization
+  const artistPositions = useMemo(() => {
+    if (artists.length === 0) return {};
+    
+    return {
+      currentArtist: artists[currentArtistIndex],
+      farLeftArtist: artists[(currentArtistIndex - 3 + artists.length) % artists.length] || artists[0],
+      leftMainArtist: artists[(currentArtistIndex - 1 + artists.length) % artists.length] || artists[0],
+      rightMainArtist: artists[(currentArtistIndex + 1) % artists.length] || artists[0],
+      farRightArtist: artists[(currentArtistIndex + 3) % artists.length] || artists[0],
+      backCard1Artist: artists[(currentArtistIndex - 2 + artists.length) % artists.length] || artists[0],
+      backCard2Artist: artists[(currentArtistIndex + 2) % artists.length] || artists[0],
+    };
+  }, [artists, currentArtistIndex]);
+
+  const { 
+    currentArtist, 
+    farLeftArtist, 
+    leftMainArtist, 
+    rightMainArtist, 
+    farRightArtist, 
+    backCard1Artist, 
+    backCard2Artist 
+  } = artistPositions;
 
   const imageVariants = {
     initial: { opacity: 0, y: 100 },

@@ -1,0 +1,6 @@
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="300" fill="#1F1F1F"/>
+  <circle cx="150" cy="120" r="40" fill="#333"/>
+  <path d="M70 220 C70 180, 110 160, 150 160 S230 180, 230 220" stroke="#333" stroke-width="2" fill="none"/>
+  <text x="150" y="250" text-anchor="middle" fill="#666" font-family="Arial" font-size="14">Music Artist</text>
+</svg> 

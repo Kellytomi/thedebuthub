@@ -2,6 +2,7 @@ import { Geist, Geist_Mono, Montserrat, Dancing_Script, DM_Sans } from "next/fon
 import "./globals.css";
 import { AudioProvider } from "./contexts/AudioContext";
 import YouTubeBackgroundPlayer from "./components/YouTubeBackgroundPlayer";
+import { validateOnStartup } from "../lib/env-validation";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,6 +39,15 @@ export const metadata = {
   title: "The Debut Hub - Discover Nigerian Music",
   description: "Explore trending music from Nigeria. Emerging artists and the latest hits you need to hear. The premier platform for discovering Nigerian talent.",
 };
+
+// Validate environment on startup
+if (typeof window === 'undefined') {
+  try {
+    validateOnStartup();
+  } catch (error) {
+    console.error('Environment validation failed:', error.message);
+  }
+}
 
 export default function RootLayout({ children }) {
   return (

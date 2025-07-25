@@ -1,6 +1,7 @@
   "use client";
   import IntroBody from "./IntroBody";
   import Link from "next/link";
+  import Image from "next/image";
   import FlankDecoration from "./FlankDecoration";
 
   export default function SocialsSection() {
@@ -53,9 +54,11 @@
                   href={social.url}
                   className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white hover:-translate-y-3 hover:border-[#00ccff]/50 hover:shadow-[0_0_20px_rgba(0,204,255,0.3)] transition-all duration-300 ${social.transform}`}
                 >
-                  <img
+                  <Image
                     src={social.icon}
                     alt={social.name}
+                    width={40}
+                    height={40}
                     className="w-10 h-10"
                   />
                   <span className="text-2xl">{social.name}</span>
@@ -69,9 +72,11 @@
                   href={social.url}
                   className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white hover:-translate-y-3 hover:border-[#00ccff]/50 hover:shadow-[0_0_20px_rgba(0,204,255,0.3)] transition-all duration-300 ${social.transform}`}
                 >
-                  <img
+                  <Image
                     src={social.icon}
                     alt={social.name}
+                    width={40}
+                    height={40}
                     className="w-10 h-10"
                   />
                   <span className="text-2xl">{social.name}</span>

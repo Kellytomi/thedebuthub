@@ -96,7 +96,7 @@ export default function StayInformedSection() {
           {isSubscribed && (
             <div className="mt-4 p-4 bg-green-600/20 border border-green-600/30 rounded-lg">
               <p className="text-green-400 font-medium">
-                ✓ Thank you for subscribing! You'll hear from us soon.
+                ✓ Thank you for subscribing! You&apos;ll hear from us soon.
               </p>
             </div>
           )}

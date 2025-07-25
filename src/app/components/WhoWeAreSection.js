@@ -112,7 +112,7 @@ export default function WhoWeAreSection() {
               className="text-white/70 w-[330px] md:w-[526px] font-dm-sans text-[20px]"
               variants={childVariants}
             >
-              We're on a mission to amplify voices in music — whether you're
+              We&apos;re on a mission to amplify voices in music — whether you&apos;re
               just starting or hitting milestones. Join us in reshaping the
               music landscape
             </motion.p>
