@@ -578,11 +578,138 @@ export async function getNigerianFeaturedPlaylists(limit = 5) {
 }
 
 /**
+ * Get top Nigerian tracks from actual charts (from the same playlist used for albums)
+ * This gives the REAL top tracks, not just one per artist
+ */
+export async function getTopNigerianTracksFromCharts(limit = 12) {
+  try {
+    console.log(`🎵 Fetching top ${limit} Nigerian tracks from charts...`);
+    
+    // Use the same playlist search logic as albums
+    const searchTerms = [
+      '"Top 50 - Nigeria"',
+      'Nigeria Top 50',
+      'Afrobeats Hits',
+      'Nigeria Music',
+      'Nigerian Charts'
+    ];
+    
+    let playlistId = null;
+    
+    for (const searchTerm of searchTerms) {
+      if (playlistId) break;
+      
+      try {
+        console.log(`🔍 Searching for charts: ${searchTerm}`);
+        const playlistSearch = await spotifyFetch(`/search?q=${encodeURIComponent(searchTerm)}&type=playlist&market=NG&limit=15`);
+        
+        if (playlistSearch.playlists?.items?.length > 0) {
+          const officialPlaylist = playlistSearch.playlists.items.find(playlist => {
+            if (!playlist || !playlist.name) return false;
+            
+            const isSpotifyOwned = playlist.owner && playlist.owner.id === 'spotify';
+            const hasRelevantName = playlist.name.includes('Top 50') || 
+                                   playlist.name.includes('Nigeria') || 
+                                   playlist.name.includes('Afrobeats');
+            
+            return isSpotifyOwned && hasRelevantName;
+          });
+          
+          if (officialPlaylist) {
+            playlistId = officialPlaylist.id;
+            console.log(`✅ Found charts playlist: "${officialPlaylist.name}" (ID: ${playlistId})`);
+            break;
+          } else {
+            const nigeriaPlaylist = playlistSearch.playlists.items.find(playlist => {
+              if (!playlist || !playlist.name) return false;
+              const name = playlist.name.toLowerCase();
+              return name.includes('nigeria') || name.includes('afrobeats') || name.includes('naija');
+            });
+            
+            if (nigeriaPlaylist) {
+              playlistId = nigeriaPlaylist.id;
+              console.log(`📋 Using charts playlist: "${nigeriaPlaylist.name}" (ID: ${playlistId})`);
+              break;
+            }
+          }
+        }
+      } catch (searchError) {
+        console.warn(`Chart search failed for "${searchTerm}":`, searchError.message);
+      }
+    }
+    
+    if (!playlistId) {
+      throw new Error('Could not find accessible Nigeria charts playlist for tracks');
+    }
+    
+    // Get tracks from the playlist
+    console.log('🎵 Fetching chart tracks...');
+    const playlistResponse = await spotifyFetch(`/playlists/${playlistId}/tracks?market=NG&limit=${Math.min(limit * 2, 50)}`);
+    
+    if (!playlistResponse.items || playlistResponse.items.length === 0) {
+      throw new Error('Charts playlist has no tracks');
+    }
+    
+    console.log(`🎵 Found ${playlistResponse.items.length} tracks in Nigeria charts`);
+    
+    // Process tracks and get the actual top ones
+    const tracks = [];
+    const seenTracks = new Set();
+    
+    for (let i = 0; i < Math.min(playlistResponse.items.length, limit); i++) {
+      const item = playlistResponse.items[i];
+      if (!item.track || !item.track.id || seenTracks.has(item.track.id)) continue;
+      
+      const track = item.track;
+      
+      tracks.push({
+        id: track.id,
+        name: track.name,
+        artist: track.artists[0]?.name || 'Unknown Artist',
+        image: track.album.images[0]?.url,
+        duration: formatDuration(track.duration_ms),
+        preview_url: track.preview_url,
+        external_urls: track.external_urls,
+        album: track.album.name,
+        popularity: track.popularity || 0,
+        chartPosition: i + 1 // Actual chart position
+      });
+      
+      seenTracks.add(track.id);
+    }
+    
+    console.log(`🏆 Top ${tracks.length} Nigerian tracks from charts:`);
+    tracks.forEach((track, i) => {
+      console.log(`🏆 #${i + 1}: ${track.artist} - ${track.name} (chart position: ${track.chartPosition})`);
+    });
+    
+    return tracks;
+    
+  } catch (error) {
+    console.error('Error fetching top Nigerian tracks from charts:', error);
+    throw error;
+  }
+}
+
+/**
  * Get top Nigerian tracks by searching for popular tracks from Nigerian artists
  * Sorts by popularity score and ensures diversity by getting one track per artist
  */
 export async function getNigerianTracks(limit = 12) {
   try {
+    // First, try to get tracks from actual Nigerian charts
+    try {
+      const chartTracks = await getTopNigerianTracksFromCharts(limit);
+      if (chartTracks && chartTracks.length > 0) {
+        console.log(`✅ Successfully fetched ${chartTracks.length} tracks from Nigerian charts`);
+        return chartTracks;
+      }
+    } catch (chartError) {
+      console.warn('Failed to get tracks from charts, falling back to artist search:', chartError.message);
+    }
+    
+    // Fallback: Use artist-based search for diversity
+    console.log('🔄 Falling back to artist-based track search...');
     const tracksByArtist = new Map(); // Track one track per artist
     const seenTracks = new Set();
     const seenArtists = new Set();
@@ -703,5 +830,6 @@ export default {
   getNigerianAlbums,
   getNigerianNewReleases,
   getNigerianFeaturedPlaylists,
-  getNigerianTracks
+  getNigerianTracks,
+  getTopNigerianTracksFromCharts
 }; 
