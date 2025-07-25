@@ -23,15 +23,7 @@ export default function TopTracksSection() {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  useEffect(() => {
-    if (isXlScreen || tracks.length === 0) return;
-
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % tracks.length);
-    }, 8000);
-
-    return () => clearInterval(interval);
-  }, [isXlScreen, tracks.length]);
+  // Auto-rotation removed - now using vertical stack on mobile
 
   useEffect(() => {
     fetchNigerianTracks();
@@ -231,18 +223,18 @@ export default function TopTracksSection() {
               <TrackSkeleton key={i} />
             ))}
           </div>
-        ) : tracks.length > 0 ? (
-          tracks.map((track, i) => (
-            <div key={track.id} className="w-full max-w-[370px]">
-              <AlbumCard track={track} index={i} />
-            </div>
-          ))
-        ) : (
-          fallbackAlbums.map((track, i) => (
-            <div key={track.id} className="w-full max-w-[370px]">
-              <AlbumCard track={track} index={i} />
-            </div>
-          ))
+                 ) : tracks.length > 0 ? (
+           tracks.map((track, i) => (
+             <div key={track.id} className="flex justify-center w-full">
+               <AlbumCard track={track} index={i} />
+             </div>
+           ))
+         ) : (
+           fallbackAlbums.map((track, i) => (
+             <div key={track.id} className="flex justify-center w-full">
+               <AlbumCard track={track} index={i} />
+             </div>
+           ))
         )}
       </div>
 

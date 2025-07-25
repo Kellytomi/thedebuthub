@@ -347,18 +347,18 @@ export default function TopAlbumsSection() {
               <AlbumSkeleton key={i} />
             ))}
           </div>
-        ) : albums.length > 0 ? (
-          albums.map((album, i) => (
-            <div key={album.id} className="w-full max-w-[370px]">
-              <AlbumCard album={album} index={i} />
-            </div>
-          ))
-        ) : (
-          fallbackAlbums.map((album, i) => (
-            <div key={album.id} className="w-full max-w-[370px]">
-              <AlbumCard album={album} index={i} />
-            </div>
-          ))
+                 ) : albums.length > 0 ? (
+           albums.map((album, i) => (
+             <div key={album.id} className="flex justify-center w-full">
+               <AlbumCard album={album} index={i} />
+             </div>
+           ))
+         ) : (
+           fallbackAlbums.map((album, i) => (
+             <div key={album.id} className="flex justify-center w-full">
+               <AlbumCard album={album} index={i} />
+             </div>
+           ))
         )}
       </div>
 
