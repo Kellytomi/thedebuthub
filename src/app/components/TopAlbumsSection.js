@@ -111,16 +111,7 @@ export default function TopAlbumsSection() {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  // Auto-rotate only on non-xl screens
-  useEffect(() => {
-    if (isXlScreen || albums.length === 0) return;
-
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % albums.length);
-    }, 8000);
-
-    return () => clearInterval(interval);
-  }, [isXlScreen, albums.length]);
+  // Auto-rotation removed - now using vertical stack on mobile
 
   useEffect(() => {
     const fetchMostStreamedAlbums = async () => {
@@ -327,7 +318,7 @@ export default function TopAlbumsSection() {
   };
 
   return (
-    <section className="relative overflow-hidden py-10 flex flex-col gap-10 w-full h-[666px] bg-[#040507]">
+    <section className="relative overflow-hidden py-10 flex flex-col gap-10 w-full xl:h-[666px] bg-[#040507]">
       <FlankDecoration />
 
       <div className="relative z-20 w-full text-center">
@@ -348,23 +339,26 @@ export default function TopAlbumsSection() {
         )}
       </div>
 
-      <div className="xl:hidden relative z-20 w-full h-[418px] flex justify-center items-center overflow-hidden">
+      {/* Mobile/Tablet: Vertical Stack (sm-lg) */}
+      <div className="xl:hidden relative z-20 w-full flex flex-col items-center gap-6 px-4">
         {loading ? (
-          <AlbumSkeleton />
+          <div className="flex flex-col gap-6">
+            {[...Array(3)].map((_, i) => (
+              <AlbumSkeleton key={i} />
+            ))}
+          </div>
+        ) : albums.length > 0 ? (
+          albums.map((album, i) => (
+            <div key={album.id} className="w-full max-w-[370px]">
+              <AlbumCard album={album} index={i} />
+            </div>
+          ))
         ) : (
-          <AnimatePresence custom={1} initial={false}>
-            <motion.div
-              key={currentIndex}
-              custom={1}
-              variants={carouselVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              className="absolute"
-            >
-              <AlbumCard album={albums[currentIndex]} index={currentIndex} />
-            </motion.div>
-          </AnimatePresence>
+          fallbackAlbums.map((album, i) => (
+            <div key={album.id} className="w-full max-w-[370px]">
+              <AlbumCard album={album} index={i} />
+            </div>
+          ))
         )}
       </div>
 

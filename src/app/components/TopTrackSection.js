@@ -202,7 +202,7 @@ export default function TopTracksSection() {
   };
 
   return (
-    <section className="relative overflow-hidden py-10 flex flex-col gap-10 w-full h-[666px] bg-[#040507]">
+    <section className="relative overflow-hidden py-10 flex flex-col gap-10 w-full xl:h-[666px] bg-[#040507]">
       <FlankDecoration />
 
       <div className="relative z-20 w-full text-center">
@@ -223,24 +223,26 @@ export default function TopTracksSection() {
         )}
       </div>
 
-      {/* Mobile/Tablet Carousel (hidden on xl) */}
-      <div className="xl:hidden relative z-20 w-full h-[418px] flex justify-center items-center overflow-hidden">
+      {/* Mobile/Tablet: Vertical Stack (sm-lg) */}
+      <div className="xl:hidden relative z-20 w-full flex flex-col items-center gap-6 px-4">
         {loading ? (
-          <TrackSkeleton />
+          <div className="flex flex-col gap-6">
+            {[...Array(3)].map((_, i) => (
+              <TrackSkeleton key={i} />
+            ))}
+          </div>
+        ) : tracks.length > 0 ? (
+          tracks.map((track, i) => (
+            <div key={track.id} className="w-full max-w-[370px]">
+              <AlbumCard track={track} index={i} />
+            </div>
+          ))
         ) : (
-          <AnimatePresence custom={1} initial={false}>
-            <motion.div
-              key={currentIndex}
-              custom={1}
-              variants={carouselVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              className="absolute"
-            >
-              <AlbumCard track={tracks[currentIndex]} index={currentIndex} />
-            </motion.div>
-          </AnimatePresence>
+          fallbackAlbums.map((track, i) => (
+            <div key={track.id} className="w-full max-w-[370px]">
+              <AlbumCard track={track} index={i} />
+            </div>
+          ))
         )}
       </div>
 
