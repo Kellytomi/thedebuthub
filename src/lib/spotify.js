@@ -184,58 +184,29 @@ export async function getMostStreamedNigerianAlbums(limit = 3) {
     
     console.log(`🎵 Found ${playlistResponse.items.length} tracks in Nigeria playlist`);
     
-    // Step 3: Extract album IDs and count frequency
-    const albumCounts = new Map(); // albumId -> { count, albumInfo }
-    const albumDetails = new Map(); // albumId -> album object
+    // Step 3: Process albums in actual chart order (not by track count)
+    console.log('📀 Processing albums in actual chart order...');
+    const detailedAlbums = [];
+    const seenAlbums = new Set();
     
-    for (const item of playlistResponse.items) {
+    // Process tracks in playlist order to maintain chart ranking
+    for (let i = 0; i < playlistResponse.items.length && detailedAlbums.length < limit; i++) {
+      const item = playlistResponse.items[i];
       if (!item.track || !item.track.album) continue;
       
-      const track = item.track;
-      const album = track.album;
+      const album = item.track.album;
       const albumId = album.id;
       
-      if (albumCounts.has(albumId)) {
-        albumCounts.get(albumId).count++;
-      } else {
-        albumCounts.set(albumId, { 
-          count: 1,
-          albumInfo: {
-            id: album.id,
-            name: album.name,
-            artist: album.artists[0]?.name,
-            image: album.images[0]?.url,
-            total_tracks: album.total_tracks,
-            release_date: album.release_date,
-            album_type: album.album_type || 'album',
-            external_urls: album.external_urls
-          }
-        });
-        albumDetails.set(albumId, album);
-      }
-    }
-    
-    console.log(`📊 Found ${albumCounts.size} unique albums in Top 50`);
-    
-    // Step 3: Sort albums by frequency (most tracks in Top 50 = most streamed)
-    const sortedAlbums = Array.from(albumCounts.entries())
-      .sort((a, b) => b[1].count - a[1].count) // Sort by track count (descending)
-      .slice(0, limit * 2); // Get more than needed for additional processing
-    
-    // Step 4: Fetch full album details for the top albums
-    console.log('📀 Fetching detailed album information...');
-    const detailedAlbums = [];
-    
-    for (const [albumId, { count, albumInfo }] of sortedAlbums) {
-      if (detailedAlbums.length >= limit) break;
+      // Skip if we've already processed this album
+      if (seenAlbums.has(albumId)) continue;
+      seenAlbums.add(albumId);
       
       try {
-        // Fetch full album details
+        // Fetch full album details for additional metadata
         const fullAlbum = await spotifyFetch(`/albums/${albumId}?market=NG`);
         
-        // Calculate a popularity score based on chart position and frequency
-        const chartPosition = sortedAlbums.findIndex(([id]) => id === albumId) + 1;
-        const popularityScore = Math.max(95 - (chartPosition * 5), 50) + (count * 2);
+        // Use actual chart position (where this album first appears)
+        const chartPosition = detailedAlbums.length + 1;
         
         let imageUrl = fullAlbum.images[0]?.url;
         
@@ -251,6 +222,11 @@ export async function getMostStreamedNigerianAlbums(limit = 3) {
           }
         }
         
+        // Count how many tracks this album has in the playlist (for info only)
+        const tracksInPlaylist = playlistResponse.items.filter(item => 
+          item.track?.album?.id === albumId
+        ).length;
+        
         const albumData = {
           id: fullAlbum.id,
           name: fullAlbum.name,
@@ -258,23 +234,24 @@ export async function getMostStreamedNigerianAlbums(limit = 3) {
           image: imageUrl,
           total_tracks: fullAlbum.total_tracks,
           release_date: fullAlbum.release_date,
-          popularity: popularityScore, // Our calculated popularity based on chart performance
+          popularity: fullAlbum.popularity || 50, // Use Spotify's actual popularity
           album_type: fullAlbum.album_type || 'album',
           external_urls: fullAlbum.external_urls,
-          tracksInTop50: count // How many tracks from this album are in Top 50
+          chartPosition: chartPosition, // Actual chart position based on first appearance
+          tracksInTop50: tracksInPlaylist // Info only - how many tracks from this album are in charts
         };
         
         detailedAlbums.push(albumData);
         
-        console.log(`🏆 #${chartPosition}: ${albumData.artist} - ${albumData.name} (${count} tracks in Top 50, popularity: ${popularityScore})`);
+        console.log(`🏆 #${chartPosition}: ${albumData.artist} - ${albumData.name} (first appears at position ${i + 1}, ${tracksInPlaylist} tracks total)`);
         
-      } catch (error) {
-        console.warn(`Failed to fetch details for album ${albumId}:`, error.message);
+                      } catch (error) {
+          console.warn(`Failed to fetch details for album ${albumId}:`, error.message);
+        }
       }
-    }
-    
-    console.log(`✅ Successfully fetched ${detailedAlbums.length} most streamed albums from Nigeria charts`);
-    return detailedAlbums;
+      
+      console.log(`✅ Successfully fetched ${detailedAlbums.length} albums in actual chart order`);
+      return detailedAlbums;
 
   } catch (error) {
     console.error('Error fetching most streamed Nigerian albums from charts:', error);
