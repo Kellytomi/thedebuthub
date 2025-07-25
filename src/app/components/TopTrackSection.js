@@ -135,7 +135,7 @@ export default function TopTracksSection() {
 
   const AlbumCard = ({ track, index }) => (
     <div className="group relative flex flex-col lg:flex-row xl:flex-col w-[370px] lg:w-full xl:w-[370px] lg:h-auto h-[418px] xl:h-[418px] gap-2 cursor-pointer">
-      <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-2 border-[#d8995a]">
+      <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-2 border-white">
         <Image
           src={track.cover}
           alt={track.title}
