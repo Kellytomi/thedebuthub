@@ -253,7 +253,7 @@ export default function HeroSection() {
           {/* Logo */}
           <div className="flex items-center">
             <Image
-              src="/images/the debut hub.png"
+              src="/images/The Debut Hub.png"
               alt="The Debut Hub Logo"
               width={48}
               height={52}

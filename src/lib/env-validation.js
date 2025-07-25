@@ -21,6 +21,11 @@ const optionalEnvVars = {
     required: false,
     description: 'Application environment',
     fallback: 'development'
+  },
+  VERCEL_ENV: {
+    required: false,
+    description: 'Vercel environment',
+    fallback: null
   }
 };
 
@@ -53,6 +58,12 @@ export function validateEnvironment() {
       }
     } else {
       config[key] = value;
+      
+      // Log masked credentials in production for debugging
+      if (process.env.NODE_ENV === 'production') {
+        const maskedValue = value.substring(0, 8) + '...';
+        console.log(`✅ ${key}: ${maskedValue}`);
+      }
     }
   }
 
@@ -76,6 +87,10 @@ export function validateEnvironment() {
  */
 export function validateOnStartup() {
   const result = validateEnvironment();
+  
+  // Log environment info
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🚀 Platform: ${process.env.VERCEL_ENV ? 'Vercel' : 'Local'}`);
   
   if (!result.isValid) {
     const errorMessage = [

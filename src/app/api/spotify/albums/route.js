@@ -6,6 +6,11 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const limit = parseInt(searchParams.get('limit')) || 12;
 
+    // Log for production debugging
+    if (process.env.NODE_ENV === 'production') {
+      console.log(`🎵 Albums API called from region: ${process.env.VERCEL_REGION || 'unknown'}`);
+    }
+
     const albums = await getNigerianAlbums(limit);
 
     return NextResponse.json({

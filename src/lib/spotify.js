@@ -10,6 +10,12 @@ const { config, isValid } = validateEnvironment();
 const CLIENT_ID = config.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = config.SPOTIFY_CLIENT_SECRET;
 
+// Add debug logging for production
+if (process.env.NODE_ENV === 'production') {
+  console.log('🎵 Spotify API initialized in production');
+  console.log('📍 Environment:', process.env.VERCEL_ENV || 'unknown');
+}
+
 // Cache for access token
 let accessToken = null;
 let tokenExpiry = null;
@@ -111,6 +117,7 @@ export async function getMostStreamedNigerianAlbums(limit = 3) {
       
       try {
         console.log(`🔍 Trying search: ${searchTerm}`);
+        console.log(`🌍 API call from region: ${process.env.VERCEL_REGION || 'local'}`);
         const playlistSearch = await spotifyFetch(`/search?q=${encodeURIComponent(searchTerm)}&type=playlist&market=NG&limit=15`);
       
       if (playlistSearch.playlists?.items) {
