@@ -65,7 +65,7 @@ export default function MusicPulseSection() {
   return (
     <motion.section
       ref={ref}
-      className="relative overflow-hidden mx-auto w-full h-[1180px] xl:h-[875px] bg-[#030303]"
+      className="relative overflow-hidden mx-auto w-full h-[796px] md:h-[1180px] xl:h-[875px] bg-[#030303]"
       initial="hidden"
       animate={controls}
     >
@@ -84,13 +84,13 @@ export default function MusicPulseSection() {
         <motion.div variants={containerVariants}>
           <div className="relative xl:hidden w-full mt-16 flex justify-center">
             <motion.div
-              className="relative w-[373px] h-auto"
+              className="relative w-[340px] md:w-[373px] h-auto"
               variants={cardVariants}
               custom={0}
             >
               <motion.div
                 variants={badgeVariants}
-                className="absolute -top-12 -right-12 z-10"
+                className="absolute -top-12 -right-3 md:-right-12 z-10"
               >
                 <Image
                   src="/images/best-todo.svg"
@@ -104,7 +104,7 @@ export default function MusicPulseSection() {
                 alt="Rema Tweet Card"
                 width={373}
                 height={372}
-                className="relative rounded-lg shadow-2xl"
+                className="relative rounded-lg shadow-2xl w-[340px] h-[360px] md:w-[373px] md:h-[372px]"
               />
             </motion.div>
           </div>
@@ -124,7 +124,7 @@ export default function MusicPulseSection() {
                 alt="Asake Tweet Card"
                 width={373}
                 height={302}
-                className="rounded-lg shadow-xl w-[273px] h-[202px] lg:w-[373px] lg:h-[302px]"
+                className="hidden md:block rounded-lg shadow-xl w-[273px] h-[202px] lg:w-[373px] lg:h-[302px]"
               />
             </motion.div>
 
@@ -164,7 +164,7 @@ export default function MusicPulseSection() {
                 alt="Crayon Tweet Card"
                 width={373}
                 height={302}
-                className="rounded-lg shadow-xl w-[273px] h-[202px] lg:w-[373px] lg:h-[302px]"
+                className="hidden md:block rounded-lg shadow-xl w-[273px] h-[202px] lg:w-[373px] lg:h-[302px]"
               />
             </motion.div>
           </motion.div>

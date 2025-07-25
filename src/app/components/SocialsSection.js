@@ -27,13 +27,13 @@
         name: "TikTok",
         url: "https://www.tiktok.com/@thedebuthub",
         icon: "/socials/tiktok-icon.svg",
-        transform: "",
+        transform: "transform -rotate-25 sm:-rotate-0",
       },
       {
         name: "Gmail",
         url: "mailto:thedebuthub@gmail.com",
         icon: "/socials/gmail-icon.svg",
-        transform: "",
+        transform: "transform rotate-12 sm:-rotate-0",
       },
     ];
 
@@ -44,9 +44,9 @@
           description="Be the first to know about chart updates, exclusive artist drops, behind-the-scenes content, and live sessions."
         />
         <FlankDecoration />
-        <div className="relative z-20 flex flex-col items-center mt-28 text-white/80 font-dm-sans text-[18px]">
-          <div className="flex flex-col gap-28 mb-8 justify-center items-center">
-            <div className="flex gap-14">
+        <div className="relative z-20 flex flex-col items-center mt-12 sm:mt-28 text-white/80 font-dm-sans text-[18px]">
+          <div className="flex flex-col gap-8 sm:gap-28 mb-8 justify-center items-center">
+            <div className="flex flex-col md:flex-row gap-8 md:gap-14">
               {socialLinks.slice(0, 3).map((social) => (
                 <Link
                   key={social.name}
@@ -62,7 +62,7 @@
                 </Link>
               ))}
             </div>
-            <div className="flex gap-14">
+            <div className="flex gap-5 sm:gap-14">
               {socialLinks.slice(3).map((social) => (
                 <Link
                   key={social.name}

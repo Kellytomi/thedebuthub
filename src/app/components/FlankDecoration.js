@@ -11,7 +11,7 @@ const FlankDecoration = () => {
               alt="Asake Tweet Card"
               width={121}
               height={88}
-              className="absolute top-10 left-10 xl:left-0 rounded-lg shadow-xl"
+              className="absolute top-10 left-2 md:left-10 xl:left-0 rounded-lg"
             />
           </div>
           <div>
@@ -20,7 +20,7 @@ const FlankDecoration = () => {
               alt="Asake Tweet Card"
               width={121}
               height={88}
-              className="absolute rounded-lg shadow-xl bottom-20 right-10 xl:right-0"
+              className="absolute rounded-lg bottom-0 md:bottom-20 right-2 md:right-10 xl:right-0"
             />
           </div>
         </div>

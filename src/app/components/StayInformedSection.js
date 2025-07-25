@@ -37,7 +37,7 @@ export default function StayInformedSection() {
         priority
         className="absolute w-full h-full lg:h-[1076px] object-cover lg:object-contain top-0 left-0 z-0"
       />
-      <div className="relative max-w-4xl mx-auto flex flex-col justify-center items-center w-full h-full text-center z-20">
+      <div className="relative max-w-4xl mx-auto flex flex-col justify-center items-center w-full h-full text-center z-20 px-4">
         <div className="mb-8">
           <div className="inline-flex items-center justify-center rounded-full mb-6">
             <Image
@@ -78,14 +78,14 @@ export default function StayInformedSection() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto mb-24">
-          <div className="flex flex-col sm:flex-row gap-3">
+        <form onSubmit={handleSubmit} className="max-w-md w-full mx-auto mb-24 px-4">
+          <div className="flex flex-col sm:flex-row gap-3 w-full">
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email address"
-              className="w-[375px] flex-1 px-6 py-4 bg-[#252525]/30 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+              className="w-full sm:flex-1 px-6 py-4 bg-[#252525]/30 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               required
             />
             <ActionButton onClick={() => alert("Action triggered!")}>
@@ -101,19 +101,19 @@ export default function StayInformedSection() {
             </div>
           )}
         </form>
-        <div className="flex flex-col gap-12">
-          <div className="flex gap-20">
-          {footerLinks.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className="text-[18px] hover:text-[#B3B3B3] text-white transition-colors font-medium"
-            >
-              {link.name}
-            </Link>
-          ))}
-        </div>
-        <p className="text-[#92989F] text-[16px]">© {new Date().getFullYear()} The Debut Hub. All rights reserved.</p>
+        <div className="flex flex-col gap-12 w-full px-4">
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-8 md:gap-20">
+            {footerLinks.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className="text-base sm:text-[18px] hover:text-[#B3B3B3] text-white transition-colors font-medium whitespace-nowrap"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </div>
+          <p className="text-[#92989F] text-sm sm:text-[16px]">© {new Date().getFullYear()} The Debut Hub. All rights reserved.</p>
         </div>
       </div>
     </section>

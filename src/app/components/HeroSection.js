@@ -748,7 +748,7 @@ export default function HeroSection() {
                   alt="Hot News Badge"
                   height={100}
                   width={100}
-                  className="absolute -top-12 -right-12"
+                  className="absolute -top-12 -right-3 md:-right-12"
                 />
               </div>
             </motion.div>
