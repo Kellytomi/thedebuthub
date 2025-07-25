@@ -278,7 +278,7 @@ export default function CoverStorySection() {
                 {/* Artist Stats */}
                 {topArtist && (
                   <motion.div
-                    className="flex items-center gap-6"
+                    className="flex items-center justify-center xl:justify-start gap-6"
                     initial="hidden"
                     animate={controls}
                     variants={statsVariants}

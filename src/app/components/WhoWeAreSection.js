@@ -99,17 +99,17 @@ export default function WhoWeAreSection() {
 
         <div className="max-w-[1350px] mx-auto flex flex-col xl:flex-row h-auto pt-16 gap-20">
           <motion.div
-            className="flex flex-col px-2 md:px-10 xl:px-0 items-start justify-center gap-6"
+            className="flex flex-col px-2 md:px-10 xl:px-0 items-center xl:items-start justify-center gap-6 order-1 xl:order-1"
             variants={containerVariants}
           >
             <motion.h2
-              className="text-[32px] text-white font-medium"
+              className="text-[32px] text-white font-medium text-center xl:text-left"
               variants={childVariants}
             >
               Who We Are
             </motion.h2>
             <motion.p
-              className="text-white/70 w-[330px] md:w-[526px] font-dm-sans text-[20px]"
+              className="text-white/70 w-[330px] md:w-[526px] font-dm-sans text-[20px] text-center xl:text-left"
               variants={childVariants}
             >
               We&apos;re on a mission to amplify voices in music — whether you&apos;re
@@ -123,14 +123,14 @@ export default function WhoWeAreSection() {
             </motion.div>
           </motion.div>
 
-          <motion.div variants={imageVariants} className="flex-1">
-            <div className="">
+          <motion.div variants={imageVariants} className="flex-1 order-2 xl:order-2">
+            <div className="flex justify-center xl:justify-end">
               <Image
                 src="/images/tdh-section-pt.svg"
                 alt="Asake Tweet Card"
                 width={740}
                 height={367}
-                className="rounded-lg shadow-xl w-[500px] float-right px-2 sm:pr-10 xl:w-[740px] xl:h-[367px]"
+                className="rounded-lg shadow-xl w-[500px] px-2 sm:pr-10 xl:w-[740px] xl:h-[367px]"
               />
             </div>
           </motion.div>

@@ -11,17 +11,9 @@ export default function TopTracksSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isXlScreen, setIsXlScreen] = useState(false);
 
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsXlScreen(window.innerWidth >= 1280);
-    };
 
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
+
 
   // Auto-rotation removed - now using vertical stack on mobile
 
@@ -126,7 +118,7 @@ export default function TopTracksSection() {
   );
 
   const AlbumCard = ({ track, index }) => (
-    <div className="group relative flex flex-col lg:flex-row xl:flex-col w-[330px] md:w-[370px] lg:w-full xl:w-[370px] lg:h-auto h-[360px] md:h-[418px] gap-2 cursor-pointer">
+    <div className="group relative flex flex-col xl:flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2 cursor-pointer">
       <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-[#FFDDB2]">
         <Image
           src={track.cover}
@@ -157,13 +149,13 @@ export default function TopTracksSection() {
           />
         )}
       </div>
-      <div className="text-white text-[20px] flex flex-col lg:justify-center gap-1">
+      <div className="text-white text-[20px] flex flex-col gap-1">
         <h3 className="truncate" title={track.title}>
           {track.title}
         </h3>
-        <div className="text-sm text-[#CCCCCC] flex flex-row items-center lg:items-start xl:items-center lg:flex-col xl:flex-row gap-2">
+        <div className="text-sm text-[#CCCCCC] flex flex-row items-center xl:items-center xl:flex-row gap-2">
           <span className="truncate">{track.artist}</span>
-          <div className="w-1 h-1 bg-[#2C2C2C] rounded-full lg:hidden xl:block flex-shrink-0" />
+          <div className="w-1 h-1 bg-[#2C2C2C] rounded-full xl:block flex-shrink-0" />
           <div className="flex flex-row items-center gap-2">
             <span className="flex-shrink-0">{track.duration}</span>
           </div>
@@ -215,7 +207,7 @@ export default function TopTracksSection() {
         )}
       </div>
 
-      {/* Mobile/Tablet: Vertical Stack (sm-lg) */}
+      {/* Mobile/Tablet/Laptop: Vertical Stack (below xl) */}
       <div className="xl:hidden relative z-20 w-full flex flex-col items-center gap-6 px-4">
         {loading ? (
           <div className="flex flex-col gap-6">
@@ -225,20 +217,20 @@ export default function TopTracksSection() {
           </div>
                  ) : tracks.length > 0 ? (
            tracks.map((track, i) => (
-             <div key={track.id} className="flex justify-center w-full">
+             <div key={track.id} className="flex justify-center">
                <AlbumCard track={track} index={i} />
              </div>
            ))
          ) : (
            fallbackAlbums.map((track, i) => (
-             <div key={track.id} className="flex justify-center w-full">
+             <div key={track.id} className="flex justify-center">
                <AlbumCard track={track} index={i} />
              </div>
            ))
         )}
       </div>
 
-      {/* Desktop Grid (hidden below xl) */}
+      {/* Desktop Grid (xl and above) */}
       <div className="hidden xl:flex relative z-20 justify-center items-center gap-[33px]">
         {loading
           ? [...Array(3)].map((_, i) => <TrackSkeleton key={i} />)

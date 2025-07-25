@@ -86,30 +86,14 @@ export default function TopAlbumsSection() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isXlScreen, setIsXlScreen] = useState(false);
+
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
     setHasMounted(true);
-    const checkScreenSize = () => {
-      setIsXlScreen(window.innerWidth >= 1280);
-    };
-
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  // Check screen size
-  useEffect(() => {
-    const checkScreenSize = () => {
-      setIsXlScreen(window.innerWidth >= 1280); // Tailwind's xl breakpoint
-    };
 
-    checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, []);
 
   // Auto-rotation removed - now using vertical stack on mobile
 
@@ -250,7 +234,7 @@ export default function TopAlbumsSection() {
   );
 
   const AlbumCard = ({ album, index }) => (
-    <div className="group relative flex flex-col lg:flex-row xl:flex-col w-[330px] md:w-[370px] lg:w-full xl:w-[370px] lg:h-auto h-[360px] md:h-[418px] gap-2 cursor-pointer">
+    <div className="group relative flex flex-col xl:flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2 cursor-pointer">
       <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-[#FFDDB2]">
         <Image
           src={album.cover}
@@ -273,13 +257,13 @@ export default function TopAlbumsSection() {
           />
         )}
       </div>
-      <div className="text-white text-[20px] flex flex-col lg:justify-center gap-1">
+      <div className="text-white text-[20px] flex flex-col gap-1">
         <h3 className="truncate" title={album.title}>
           {album.title}
         </h3>
-        <div className="text-sm text-[#CCCCCC] flex flex-row items-center lg:items-start xl:items-center lg:flex-col xl:flex-row gap-2">
+        <div className="text-sm text-[#CCCCCC] flex flex-row items-center xl:items-center xl:flex-row gap-2">
           <span className="truncate">{album.artist}</span>
-          <div className="w-1 h-1 bg-[#2C2C2C] rounded-full lg:hidden xl:block flex-shrink-0" />
+          <div className="w-1 h-1 bg-[#2C2C2C] rounded-full xl:block flex-shrink-0" />
           <div className="flex flex-row items-center gap-2">
             <span className="flex-shrink-0">{album.tracks}</span>
             {album.streamCount && (
@@ -339,7 +323,7 @@ export default function TopAlbumsSection() {
         )}
       </div>
 
-      {/* Mobile/Tablet: Vertical Stack (sm-lg) */}
+      {/* Mobile/Tablet/Laptop: Vertical Stack (below xl) */}
       <div className="xl:hidden relative z-20 w-full flex flex-col items-center gap-6 px-4">
         {loading ? (
           <div className="flex flex-col gap-6">
@@ -349,20 +333,20 @@ export default function TopAlbumsSection() {
           </div>
                  ) : albums.length > 0 ? (
            albums.map((album, i) => (
-             <div key={album.id} className="flex justify-center w-full">
+             <div key={album.id} className="flex justify-center">
                <AlbumCard album={album} index={i} />
              </div>
            ))
          ) : (
            fallbackAlbums.map((album, i) => (
-             <div key={album.id} className="flex justify-center w-full">
+             <div key={album.id} className="flex justify-center">
                <AlbumCard album={album} index={i} />
              </div>
            ))
         )}
       </div>
 
-      {/* Desktop Grid (hidden below xl) */}
+      {/* Desktop Grid (xl and above) */}
       <div className="hidden xl:flex relative z-20 justify-center items-center gap-[33px]">
         {loading
           ? [...Array(3)].map((_, i) => <AlbumSkeleton key={i} />)

@@ -11,11 +11,17 @@ export default function YouTubeBackgroundPlayer() {
   const playerRef = useRef(null);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [isAPILoaded, setIsAPILoaded] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
   const hasInitialized = useRef(false);
+
+  // Hydration guard
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   // Load YouTube IFrame API
   useEffect(() => {
-    if (typeof window === 'undefined' || hasInitialized.current) return;
+    if (!hasMounted || hasInitialized.current) return;
 
     const loadYouTubeAPI = () => {
       // Check if API is already loaded
@@ -85,7 +91,7 @@ export default function YouTubeBackgroundPlayer() {
         script.remove();
       }
     };
-  }, []);
+  }, [hasMounted]);
 
   // Initialize YouTube Player when API is loaded
   useEffect(() => {
@@ -213,8 +219,8 @@ export default function YouTubeBackgroundPlayer() {
     }
   }, [isMuted, isPlayerReady]);
 
-  // Only render on client side
-  if (typeof window === 'undefined') {
+  // Prevent hydration mismatch by only rendering after client mount
+  if (!hasMounted) {
     return null;
   }
 
