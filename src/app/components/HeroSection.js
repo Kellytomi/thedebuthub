@@ -351,9 +351,12 @@ export default function HeroSection() {
               )}
             </button>
 
-            {/* Subscribe Button */}
-            <button
-              className="text-white/70 hover:text-white font-medium relative overflow-hidden text-xs sm:text-sm px-3 py-2 sm:px-4 rounded-md h-8 sm:h-9 font-dm-sans"
+            {/* Subscribe Button - Links to Twitter */}
+            <a
+              href="https://twitter.com/thedebuthub"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-white/70 hover:text-white font-medium relative overflow-hidden text-xs sm:text-sm px-3 py-2 sm:px-4 rounded-md h-8 sm:h-9 font-dm-sans inline-flex items-center justify-center transition-colors duration-200"
               style={{
                 background: `linear-gradient(180deg, #1F1F1F 0%, #080808 100%), linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 109, 255, 0.08) 100%)`,
                 boxShadow: "0px 2px 7px 0px rgba(87, 87, 87, 0.17)",
@@ -376,7 +379,7 @@ export default function HeroSection() {
                 />
               </div>
               Subscribe
-            </button>
+            </a>
           </div>
         </div>
       </div>
