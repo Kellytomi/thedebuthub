@@ -47,13 +47,13 @@ export const metadata = {
     siteName: "The Debut Hub",
     images: [
       {
-        url: "/Preview 512x512.png?v=1",
+        url: "/Preview 512x512.png?v=2",
         width: 512,
         height: 512,
         alt: "The Debut Hub - Nigerian Music Discovery Platform",
       },
       {
-        url: "/android-chrome-512x512.png",
+        url: "/Preview 512x512.png?v=2",
         width: 512,
         height: 512,
         alt: "The Debut Hub Logo",
