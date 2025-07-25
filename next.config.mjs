@@ -35,10 +35,8 @@ const nextConfig = {
       },
     ];
   },
-  // Enable experimental features for better error handling
-  experimental: {
-    serverComponentsExternalPackages: [],
-  },
+  // External packages for server components
+  serverExternalPackages: [],
   // Production optimizations
   poweredByHeader: false,
   generateEtags: false,
