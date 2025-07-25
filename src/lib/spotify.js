@@ -62,16 +62,39 @@ async function getAccessToken() {
 }
 
 /**
- * Make authenticated request to Spotify API
+ * Make authenticated request to Spotify API with forced Nigeria market
  */
 async function spotifyFetch(endpoint, options = {}) {
   const token = await getAccessToken();
   
-  const response = await fetch(`https://api.spotify.com/v1${endpoint}`, {
+  // Force Nigeria market for all API calls
+  let enhancedEndpoint = endpoint;
+  const urlParams = new URLSearchParams();
+  
+  // Extract existing query parameters
+  const [baseEndpoint, existingParams] = endpoint.split('?');
+  if (existingParams) {
+    const existing = new URLSearchParams(existingParams);
+    for (const [key, value] of existing) {
+      urlParams.set(key, value);
+    }
+  }
+  
+  // Force Nigeria market and Nigerian locale
+  urlParams.set('market', 'NG');
+  urlParams.set('country', 'NG');
+  
+  // Rebuild endpoint with forced parameters
+  enhancedEndpoint = `${baseEndpoint}?${urlParams.toString()}`;
+  
+  console.log(`🇳🇬 Spotify API call (Nigeria market): ${enhancedEndpoint}`);
+  
+  const response = await fetch(`https://api.spotify.com/v1${enhancedEndpoint}`, {
     ...options,
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
+      'Accept-Language': 'en-NG,en', // Nigerian English preference
       ...options.headers,
     },
   });

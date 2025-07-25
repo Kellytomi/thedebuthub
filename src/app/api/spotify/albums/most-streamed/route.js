@@ -8,10 +8,7 @@ export async function GET(request) {
     
     console.log(`Fetching top ${limit} most streamed Nigerian albums...`);
     
-    // Force consistent results by using fallback data in production
-    const albums = process.env.NODE_ENV === 'production' 
-      ? null // This will trigger fallback
-      : await getMostStreamedNigerianAlbums(limit);
+    const albums = await getMostStreamedNigerianAlbums(limit);
     
     console.log(`🔍 API received ${albums?.length || 0} albums from Spotify function`);
     

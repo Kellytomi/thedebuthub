@@ -11,10 +11,7 @@ export async function GET(request) {
       console.log(`🎵 Tracks API called from region: ${process.env.VERCEL_REGION || 'unknown'}`);
     }
 
-    // Force consistent results by using fallback data in production
-    const tracks = process.env.NODE_ENV === 'production'
-      ? null // This will trigger fallback
-      : await getNigerianTracks(limit);
+    const tracks = await getNigerianTracks(limit);
 
     return NextResponse.json({
       success: true,
