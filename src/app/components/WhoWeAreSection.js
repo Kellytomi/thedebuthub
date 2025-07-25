@@ -79,7 +79,7 @@ export default function WhoWeAreSection() {
   return (
     <motion.section
       ref={ref}
-      className="relative overflow-hidden mx-auto w-full h-[875px] xl:h-[665px] bg-[#030303] pt-20"
+      className="relative overflow-hidden mx-auto w-full h-[955px] sm:h-[875px] xl:h-[665px] bg-[#030303] pt-20"
       initial="hidden"
       animate={controls}
     >
@@ -99,7 +99,7 @@ export default function WhoWeAreSection() {
 
         <div className="max-w-[1350px] mx-auto flex flex-col xl:flex-row h-auto pt-16 gap-20">
           <motion.div
-            className="flex flex-col px-10 xl:px-0 items-start justify-center gap-6"
+            className="flex flex-col px-2 md:px-10 xl:px-0 items-start justify-center gap-6"
             variants={containerVariants}
           >
             <motion.h2
@@ -109,7 +109,7 @@ export default function WhoWeAreSection() {
               Who We Are
             </motion.h2>
             <motion.p
-              className="text-white/70 w-[526px] font-dm-sans text-[20px]"
+              className="text-white/70 w-[330px] md:w-[526px] font-dm-sans text-[20px]"
               variants={childVariants}
             >
               We're on a mission to amplify voices in music — whether you're
@@ -130,7 +130,7 @@ export default function WhoWeAreSection() {
                 alt="Asake Tweet Card"
                 width={740}
                 height={367}
-                className="rounded-lg shadow-xl w-[500px] float-right pr-10 xl:w-[740px] xl:h-[367px]"
+                className="rounded-lg shadow-xl w-[500px] float-right px-2 sm:pr-10 xl:w-[740px] xl:h-[367px]"
               />
             </div>
           </motion.div>

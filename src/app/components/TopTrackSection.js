@@ -114,7 +114,7 @@ export default function TopTracksSection() {
   };
 
   const TrackSkeleton = () => (
-    <div className="group relative flex flex-col lg:flex-row xl:flex-col w-[370px] lg:w-full lg:justify-center xl:w-[370px] lg:h-auto h-[418px] xl:h-[418px] gap-2">
+    <div className="group relative flex flex-col lg:flex-row xl:flex-col lg:justify-center w-[330px] md:w-[370px] lg:w-full xl:w-[370px] lg:h-auto h-[360px] md:h-[418px] gap-2">
       <div className="relative w-full lg:w-[370px] xl:w-full h-[350px] overflow-hidden rounded-xl bg-[#171717]">
         <div className="absolute inset-0 bg-[#171717] animate-pulse" />
       </div>
@@ -134,7 +134,7 @@ export default function TopTracksSection() {
   );
 
   const AlbumCard = ({ track, index }) => (
-    <div className="group relative flex flex-col lg:flex-row xl:flex-col w-[370px] lg:w-full xl:w-[370px] lg:h-auto h-[418px] xl:h-[418px] gap-2 cursor-pointer">
+    <div className="group relative flex flex-col lg:flex-row xl:flex-col w-[330px] md:w-[370px] lg:w-full xl:w-[370px] lg:h-auto h-[360px] md:h-[418px] gap-2 cursor-pointer">
       <div className="relative w-full h-[350px] overflow-hidden rounded-xl border border-white">
         <Image
           src={track.cover}
@@ -148,9 +148,9 @@ export default function TopTracksSection() {
           }}
         />
 
-        <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-50 transition-opacity duration-300 rounded-md" />
+        <div className="absolute inset-0 bg-black bg-opacity-40 md:opacity-0 md:group-hover:opacity-50 opacity-50 transition-opacity duration-300 rounded-md" />
 
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <div className="absolute inset-0 flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 opacity-100 transition-opacity duration-300">
           <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg">
             <Play size="42" color="black" variant="TwoTone" />
           </div>

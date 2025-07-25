@@ -21,7 +21,7 @@ const IntroSection = ({
           />
         </div>
 
-        <p className="text-white/70 w-[606px] lg:w-[880px] max-w-4xl mx-auto font-dm-sans text-[18px] leading-[1.6]">
+        <p className="text-white/70 w-[350px] md:w-[606px] lg:w-[880px] max-w-4xl mx-auto font-dm-sans text-[18px] leading-[1.6]">
           {description}
         </p>
       </div>
