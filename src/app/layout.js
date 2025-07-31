@@ -3,6 +3,7 @@ import "./globals.css";
 import { AudioProvider } from "./contexts/AudioContext";
 import YouTubeBackgroundPlayer from "./components/YouTubeBackgroundPlayer";
 import { validateOnStartup } from "../lib/env-validation";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -161,6 +162,7 @@ export default function RootLayout({ children }) {
           <YouTubeBackgroundPlayer />
           {children}
         </AudioProvider>
+        <Analytics />
       </body>
     </html>
   );
