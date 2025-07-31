@@ -4,39 +4,48 @@ import { AudioProvider } from "./contexts/AudioContext";
 import YouTubeBackgroundPlayer from "./components/YouTubeBackgroundPlayer";
 import { validateOnStartup } from "../lib/env-validation";
 import { Analytics } from "@vercel/analytics/next";
+import PerformanceOptimizer from "./components/PerformanceOptimizer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
+  preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
+  preload: false,
 });
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
+  preload: true,
 });
 
 const dancingScript = Dancing_Script({
   variable: "--font-dancing-script",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600"],
   display: "swap",
+  preload: true,
 });
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
+  preload: true,
 });
 
 export const metadata = {
+  metadataBase: new URL('https://thedebuthub.com'),
   title: "The Debut Hub - Discover Nigerian Music",
   description: "Explore trending music from Nigeria. Emerging artists and the latest hits you need to hear. The premier platform for discovering Nigerian talent.",
   
@@ -44,7 +53,7 @@ export const metadata = {
   openGraph: {
     title: "The Debut Hub - Discover Nigerian Music",
     description: "Explore trending music from Nigeria. Emerging artists and the latest hits you need to hear. The premier platform for discovering Nigerian talent.",
-    url: "https://thedebuthub.vercel.app",
+    url: "https://thedebuthub.com",
     siteName: "The Debut Hub",
     images: [
       {
@@ -143,6 +152,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        {/* Preload critical resources */}
+        <link rel="preload" href="/images/tdh-logo.svg" as="image" />
+        <link rel="preload" href="/api/spotify/albums/most-streamed?limit=3" as="fetch" crossOrigin="anonymous" />
+        <link rel="preload" href="/api/spotify/tracks?limit=3" as="fetch" crossOrigin="anonymous" />
+        
         {/* Favicons */}
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
@@ -154,10 +168,15 @@ export default function RootLayout({ children }) {
         {/* Theme colors */}
         <meta name="theme-color" content="#006dff" />
         <meta name="msapplication-TileColor" content="#006dff" />
+        
+        {/* DNS prefetch for external domains */}
+        <link rel="dns-prefetch" href="//i.scdn.co" />
+        <link rel="dns-prefetch" href="//p.scdn.co" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${dancingScript.variable} ${dmSans.variable} antialiased bg-slate-900`}
       >
+        <PerformanceOptimizer />
         <AudioProvider>
           <YouTubeBackgroundPlayer />
           {children}

@@ -8,19 +8,31 @@ const FlankDecoration = () => {
           <div>
             <Image
               src="/images/decoration-top.svg"
-              alt="Asake Tweet Card"
+              alt="Top decoration"
               width={121}
               height={88}
+              loading="lazy"
+              sizes="121px"
               className="absolute top-10 left-2 md:left-10 xl:left-0 rounded-lg"
+              style={{
+                aspectRatio: '121/88',
+                objectFit: 'contain'
+              }}
             />
           </div>
           <div>
             <Image
               src="/images/decoration-bottom.svg"
-              alt="Asake Tweet Card"
+              alt="Bottom decoration"
               width={121}
               height={88}
+              loading="lazy"
+              sizes="121px"
               className="absolute rounded-lg bottom-0 md:bottom-20 right-2 md:right-10 xl:right-0"
+              style={{
+                aspectRatio: '121/88',
+                objectFit: 'contain'
+              }}
             />
           </div>
         </div>

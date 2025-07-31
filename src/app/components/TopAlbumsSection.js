@@ -3,7 +3,15 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import FlankDecoration from "./FlankDecoration";
-import { AnimatePresence, motion } from "framer-motion";
+import dynamic from "next/dynamic";
+
+// Dynamic import for framer-motion to reduce bundle size
+const MotionDiv = dynamic(() => import("framer-motion").then(mod => ({ default: mod.motion.div })), {
+  ssr: false
+});
+const AnimatePresence = dynamic(() => import("framer-motion").then(mod => ({ default: mod.AnimatePresence })), {
+  ssr: false
+});
 
 const fallbackAlbums = [
   {
@@ -181,7 +189,14 @@ export default function TopAlbumsSection() {
           alt={album.title}
           width={370}
           height={350}
+          priority={index < 3} // Priority for first 3 images
+          loading={index < 3 ? "eager" : "lazy"}
+          sizes="(max-width: 768px) 330px, (max-width: 1200px) 370px, 370px"
           className="object-cover w-full h-full rounded-md transition-transform duration-300 group-hover:scale-105"
+          style={{
+            aspectRatio: '370/350',
+            objectFit: 'cover'
+          }}
           onError={(e) => {
             e.currentTarget.src =
               fallbackAlbums[index]?.cover || "/images/placeholder.png";
@@ -204,7 +219,7 @@ export default function TopAlbumsSection() {
         <div className="text-sm text-[#CCCCCC] flex flex-row items-center xl:items-center xl:flex-row gap-2">
           <span className="truncate">{album.artist}</span>
           <div className="w-1 h-1 bg-[#2C2C2C] rounded-full xl:block flex-shrink-0" />
-          <span className="flex-shrink-0">{album.tracks}</span>
+            <span className="flex-shrink-0">{album.tracks}</span>
         </div>
       </div>
     </div>

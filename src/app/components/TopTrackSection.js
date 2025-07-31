@@ -1,10 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import FlankDecoration from "./FlankDecoration";
-import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import FlankDecoration from "./FlankDecoration";
 import { Play } from "iconsax-react";
+import dynamic from "next/dynamic";
+
+// Dynamic import for framer-motion to reduce bundle size
+const MotionDiv = dynamic(() => import("framer-motion").then(mod => ({ default: mod.motion.div })), {
+  ssr: false
+});
 
 export default function TopTracksSection() {
   const [tracks, setTracks] = useState([]);
@@ -125,7 +130,14 @@ export default function TopTracksSection() {
           alt={track.title}
           width={370}
           height={350}
+          priority={index < 3} // Priority for first 3 images
+          loading={index < 3 ? "eager" : "lazy"}
+          sizes="(max-width: 768px) 330px, (max-width: 1200px) 370px, 370px"
           className="object-cover w-full h-full rounded-md transition-transform duration-300 group-hover:scale-105"
+          style={{
+            aspectRatio: '370/350',
+            objectFit: 'cover'
+          }}
           onError={(e) => {
             e.currentTarget.src =
               fallbackAlbums[index]?.cover || "/images/placeholder.png";
