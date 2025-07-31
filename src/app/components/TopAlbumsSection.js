@@ -5,52 +5,6 @@ import Image from "next/image";
 import FlankDecoration from "./FlankDecoration";
 import { AnimatePresence, motion } from "framer-motion";
 
-// Simple hash function to generate consistent pseudo-random numbers
-const simpleHash = (str) => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash = (hash << 5) - hash + char;
-    hash = hash & hash; // Convert to 32bit integer
-  }
-  return Math.abs(hash);
-};
-
-// Function to convert popularity score to estimated stream count
-const formatStreamCount = (popularity, albumName = "") => {
-  // Handle undefined, null, or 0 values
-  if (!popularity || popularity === 0) {
-    return "0 streams";
-  }
-
-  // Ensure popularity is a number and within valid range
-  const normalizedPopularity = Math.max(
-    0,
-    Math.min(100, Number(popularity) || 0)
-  );
-
-  if (normalizedPopularity === 0) {
-    return "0 streams";
-  }
-
-  // Convert popularity (0-100) to estimated stream count
-  // Higher popularity = exponentially more streams
-  const baseStreams = Math.pow(normalizedPopularity / 100, 2) * 50000000; // 50M max streams
-
-  // Use consistent pseudo-random factor based on album name
-  const hashValue = simpleHash(albumName || "default");
-  const consistentFactor = 0.85 + ((hashValue % 100) / 100) * 0.3; // Consistent 0.85-1.15 range
-  const streams = Math.floor(baseStreams * consistentFactor);
-
-  if (streams >= 1000000) {
-    return `${(streams / 1000000).toFixed(1)}M streams`;
-  } else if (streams >= 1000) {
-    return `${(streams / 1000).toFixed(0)}K streams`;
-  } else {
-    return `${Math.max(1, streams)} streams`; // Ensure at least 1 stream for non-zero popularity
-  }
-};
-
 const fallbackAlbums = [
   {
     id: 1,
@@ -59,7 +13,6 @@ const fallbackAlbums = [
     cover: "/images/album3.png",
     tracks: "19 tracks",
     popularity: 89,
-    streamCount: formatStreamCount(89, "Love, Damini"),
   },
   {
     id: 2,
@@ -68,7 +21,6 @@ const fallbackAlbums = [
     cover: "/images/album1.png",
     tracks: "14 tracks",
     popularity: 92,
-    streamCount: formatStreamCount(92, "Made in Lagos"),
   },
   {
     id: 3,
@@ -77,7 +29,6 @@ const fallbackAlbums = [
     cover: "/images/album2.png",
     tracks: "17 tracks",
     popularity: 85,
-    streamCount: formatStreamCount(85, "A Better Time"),
   },
 ];
 
@@ -143,10 +94,6 @@ export default function TopAlbumsSection() {
                   ? `${album.total_tracks} tracks`
                   : "Tracks unknown",
                 popularity: popularity,
-                streamCount: formatStreamCount(
-                  popularity,
-                  album.name || `Album ${i + 1}`
-                ),
                 spotifyUrl: album.external_urls?.spotify ?? "#",
               };
             }) || [];
@@ -175,7 +122,6 @@ export default function TopAlbumsSection() {
             cover: "/images/album3.png", // Love, Damini = album3.png
             tracks: "19 tracks",
             popularity: 95,
-            streamCount: formatStreamCount(95, "Love, Damini"),
           },
           {
             id: 2,
@@ -184,7 +130,6 @@ export default function TopAlbumsSection() {
             cover: "/images/album2.png", // Twice As Tall = album2.png
             tracks: "15 tracks",
             popularity: 92,
-            streamCount: formatStreamCount(92, "Twice As Tall"),
           },
           {
             id: 3,
@@ -193,7 +138,6 @@ export default function TopAlbumsSection() {
             cover: "/images/album1.png", // Made in Lagos = album1.png
             tracks: "14 tracks",
             popularity: 90,
-            streamCount: formatStreamCount(90, "Made in Lagos"),
           },
         ];
 
@@ -223,10 +167,6 @@ export default function TopAlbumsSection() {
 
           <div className="flex flex-row items-center gap-2">
             <div className="h-4 w-16 bg-[#171717] rounded animate-pulse flex-shrink-0" />
-
-            <div className="flex items-center gap-1 flex-shrink-0">
-              <div className="h-4 w-20 bg-[#171717] rounded animate-pulse" />
-            </div>
           </div>
         </div>
       </div>
@@ -264,17 +204,7 @@ export default function TopAlbumsSection() {
         <div className="text-sm text-[#CCCCCC] flex flex-row items-center xl:items-center xl:flex-row gap-2">
           <span className="truncate">{album.artist}</span>
           <div className="w-1 h-1 bg-[#2C2C2C] rounded-full xl:block flex-shrink-0" />
-          <div className="flex flex-row items-center gap-2">
-            <span className="flex-shrink-0">{album.tracks}</span>
-            {album.streamCount && (
-              <>
-                <div className="w-1 h-1 bg-[#2C2C2C] rounded-full flex-shrink-0" />
-                <div className="text-sm text-[#CCCCCC] flex items-center gap-1 flex-shrink-0">
-                  <span>{album.streamCount}</span>
-                </div>
-              </>
-            )}
-          </div>
+          <span className="flex-shrink-0">{album.tracks}</span>
         </div>
       </div>
     </div>
