@@ -6,6 +6,7 @@ import { motion, useAnimation } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import IntroBody from "./IntroBody";
 import IntroTitle from "./IntroTitle";
+import ActionButton from "./ActionButton";
 
 // Generate dynamic artist story based on artist data
 const generateArtistStory = (artist) => {
@@ -274,6 +275,16 @@ export default function CoverStorySection() {
                 >
                   {artistStory.description}
                 </motion.p>
+
+                {/* Read more button */}
+                <motion.div
+                  className="mb-8"
+                  variants={childVariants}
+                >
+                  <ActionButton onClick={() => window.open("https://twitter.com/thedebuthub", "_blank")}>
+                    Read More
+                  </ActionButton>
+                </motion.div>
 
                 {/* Artist Stats */}
                 {topArtist && (

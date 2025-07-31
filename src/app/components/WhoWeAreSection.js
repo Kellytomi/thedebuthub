@@ -117,7 +117,7 @@ export default function WhoWeAreSection() {
               music landscape
             </motion.p>
             <motion.div variants={buttonVariants} whileHover="hover">
-              <ActionButton onClick={() => alert("Action triggered!")}>
+              <ActionButton onClick={() => window.open("https://twitter.com/thedebuthub", "_blank")}>
                 Know More
               </ActionButton>
             </motion.div>

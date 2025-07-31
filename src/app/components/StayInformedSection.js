@@ -114,6 +114,26 @@ export default function StayInformedSection() {
             ))}
           </div>
           <p className="text-[#92989F] text-sm sm:text-[16px]">© {new Date().getFullYear()} The Debut Hub. All rights reserved.</p>
+          <p className="text-[#92989F]/60 text-xs">
+            Designed by{" "}
+            <a 
+              href="https://x.com/kemsdesigns" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-[#92989F]/80 hover:text-white transition-colors underline"
+            >
+              Kems Designs
+            </a>
+            {" "}and developed by{" "}
+            <a 
+              href="https://x.com/kelvin_dart" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-[#92989F]/80 hover:text-white transition-colors underline"
+            >
+              Etoma.dev
+            </a>
+          </p>
         </div>
       </div>
     </section>

@@ -758,7 +758,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <ActionButton onClick={() => alert("Action triggered!")}>
+        <ActionButton onClick={() => window.open("https://twitter.com/thedebuthub", "_blank")}>
           Explore More News
         </ActionButton>
       </div>
