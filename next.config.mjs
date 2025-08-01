@@ -25,16 +25,46 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // Apply headers to API routes
+        // Security headers for all routes
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; media-src 'self' https:; connect-src 'self' https://vitals.vercel-insights.com https://api.spotify.com https://accounts.spotify.com;",
+          },
+        ],
+      },
+      {
+        // Apply headers to API routes with rate limiting info
         source: '/api/:path*',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, s-maxage=3600, stale-while-revalidate=86400', // 1 hour cache, 24h stale
+            value: 'public, s-maxage=3600, stale-while-revalidate=86400',
           },
           {
             key: 'X-Environment',
             value: process.env.VERCEL_ENV || process.env.NODE_ENV || 'development',
+          },
+          {
+            key: 'X-Rate-Limit',
+            value: 'Please respect our API limits',
           },
         ],
       },
@@ -44,7 +74,7 @@ const nextConfig = {
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, max-age=31536000, immutable', // 1 year cache for images
+            value: 'public, max-age=31536000, immutable',
           },
         ],
       },
@@ -64,7 +94,7 @@ const nextConfig = {
   serverExternalPackages: [],
   // Production optimizations
   poweredByHeader: false,
-  generateEtags: true, // Enable ETags for better caching
+  generateEtags: true,
   compress: true,
   // Experimental features for performance
   experimental: {
