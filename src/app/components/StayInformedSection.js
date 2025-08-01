@@ -28,16 +28,24 @@ export default function StayInformedSection() {
   ];
 
   return (
-    <section className="relative bg-black h-[1076px]">
+    <section className="relative bg-black h-[1276px] sm:h-[1296px] md:h-[1326px] lg:h-[1356px] xl:h-[1376px]">
       <Image
         src="/images/grid-layers.svg"
         alt="grid pattern background"
         width={36}
         height={39}
         priority
-        className="absolute w-full h-full lg:h-[1076px] object-cover lg:object-contain top-0 left-0 z-0"
+        style={{
+          position: "absolute",
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          top: 0,
+          left: 0,
+          zIndex: 0
+        }}
       />
-      <div className="relative max-w-4xl mx-auto flex flex-col justify-center items-center w-full h-full text-center z-20 px-4">
+      <div className="relative max-w-4xl mx-auto flex flex-col justify-center items-center w-full text-center z-20 px-4" style={{ height: '1076px' }}>
         <div className="mb-8">
           <div className="inline-flex items-center justify-center rounded-full mb-6">
             <Image
@@ -135,6 +143,24 @@ export default function StayInformedSection() {
             </a>
           </p>
         </div>
+      </div>
+      
+      {/* Big "THE DEBUT HUB" text on top of grid - Cut in half */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden h-[100px] sm:h-[120px] md:h-[150px] lg:h-[180px] xl:h-[200px] z-10">
+        <h1 
+          className="font-montserrat text-white uppercase text-center absolute left-1/2 transform -translate-x-1/2"
+          style={{
+            fontSize: 'clamp(80px, 12vw, 164px)',
+            opacity: 0.2,
+            fontWeight: 600,
+            lineHeight: '100%',
+            letterSpacing: '0%',
+            top: '50%',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          THE DEBUT HUB
+        </h1>
       </div>
     </section>
   );
