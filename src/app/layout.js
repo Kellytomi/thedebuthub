@@ -99,6 +99,7 @@ export const metadata = {
   // Favicon and icons
   icons: {
     icon: [
+      { url: "/favicon.ico", sizes: "any" },
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
       { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
       { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
@@ -108,22 +109,29 @@ export const metadata = {
     ],
     other: [
       {
-        rel: "android-chrome-192x192",
+        rel: "icon",
         url: "/android-chrome-192x192.png",
+        sizes: "192x192",
+        type: "image/png",
       },
       {
-        rel: "android-chrome-512x512", 
+        rel: "icon", 
         url: "/android-chrome-512x512.png",
+        sizes: "512x512",
+        type: "image/png",
       },
     ],
   },
   
-  // Verification and additional meta
-  verification: {
-    // Add your verification codes here when you get them
-    // google: "your-google-verification-code",
-    // yandex: "your-yandex-verification-code",
+  // DNS verification is preferred - no HTML meta tags needed
+  
+  // Additional SEO enhancements
+  alternates: {
+    canonical: 'https://thedebuthub.com',
   },
+  
+  // Open Graph additional properties
+  category: 'music',
   
   // Additional metadata
   robots: {
@@ -159,6 +167,7 @@ export default function RootLayout({ children }) {
         
         {/* Favicons */}
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
@@ -172,6 +181,39 @@ export default function RootLayout({ children }) {
         {/* DNS prefetch for external domains */}
         <link rel="dns-prefetch" href="//i.scdn.co" />
         <link rel="dns-prefetch" href="//p.scdn.co" />
+        
+        {/* Structured Data for Google */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "The Debut Hub",
+              "alternateName": "TDH",
+              "url": "https://thedebuthub.com",
+              "description": "Explore trending music from Nigeria. Emerging artists and the latest hits you need to hear. The premier platform for discovering Nigerian talent.",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://thedebuthub.com?search={search_term_string}",
+                "query-input": "required name=search_term_string"
+              },
+              "publisher": {
+                "@type": "Organization",
+                "name": "The Debut Hub",
+                "url": "https://thedebuthub.com",
+                "logo": {
+                  "@type": "ImageObject",
+                  "url": "https://thedebuthub.com/Preview 512x512.png"
+                }
+              },
+              "sameAs": [
+                "https://twitter.com/thedebuthub",
+                "https://instagram.com/thedebuthub"
+              ]
+            })
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${dancingScript.variable} ${dmSans.variable} antialiased bg-slate-900`}
