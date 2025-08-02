@@ -5,6 +5,7 @@ import Image from "next/image";
 import FlankDecoration from "./FlankDecoration";
 import { Play } from "iconsax-react";
 import dynamic from "next/dynamic";
+import { trpc } from "../../lib/trpc-client";
 
 // Dynamic import for framer-motion to reduce bundle size
 const MotionDiv = dynamic(() => import("framer-motion").then(mod => ({ default: mod.motion.div })), {
@@ -12,95 +13,70 @@ const MotionDiv = dynamic(() => import("framer-motion").then(mod => ({ default: 
 });
 
 export default function TopTracksSection() {
-  const [tracks, setTracks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-
-
-
-  // Auto-rotation removed - now using vertical stack on mobile
-
-  useEffect(() => {
-    fetchNigerianTracks();
-  }, []);
-
-  const fetchNigerianTracks = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch("/api/spotify/tracks?limit=3");
-      const data = await response.json();
-
-      if (data.success || data.fallback) {
-        const transformedTracks = data.tracks.map((track, index) => ({
-          id: track.id || index + 1,
-          title: track.name || `Track ${index + 1}`,
-          artist: track.artist || "Unknown Artist",
-          cover: track.image || `/images/track${index + 1}.png`,
-          duration: track.duration || "0:00",
-          spotifyUrl: track.external_urls?.spotify,
-          previewUrl: track.preview_url,
-        }));
-        setTracks(transformedTracks);
-      } else {
-        setError(data.error || "Failed to fetch tracks");
-        // Fallback to static data on error
-        setTracks([
-          {
-            id: 1,
-            title: "Love",
-            artist: "Burna Boy",
-            cover: "/images/track3.png",
-            duration: "3:45",
-          },
-          {
-            id: 2,
-            title: "Essence",
-            artist: "Wizkid",
-            cover: "/images/track1.png",
-            duration: "3:12",
-          },
-          {
-            id: 3,
-            title: "Stand Strong",
-            artist: "Davido",
-            cover: "/images/track2.png",
-            duration: "2:55",
-          },
-        ]);
-      }
-    } catch (err) {
-      console.error("Error fetching Nigerian tracks:", err);
-      setError("Failed to load tracks");
-      // Fallback to static data on error
-      setTracks([
-        {
-          id: 1,
-          title: "Love",
-          artist: "Burna Boy",
-          cover: "/images/track3.png",
-          duration: "3:45",
-        },
-        {
-          id: 2,
-          title: "Essence",
-          artist: "Wizkid",
-          cover: "/images/track1.png",
-          duration: "3:12",
-        },
-        {
-          id: 3,
-          title: "Stand Strong",
-          artist: "Davido",
-          cover: "/images/track2.png",
-          duration: "2:55",
-        },
-      ]);
-    } finally {
-      setLoading(false);
+  // Use tRPC to fetch Nigerian tracks
+  const { 
+    data: tracksData, 
+    isLoading: loading, 
+    error,
+    isSuccess 
+  } = trpc.spotify.getTracks.useQuery(
+    { limit: 3 },
+    {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 3,
     }
-  };
+  );
+
+  // Process tracks data from tRPC
+  const tracks = (() => {
+    if (isSuccess && (tracksData?.success || tracksData?.fallback)) {
+      const transformedTracks = tracksData.tracks.map((track, index) => ({
+        id: track.id || index + 1,
+        title: track.name || `Track ${index + 1}`,
+        artist: track.artist || "Unknown Artist",
+        cover: track.image || `/images/track${index + 1}.png`,
+        duration: track.duration || "0:00",
+        spotifyUrl: track.external_urls?.spotify,
+        previewUrl: track.preview_url,
+      }));
+      
+      if (transformedTracks.length > 0) {
+        console.log("✅ Successfully loaded tracks via tRPC:", transformedTracks.map(t => `${t.artist} - ${t.title}`));
+        return transformedTracks;
+      }
+    }
+
+    // Fallback data if API fails or returns no data
+    console.log("🔄 Using fallback track data");
+    return [
+      {
+        id: 1,
+        title: "Love",
+        artist: "Burna Boy",
+        cover: "/images/album3.png",
+        duration: "3:45",
+        spotifyUrl: "#"
+      },
+      {
+        id: 2,
+        title: "Essence",
+        artist: "Wizkid",
+        cover: "/images/album1.png",
+        duration: "3:12",
+        spotifyUrl: "#"
+      },
+      {
+        id: 3,
+        title: "Stand Strong",
+        artist: "Davido",
+        cover: "/images/album2.png",
+        duration: "2:55",
+        spotifyUrl: "#"
+      }
+    ];
+  })();
 
   const TrackSkeleton = () => (
     <div className="group relative flex flex-col lg:flex-row xl:flex-col lg:justify-center w-[330px] md:w-[370px] lg:w-full xl:w-[370px] lg:h-auto h-[360px] md:h-[418px] gap-2">

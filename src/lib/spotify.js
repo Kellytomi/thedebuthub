@@ -896,6 +896,85 @@ export async function getNigerianTracks(limit = 12) {
 }
 
 /**
+ * Get top Nigerian artists with their images
+ */
+export async function getNigerianArtists(limit = 7) {
+  try {
+    console.log(`🎤 Fetching top ${limit} Nigerian artists...`);
+    
+    const artists = [];
+    const seenArtists = new Set();
+
+    for (const artistName of NIGERIAN_ARTISTS) {
+      if (artists.length >= limit) break;
+      
+      try {
+        const searchResult = await spotifyFetch(
+          `/search?q="${encodeURIComponent(artistName)}"&type=artist&market=NG&limit=1`
+        );
+        
+        if (searchResult.artists?.items?.length > 0) {
+          const artist = searchResult.artists.items[0];
+          const normalizedName = artist.name.toLowerCase();
+          
+          // Ensure we don't add duplicate artists and that they have an image
+          if (!seenArtists.has(normalizedName) && artist.images?.length > 0) {
+            // Get the highest resolution artist image
+            const artistImage = artist.images[0]?.url;
+            
+            // Verify this is actually the artist we're looking for
+            const searchName = artistName.replace(/['"]/g, '').toLowerCase();
+            if (normalizedName.includes(searchName) || searchName.includes(normalizedName)) {
+              console.log(`✅ Found ${artist.name} via Spotify API with artist image`);
+              
+              // Use local fallback images if Spotify image is not available
+              let imageUrl = artistImage;
+              if (!imageUrl) {
+                const artistLower = artist.name.toLowerCase();
+                if (artistLower.includes('rema')) {
+                  imageUrl = '/images/rema-image.png';
+                } else if (artistLower.includes('wizkid')) {
+                  imageUrl = '/images/wiz-image.png';
+                } else if (artistLower.includes('davido')) {
+                  imageUrl = '/images/david-image.png';
+                } else {
+                  imageUrl = '/images/placeholder.svg';
+                }
+              }
+              
+              artists.push({
+                id: artist.id,
+                name: artist.name,
+                image: imageUrl,
+                followers: artist.followers?.total || 0,
+                popularity: artist.popularity || 0,
+                external_urls: artist.external_urls,
+                genres: artist.genres || []
+              });
+              seenArtists.add(normalizedName);
+            }
+          }
+        }
+      } catch (error) {
+        console.warn(`❌ Search for ${artistName} failed:`, error.message);
+      }
+    }
+
+    // Sort by popularity and return top artists
+    const sortedArtists = artists
+      .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+      .slice(0, limit);
+
+    console.log(`✅ Successfully fetched ${sortedArtists.length} Nigerian artists`);
+    return sortedArtists;
+
+  } catch (error) {
+    console.error('Error fetching top Nigerian artists:', error);
+    throw new Error('Failed to fetch top Nigerian artists');
+  }
+}
+
+/**
  * Helper function to format duration from milliseconds to MM:SS
  */
 function formatDuration(durationMs) {
@@ -909,6 +988,7 @@ const spotifyService = {
   getNigerianNewReleases,
   getNigerianFeaturedPlaylists,
   getNigerianTracks,
+  getNigerianArtists,
   getTopNigerianTracksFromCharts
 };
 

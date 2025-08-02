@@ -5,6 +5,7 @@ import YouTubeBackgroundPlayer from "./components/YouTubeBackgroundPlayer";
 import { validateOnStartup } from "../lib/env-validation";
 import { Analytics } from "@vercel/analytics/next";
 import PerformanceOptimizer from "./components/PerformanceOptimizer";
+import TRPCProvider from "./components/TRPCProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -219,10 +220,12 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${dancingScript.variable} ${dmSans.variable} antialiased bg-slate-900`}
       >
         <PerformanceOptimizer />
-        <AudioProvider>
-          <YouTubeBackgroundPlayer />
-          {children}
-        </AudioProvider>
+        <TRPCProvider>
+          <AudioProvider>
+            <YouTubeBackgroundPlayer />
+            {children}
+          </AudioProvider>
+        </TRPCProvider>
         <Analytics />
       </body>
     </html>

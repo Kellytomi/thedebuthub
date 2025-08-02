@@ -6,152 +6,154 @@ import ActionButton from "./ActionButton";
 import { motion } from "framer-motion";
 import { useAudio } from "../contexts/AudioContext";
 import { validateApiResponse } from "../../lib/api-validation";
+import { trpc } from "../../lib/trpc-client";
 
 export default function HeroSection() {
   const { isMuted, toggleMute, hasUserInteracted, pendingUnmute } = useAudio();
-  const [artists, setArtists] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [currentArtistIndex, setCurrentArtistIndex] = useState(0);
   const [isAutoRotating, setIsAutoRotating] = useState(true);
 
-  // Fetch Nigerian artists on component mount with validation
-  const fetchArtists = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/spotify/artists?limit=7");
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      if (data.success && data.artists && data.artists.length > 0) {
-        // Apply validation to each artist individually
-        const validatedArtists = data.artists
-          .map(artist => {
-            if (!artist || !artist.name) return null;
-            return {
-              id: artist.id || `artist-${Date.now()}-${Math.random()}`,
-              name: artist.name,
-              image: artist.image || "/images/placeholder.svg",
-              fallback: "/images/placeholder.svg",
-              followers: artist.followers || 0,
-              popularity: artist.popularity || 0,
-              external_urls: artist.external_urls || {},
-              genres: artist.genres || []
-            };
-          })
-          .filter(artist => artist !== null);
+  // Use tRPC to fetch Nigerian artists
+  const { 
+    data: artistsData, 
+    isLoading, 
+    error,
+    isSuccess 
+  } = trpc.spotify.getArtists.useQuery(
+    { limit: 7 },
+    {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 3,
+    }
+  );
 
-        if (validatedArtists.length > 0) {
-          setArtists(validatedArtists);
-          console.log('✅ Successfully loaded', validatedArtists.length, 'artists');
-          return;
-        }
-      }
-      
-      // If we get here, fallback to static images
-      console.warn('Failed to fetch artists from API, using fallback data');
-      setArtists([
+    // Process artists data from tRPC
+  const artists = useMemo(() => {
+    if (!artistsData || !isSuccess) {
+      // Fallback to static data if no data or on error
+      console.warn('Using fallback artists data');
+      return [
         {
           id: "fallback-1",
           name: "Rema",
           image: "/images/rema-image.png",
           fallback: "/images/placeholder.svg",
+          followers: 5000000,
+          popularity: 85,
+          external_urls: { spotify: '#' },
+          genres: ['afrobeats']
         },
         {
           id: "fallback-2",
-          name: "Wizkid", 
+          name: "Wizkid",
           image: "/images/wiz-image.png",
           fallback: "/images/placeholder.svg",
+          followers: 8000000,
+          popularity: 90,
+          external_urls: { spotify: '#' },
+          genres: ['afrobeats']
         },
         {
           id: "fallback-3",
           name: "Davido",
           image: "/images/david-image.png",
           fallback: "/images/placeholder.svg",
+          followers: 6000000,
+          popularity: 88,
+          external_urls: { spotify: '#' },
+          genres: ['afrobeats']
         },
         {
           id: "fallback-4",
           name: "Burna Boy",
-          image: "/images/rema-image.png", 
+          image: "/images/rema-image.png",
           fallback: "/images/placeholder.svg",
+          followers: 7000000,
+          popularity: 89,
+          external_urls: { spotify: '#' },
+          genres: ['afrobeats']
         },
         {
           id: "fallback-5",
           name: "Asake",
           image: "/images/wiz-image.png",
           fallback: "/images/placeholder.svg",
+          followers: 4000000,
+          popularity: 82,
+          external_urls: { spotify: '#' },
+          genres: ['afrobeats']
         },
         {
           id: "fallback-6",
           name: "Fireboy DML",
           image: "/images/david-image.png",
           fallback: "/images/placeholder.svg",
+          followers: 3500000,
+          popularity: 80,
+          external_urls: { spotify: '#' },
+          genres: ['afrobeats']
         },
         {
           id: "fallback-7",
           name: "Omah Lay",
           image: "/images/rema-image.png",
           fallback: "/images/placeholder.svg",
-        },
-      ]);
-      } catch (error) {
-        console.error("Failed to fetch artists:", error);
-        // Fallback to static images
-        setArtists([
-          {
-            id: "fallback-1",
-            name: "Rema",
-            image: "/images/rema-image.png",
-            fallback: "/images/placeholder.svg",
-          },
-          {
-            id: "fallback-2",
-            name: "Wizkid",
-            image: "/images/wiz-image.png",
-            fallback: "/images/placeholder.svg",
-          },
-          {
-            id: "fallback-3",
-            name: "Davido",
-            image: "/images/david-image.png",
-            fallback: "/images/placeholder.svg",
-          },
-          {
-            id: "fallback-4",
-            name: "Burna Boy",
-            image: "/images/rema-image.png",
-            fallback: "/images/placeholder.svg",
-          },
-          {
-            id: "fallback-5",
-            name: "Asake",
-            image: "/images/wiz-image.png",
-            fallback: "/images/placeholder.svg",
-          },
-          {
-            id: "fallback-6",
-            name: "Fireboy DML",
-            image: "/images/david-image.png",
-            fallback: "/images/placeholder.svg",
-          },
-          {
-            id: "fallback-7",
-            name: "Omah Lay",
-            image: "/images/rema-image.png",
-            fallback: "/images/placeholder.svg",
-          },
-        ]);
-      } finally {
-        setIsLoading(false);
-      }
-    }, []);
+          followers: 3000000,
+          popularity: 78,
+          external_urls: { spotify: '#' },
+          genres: ['afrobeats']
+        }
+      ];
+    }
 
-    useEffect(() => {
-      fetchArtists();
-    }, [fetchArtists]);
+    // Process successful API data
+    if (artistsData.success && artistsData.artists && artistsData.artists.length > 0) {
+      const validatedArtists = artistsData.artists
+        .map(artist => {
+          if (!artist || !artist.name) return null;
+          return {
+            id: artist.id || `artist-${Date.now()}-${Math.random()}`,
+            name: artist.name,
+            image: artist.image || "/images/placeholder.svg",
+            fallback: "/images/placeholder.svg",
+            followers: artist.followers || 0,
+            popularity: artist.popularity || 0,
+            external_urls: artist.external_urls || {},
+            genres: artist.genres || []
+          };
+        })
+        .filter(artist => artist !== null);
+
+      if (validatedArtists.length > 0) {
+        console.log('✅ Successfully loaded', validatedArtists.length, 'artists via tRPC');
+        return validatedArtists;
+      }
+    }
+
+    // If API returned fallback data
+    if (artistsData.fallback && artistsData.artists && artistsData.artists.length > 0) {
+      console.log('📋 Using tRPC fallback data');
+      return artistsData.artists.map(artist => ({
+        ...artist,
+        fallback: "/images/placeholder.svg"
+      }));
+    }
+
+    // Final fallback if all else fails
+    console.warn('No valid artist data, using local fallback');
+    return [
+      {
+        id: "local-fallback-1",
+        name: "Rema",
+        image: "/images/rema-image.png",
+        fallback: "/images/placeholder.svg",
+        followers: 5000000,
+        popularity: 85,
+        external_urls: { spotify: '#' },
+        genres: ['afrobeats']
+      }
+    ];
+  }, [artistsData, isSuccess]);
 
   // Auto-rotation carousel effect when idle
   useEffect(() => {

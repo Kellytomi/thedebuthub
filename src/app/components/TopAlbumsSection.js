@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import FlankDecoration from "./FlankDecoration";
 import dynamic from "next/dynamic";
+import { trpc } from "../../lib/trpc-client";
 
 // Dynamic import for framer-motion to reduce bundle size
 const MotionDiv = dynamic(() => import("framer-motion").then(mod => ({ default: mod.motion.div })), {
@@ -41,125 +42,98 @@ const fallbackAlbums = [
 ];
 
 export default function TopAlbumsSection() {
-  const [albums, setAlbums] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
     setHasMounted(true);
   }, []);
 
+  // Use tRPC to fetch most streamed albums
+  const { 
+    data: albumsData, 
+    isLoading: loading, 
+    error,
+    isSuccess 
+  } = trpc.spotify.getMostStreamedAlbums.useQuery(
+    { limit: 3 },
+    {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 3,
+    }
+  );
 
+  // Process albums data from tRPC
+  const albums = (() => {
+    if (isSuccess && (albumsData?.success || albumsData?.fallback)) {
+      console.log("🎯 tRPC Nigeria Chart Data Response:", albumsData);
 
-  // Auto-rotation removed - now using vertical stack on mobile
-
-  useEffect(() => {
-    const fetchMostStreamedAlbums = async () => {
-      try {
-        console.log("🇳🇬 Fetching top albums from Nigeria's official charts...");
-        const res = await fetch("/api/spotify/albums/most-streamed?limit=3");
-
-        if (!res.ok)
-          throw new Error("Failed to fetch Nigeria Top 50 chart data");
-
-        let data;
-        try {
-          data = await res.json();
-        } catch (jsonErr) {
-          console.warn("Failed to parse JSON. Using fallback.");
-          throw new Error("Invalid JSON");
-        }
-
-        if (data.success || data.fallback) {
-          console.log("🎯 Nigeria Chart Data API Response:", data);
-
-          const transformed =
-            data.albums?.map((album, i) => {
-              // Ensure popularity is available for stream count calculation
-              const popularity = album.popularity || 85;
-
-              console.log(
-                `🏆 #${i + 1} Chart Position: ${album.artist} - ${
-                  album.name
-                } (${
-                  album.tracksInTop50 || "unknown"
-                } tracks in Top 50, popularity: ${popularity})`
-              );
-              console.log(`🖼️  Image URL received: ${album.image}`);
-
-              const coverImage = album.image || fallbackAlbums[i]?.cover;
-              console.log(`🖼️  Final cover image: ${coverImage}`);
-
-              return {
-                id: album.id || i + 1,
-                title: album.name || `Album ${i + 1}`,
-                artist: album.artist || "Unknown Artist",
-                cover: coverImage,
-                tracks: album.total_tracks
-                  ? `${album.total_tracks} tracks`
-                  : "Tracks unknown",
-                popularity: popularity,
-                spotifyUrl: album.external_urls?.spotify ?? "#",
-              };
-            }) || [];
-
-          if (transformed.length === 0)
-            throw new Error("Empty transformed array");
-
-          console.log(
-            "✅ Successfully loaded Nigeria chart albums:",
-            transformed.map((a) => `${a.artist} - ${a.title}`)
-          );
-          setAlbums(transformed);
-        } else {
-          throw new Error("API returned failure");
-        }
-      } catch (err) {
-        console.error("❌ Nigeria chart data fetch error:", err);
-        setError(true);
-
-        // Enhanced fallback - realistic Nigeria chart rankings with correct image mappings
-        const enhancedFallbacks = [
-          {
-            id: 1,
-            title: "Love, Damini",
-            artist: "Burna Boy",
-            cover: "/images/album3.png", // Love, Damini = album3.png
-            tracks: "19 tracks",
-            popularity: 95,
-          },
-          {
-            id: 2,
-            title: "Twice As Tall",
-            artist: "Burna Boy",
-            cover: "/images/album2.png", // Twice As Tall = album2.png
-            tracks: "15 tracks",
-            popularity: 92,
-          },
-          {
-            id: 3,
-            title: "Made in Lagos",
-            artist: "Wizkid",
-            cover: "/images/album1.png", // Made in Lagos = album1.png
-            tracks: "14 tracks",
-            popularity: 90,
-          },
-        ];
+      const transformed = albumsData.albums?.map((album, i) => {
+        // Ensure popularity is available for stream count calculation
+        const popularity = album.popularity || 85;
 
         console.log(
-          "🔄 Using enhanced fallback data for Nigeria chart rankings"
+          `🏆 #${i + 1} Chart Position: ${album.artist} - ${album.name} (popularity: ${popularity})`
         );
-        setAlbums(enhancedFallbacks);
-      } finally {
-        setLoading(false);
-      }
-    };
+        console.log(`🖼️  Image URL received: ${album.image}`);
 
-    fetchMostStreamedAlbums();
-  }, []);
+        const coverImage = album.image || fallbackAlbums[i]?.cover || "/images/placeholder.svg";
+        console.log(`🖼️  Final cover image: ${coverImage}`);
+
+        return {
+          id: album.id || i + 1,
+          title: album.name || `Album ${i + 1}`,
+          artist: album.artist || "Unknown Artist",
+          cover: coverImage,
+          tracks: album.total_tracks
+            ? `${album.total_tracks} tracks`
+            : "Tracks unknown",
+          popularity: popularity,
+          spotifyUrl: album.external_urls?.spotify ?? "#",
+        };
+      }) || [];
+
+      if (transformed.length > 0) {
+        console.log(
+          "✅ Successfully loaded Nigeria chart albums via tRPC:",
+          transformed.map((a) => `${a.artist} - ${a.title}`)
+        );
+        return transformed;
+      }
+    }
+
+    // Fallback data if API fails or returns no data
+    console.log("🔄 Using fallback album data");
+    return [
+      {
+        id: 1,
+        title: "Love, Damini",
+        artist: "Burna Boy",
+        cover: "/images/album3.png",
+        tracks: "19 tracks",
+        popularity: 95,
+        spotifyUrl: "#"
+      },
+      {
+        id: 2,
+        title: "Made in Lagos",
+        artist: "Wizkid",
+        cover: "/images/album1.png",
+        tracks: "14 tracks",
+        popularity: 92,
+        spotifyUrl: "#"
+      },
+      {
+        id: 3,
+        title: "A Better Time",
+        artist: "Davido",
+        cover: "/images/album2.png",
+        tracks: "17 tracks",
+        popularity: 85,
+        spotifyUrl: "#"
+      }
+    ];
+  })();
 
   const AlbumSkeleton = () => (
     <div className="group relative flex flex-col lg:flex-row xl:flex-col lg:justify-center w-[330px] md:w-[370px] lg:w-full xl:w-[370px] lg:h-auto h-[360px] md:h-[418px] gap-2">

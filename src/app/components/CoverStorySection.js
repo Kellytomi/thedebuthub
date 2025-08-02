@@ -7,6 +7,7 @@ import { useInView } from "react-intersection-observer";
 import IntroBody from "./IntroBody";
 import IntroTitle from "./IntroTitle";
 import ActionButton from "./ActionButton";
+import { trpc } from "../../lib/trpc-client";
 
 // Generate dynamic artist story based on artist data
 const generateArtistStory = (artist) => {
@@ -37,10 +38,6 @@ const generateArtistStory = (artist) => {
 };
 
 export default function CoverStorySection() {
-  const [topArtist, setTopArtist] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(false);
-
   // Animation controls
   const controls = useAnimation();
   const [ref, inView] = useInView({
@@ -48,43 +45,36 @@ export default function CoverStorySection() {
     triggerOnce: false,
   });
 
-  // Fetch the #1 top Nigerian artist
-  useEffect(() => {
-    async function fetchTopArtist() {
-      try {
-        const response = await fetch("/api/spotify/artists?limit=1");
-        const data = await response.json();
-
-        if (data.success && data.artists.length > 0) {
-          setTopArtist(data.artists[0]);
-        } else {
-          setTopArtist({
-            id: "fallback-top",
-            name: "Wizkid",
-            image: "/images/wiz-image.png",
-            popularity: 95,
-            followers: 8000000,
-            genres: ["afrobeats", "pop"],
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch top artist:", error);
-        setError(true);
-        setTopArtist({
-          id: "fallback-top",
-          name: "Wizkid",
-          image: "/images/wiz-image.png",
-          popularity: 95,
-          followers: 8000000,
-          genres: ["afrobeats", "pop"],
-        });
-      } finally {
-        setIsLoading(false);
-      }
+  // Use tRPC to fetch the #1 top Nigerian artist
+  const { 
+    data: artistsData, 
+    isLoading, 
+    error,
+    isSuccess 
+  } = trpc.spotify.getArtists.useQuery(
+    { limit: 1 },
+    {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 3,
     }
+  );
 
-    fetchTopArtist();
-  }, []);
+  // Get the top artist from tRPC data
+  const topArtist = (() => {
+    if (isSuccess && artistsData?.success && artistsData.artists?.length > 0) {
+      return artistsData.artists[0];
+    }
+    
+    // Fallback data
+    return {
+      id: "fallback-top",
+      name: "Wizkid",
+      image: "/images/wiz-image.png",
+      popularity: 95,
+      followers: 8000000,
+      genres: ["afrobeats", "pop"],
+    };
+  })();
 
   // Handle inView changes
   useEffect(() => {
