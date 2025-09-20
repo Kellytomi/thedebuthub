@@ -3,7 +3,7 @@ import "./globals.css";
 import { AudioProvider } from "@/contexts/AudioContext";
 import { YouTubeBackgroundPlayer } from "@/components/features/audio";
 import { validateOnStartup } from "@/lib/utils/env-validation";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import { PerformanceOptimizer } from "@/components/utils";
 import { TRPCProvider } from "@/components/sections";
 
@@ -163,8 +163,6 @@ export default function RootLayout({ children }) {
       <head>
         {/* Preload critical resources */}
         <link rel="preload" href="/images/tdh-logo.svg" as="image" />
-        <link rel="preload" href="/api/spotify/albums/most-streamed?limit=3" as="fetch" crossOrigin="anonymous" />
-        <link rel="preload" href="/api/spotify/tracks?limit=3" as="fetch" crossOrigin="anonymous" />
         
         {/* Favicons */}
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />

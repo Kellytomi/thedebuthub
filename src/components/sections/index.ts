@@ -8,3 +8,4 @@ export { default as StayInformedSection } from './StayInformedSection';
 export { default as TopAlbumsSection } from './TopAlbumsSection';
 export { default as TopTrackSection } from './TopTrackSection';
 export { default as WhoWeAreSection } from './WhoWeAreSection';
+export { default as TRPCProvider } from './TRPCProvider';

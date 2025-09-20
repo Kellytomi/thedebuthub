@@ -273,11 +273,11 @@ function getFallbackAlbums(limit: number) {
   const fallbackAlbums: any[] = [
     {
       id: 'fallback-1',
-      name: 'Love, Damini',
-      artist: 'Burna Boy',
-      image: '/images/album3.png',
-      total_tracks: 19,
-      release_date: '2022-07-08',
+      name: 'Rave & Roses Ultra',
+      artist: 'Rema',
+      image: '/images/rema-image.png',
+      total_tracks: 15,
+      release_date: '2023-04-28',
       popularity: 95,
       album_type: 'album',
       external_urls: { spotify: '#' },
@@ -285,11 +285,11 @@ function getFallbackAlbums(limit: number) {
     },
     {
       id: 'fallback-2',
-      name: 'Made in Lagos',
-      artist: 'Wizkid',
-      image: '/images/album1.png',
-      total_tracks: 14,
-      release_date: '2020-10-30',
+      name: 'Afro Rave',
+      artist: 'Shallipopi',
+      image: '/images/album2.png',
+      total_tracks: 12,
+      release_date: '2023-08-11',
       popularity: 92,
       album_type: 'album',
       external_urls: { spotify: '#' },
@@ -297,12 +297,12 @@ function getFallbackAlbums(limit: number) {
     },
     {
       id: 'fallback-3',
-      name: 'A Better Time',
-      artist: 'Davido',
-      image: '/images/album2.png',
-      total_tracks: 17,
-      release_date: '2020-11-13',
-      popularity: 88,
+      name: 'Work of Art',
+      artist: 'Asake',
+      image: '/images/album1.png',
+      total_tracks: 14,
+      release_date: '2023-06-16',
+      popularity: 90,
       album_type: 'album',
       external_urls: { spotify: '#' },
       chartPosition: 3
@@ -498,47 +498,178 @@ function getFallbackTracks(limit: number) {
   const fallbackTracks: any[] = [
     {
       id: 'fallback-track-1',
-      name: 'Love',
-      artist: 'Burna Boy',
-      image: '/images/album3.png',
-      duration: '3:45',
+      name: 'FUN',
+      artist: 'Rema',
+      image: '/images/rema-image.png',
+      duration: '3:27',
       preview_url: null,
       external_urls: { spotify: '#' },
-      album: 'Love, Damini',
+      album: 'Rave & Roses Ultra',
       popularity: 95
     },
     {
       id: 'fallback-track-2',
-      name: 'Essence',
-      artist: 'Wizkid',
-      image: '/images/album1.png',
-      duration: '3:12',
+      name: 'you',
+      artist: 'FOLA',
+      image: '/images/album2.png',
+      duration: '2:48',
       preview_url: null,
       external_urls: { spotify: '#' },
-      album: 'Made in Lagos',
+      album: 'Single',
       popularity: 92
     },
     {
       id: 'fallback-track-3',
-      name: 'Stand Strong',
-      artist: 'Davido',
-      image: '/images/album2.png',
-      duration: '2:55',
+      name: 'Na So',
+      artist: 'Shallipopi',
+      image: '/images/album1.png',
+      duration: '2:15',
       preview_url: null,
       external_urls: { spotify: '#' },
-      album: 'A Better Time',
-      popularity: 88
+      album: 'Afro Rave',
+      popularity: 90
     }
   ];
   
   return fallbackTracks.slice(0, limit);
 }
 
+/**
+ * Get top Nigerian artists with their images
+ */
+export async function getNigerianArtists(limit = 7) {
+  try {
+    console.log(`🎤 Fetching top ${limit} Nigerian artists...`);
+    
+    const artists: any[] = [];
+    const seenArtists = new Set();
+
+    for (const artistName of NIGERIAN_ARTISTS) {
+      if (artists.length >= limit) break;
+      
+      try {
+        const searchResult = await spotifyFetch(
+          `/search?q="${encodeURIComponent(artistName)}"&type=artist&market=NG&limit=1`
+        );
+        
+        if (searchResult.artists?.items?.length > 0) {
+          const artist = searchResult.artists.items[0];
+          const normalizedName = artist.name.toLowerCase();
+          
+          if (!seenArtists.has(normalizedName) && artist.images?.length > 0) {
+            const artistImage = artist.images[0]?.url;
+            const searchName = artistName.replace(/['"]/g, '').toLowerCase();
+            
+            if (normalizedName.includes(searchName) || searchName.includes(normalizedName)) {
+              console.log(`✅ Found ${artist.name} via Spotify API`);
+              
+              let imageUrl = artistImage;
+              if (!imageUrl) {
+                const artistLower = artist.name.toLowerCase();
+                if (artistLower.includes('rema')) {
+                  imageUrl = '/images/rema-image.png';
+                } else if (artistLower.includes('wizkid')) {
+                  imageUrl = '/images/wiz-image.png';
+                } else if (artistLower.includes('davido')) {
+                  imageUrl = '/images/david-image.png';
+                } else {
+                  imageUrl = '/images/placeholder.svg';
+                }
+              }
+              
+              artists.push({
+                id: artist.id,
+                name: artist.name,
+                image: imageUrl,
+                followers: artist.followers?.total || 0,
+                popularity: artist.popularity || 0,
+                external_urls: artist.external_urls,
+                genres: artist.genres || []
+              });
+              seenArtists.add(normalizedName);
+            }
+          }
+        }
+      } catch (error: any) {
+        console.warn(`❌ Search for ${artistName} failed:`, error.message);
+      }
+    }
+
+    // Sort by popularity and return top artists
+    const sortedArtists = artists
+      .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
+      .slice(0, limit);
+
+    console.log(`✅ Successfully fetched ${sortedArtists.length} Nigerian artists`);
+    return sortedArtists;
+
+  } catch (error) {
+    console.error('Error fetching top Nigerian artists:', error);
+    return getFallbackArtists(limit);
+  }
+}
+
+/**
+ * Get fallback artists when API fails
+ */
+function getFallbackArtists(limit: number) {
+  const fallbackArtists: any[] = [
+    {
+      id: 'fallback-artist-1',
+      name: 'Rema',
+      image: '/images/rema-image.png',
+      followers: 8500000,
+      popularity: 95,
+      external_urls: { spotify: '#' },
+      genres: ['afrobeats', 'trap']
+    },
+    {
+      id: 'fallback-artist-2',
+      name: 'Shallipopi',
+      image: '/images/album2.png',
+      followers: 7200000,
+      popularity: 93,
+      external_urls: { spotify: '#' },
+      genres: ['afrobeats', 'pop']
+    },
+    {
+      id: 'fallback-artist-3',
+      name: 'Asake',
+      image: '/images/album1.png',
+      followers: 6800000,
+      popularity: 91,
+      external_urls: { spotify: '#' },
+      genres: ['afrobeats', 'pop']
+    },
+    {
+      id: 'fallback-artist-4',
+      name: 'Burna Boy',
+      image: '/images/album3.png',
+      followers: 4200000,
+      popularity: 88,
+      external_urls: { spotify: '#' },
+      genres: ['afrobeats', 'pop']
+    },
+    {
+      id: 'fallback-artist-5',
+      name: 'Wizkid',
+      image: '/images/wiz-image.png',
+      followers: 3500000,
+      popularity: 85,
+      external_urls: { spotify: '#' },
+      genres: ['afrobeats', 'pop']
+    }
+  ];
+  
+  return fallbackArtists.slice(0, limit);
+}
+
 // Export service object for compatibility
 const spotifyService = {
   getMostStreamedNigerianAlbums,
   getNigerianAlbums,
-  getNigerianTracks
+  getNigerianTracks,
+  getNigerianArtists
 };
 
 export default spotifyService;

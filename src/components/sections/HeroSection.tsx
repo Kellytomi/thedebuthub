@@ -5,57 +5,26 @@ import Image from "next/image";
 import { Button } from "@/components/ui";
 import { motion, type Variants } from "framer-motion";
 import { useAudio } from "@/contexts/AudioContext";
+import { trpc } from "@/lib/trpc-client";
 
 export default function HeroSection() {
   const { isMuted, toggleMute, hasUserInteracted, pendingUnmute } = useAudio();
-  const [artists, setArtists] = useState<{ id: string; name: string; image: string; fallback: string; }[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [currentArtistIndex, setCurrentArtistIndex] = useState(0);
   const [isAutoRotating, setIsAutoRotating] = useState(true);
 
-  // Fetch Nigerian artists on component mount
-  const fetchArtists = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const response = await fetch("/api/spotify/artists?limit=7");
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      
-      if (data.success && data.artists?.length > 0) {
-        const validatedArtists = data.artists
-          .filter((artist: any) => artist?.name)
-          .map((artist: any) => ({
-            id: artist.id || `artist-${Date.now()}-${Math.random()}`,
-            name: artist.name,
-            image: artist.image || "/images/placeholder.svg",
-            fallback: "/images/placeholder.svg",
-            followers: artist.followers || 0,
-            popularity: artist.popularity || 0,
-            external_urls: artist.external_urls || {},
-            genres: artist.genres || []
-          }));
-
-        if (validatedArtists.length > 0) {
-          setArtists(validatedArtists);
-          console.log('✅ Successfully loaded', validatedArtists.length, 'artists');
-          return;
-        }
-      }
-      
-      // Fallback to static images
-      throw new Error('No valid artists received');
-      
-    } catch (error) {
-      console.error("Failed to fetch artists:", error);
-      setArtists(getDefaultArtists());
-    } finally {
-      setIsLoading(false);
+  // Use tRPC to fetch Nigerian artists
+  const { 
+    data: artistsData, 
+    isLoading, 
+    error,
+    isSuccess 
+  } = trpc.spotify.getArtists.useQuery(
+    { limit: 7 },
+    {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 3,
     }
-  }, []);
+  );
 
   const getDefaultArtists = () => [
     {
@@ -102,10 +71,25 @@ export default function HeroSection() {
     },
   ];
 
-  // Initialize artists on component mount
-  useEffect(() => {
-    fetchArtists();
-  }, [fetchArtists]);
+  // Process artists data from tRPC
+  const artists = (() => {
+    if (isSuccess && artistsData?.artists?.length > 0) {
+      return artistsData.artists.map((artist: any) => ({
+        id: artist.id || `artist-${Date.now()}-${Math.random()}`,
+        name: artist.name,
+        image: artist.image || "/images/placeholder.svg",
+        fallback: "/images/placeholder.svg",
+        followers: artist.followers || 0,
+        popularity: artist.popularity || 0,
+        external_urls: artist.external_urls || {},
+        genres: artist.genres || []
+      }));
+    }
+
+    // Fallback data if API fails or returns no data
+    return getDefaultArtists();
+  })();
+
 
   // Auto-rotation carousel effect when idle
   useEffect(() => {

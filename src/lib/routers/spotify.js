@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '../trpc';
-import { getMostStreamedNigerianAlbums, getNigerianTracks, getNigerianArtists } from '../spotify';
+import { getMostStreamedNigerianAlbums, getNigerianTracks, getNigerianArtists } from '../api/spotify';
 
 export const spotifyRouter = createTRPCRouter({
   // Get most streamed Nigerian albums
@@ -32,55 +32,55 @@ export const spotifyRouter = createTRPCRouter({
           const fallbackAlbums = [
             {
               id: 'fallback-most-streamed-1',
-              name: 'Love, Damini',
-              artist: 'Burna Boy',
-              image: '/images/album3.png',
-              total_tracks: 19,
-              release_date: '2022-07-08',
+              name: 'Rave & Roses Ultra',
+              artist: 'Rema',
+              image: '/images/rema-image.png',
+              total_tracks: 15,
+              release_date: '2023-04-28',
               popularity: 95,
               album_type: 'album',
               external_urls: { spotify: '#' }
             },
             {
               id: 'fallback-most-streamed-2',
-              name: 'Twice As Tall',
-              artist: 'Burna Boy',
+              name: 'Afro Rave',
+              artist: 'Shallipopi',
               image: '/images/album2.png',
-              total_tracks: 15,
-              release_date: '2020-08-14',
+              total_tracks: 12,
+              release_date: '2023-08-11',
               popularity: 92,
               album_type: 'album',
               external_urls: { spotify: '#' }
             },
             {
               id: 'fallback-most-streamed-3',
-              name: 'Made in Lagos',
-              artist: 'Wizkid',
+              name: 'Work of Art',
+              artist: 'Asake',
               image: '/images/album1.png',
               total_tracks: 14,
-              release_date: '2020-10-30',
+              release_date: '2023-06-16',
               popularity: 90,
               album_type: 'album',
               external_urls: { spotify: '#' }
             },
             {
               id: 'fallback-most-streamed-4',
-              name: 'A Better Time',
-              artist: 'Davido',
-              image: '/images/album1.png',
-              total_tracks: 17,
-              release_date: '2020-11-13',
+              name: 'Love, Damini',
+              artist: 'Burna Boy',
+              image: '/images/album3.png',
+              total_tracks: 19,
+              release_date: '2022-07-08',
               popularity: 88,
               album_type: 'album',
               external_urls: { spotify: '#' }
             },
             {
               id: 'fallback-most-streamed-5',
-              name: 'More Love, Less Ego',
+              name: 'Made in Lagos',
               artist: 'Wizkid',
-              image: '/images/album3.png',
-              total_tracks: 13,
-              release_date: '2022-11-11',
+              image: '/images/album1.png',
+              total_tracks: 14,
+              release_date: '2020-10-30',
               popularity: 85,
               album_type: 'album',
               external_urls: { spotify: '#' }
@@ -104,33 +104,33 @@ export const spotifyRouter = createTRPCRouter({
         const fallbackAlbums = [
           {
             id: 'error-fallback-1',
-            name: 'Love, Damini',
-            artist: 'Burna Boy',
-            image: '/images/album3.png',
-            total_tracks: 19,
-            release_date: '2022-07-08',
+            name: 'Rave & Roses Ultra',
+            artist: 'Rema',
+            image: '/images/rema-image.png',
+            total_tracks: 15,
+            release_date: '2023-04-28',
             popularity: 95,
             album_type: 'album',
             external_urls: { spotify: '#' }
           },
           {
             id: 'error-fallback-2',
-            name: 'Twice As Tall',
-            artist: 'Burna Boy',
+            name: 'Afro Rave',
+            artist: 'Shallipopi',
             image: '/images/album2.png',
-            total_tracks: 15,
-            release_date: '2020-08-14',
+            total_tracks: 12,
+            release_date: '2023-08-11',
             popularity: 92,
             album_type: 'album',
             external_urls: { spotify: '#' }
           },
           {
             id: 'error-fallback-3',
-            name: 'Made in Lagos',
-            artist: 'Wizkid',
+            name: 'Work of Art',
+            artist: 'Asake',
             image: '/images/album1.png',
             total_tracks: 14,
-            release_date: '2020-10-30',
+            release_date: '2023-06-16',
             popularity: 90,
             album_type: 'album',
             external_urls: { spotify: '#' }
@@ -176,33 +176,33 @@ export const spotifyRouter = createTRPCRouter({
         const fallbackTracks = [
           {
             id: 'fallback-1',
-            name: 'Love',
-            artist: 'Burna Boy',
-            image: '/images/album3.png',
-            duration: '3:45',
+            name: 'FUN',
+            artist: 'Rema',
+            image: '/images/rema-image.png',
+            duration: '3:27',
             preview_url: null,
             external_urls: { spotify: '#' },
-            album: 'Love, Damini'
+            album: 'Rave & Roses Ultra'
           },
           {
             id: 'fallback-2',
-            name: 'Essence',
-            artist: 'Wizkid',
-            image: '/images/album1.png',
-            duration: '3:12',
+            name: 'you',
+            artist: 'FOLA',
+            image: '/images/album2.png',
+            duration: '2:48',
             preview_url: null,
             external_urls: { spotify: '#' },
-            album: 'Made in Lagos'
+            album: 'Single'
           },
           {
             id: 'fallback-3',
-            name: 'Stand Strong',
-            artist: 'Davido',
-            image: '/images/album2.png',
-            duration: '2:55',
+            name: 'Na So',
+            artist: 'Shallipopi',
+            image: '/images/album1.png',
+            duration: '2:15',
             preview_url: null,
             external_urls: { spotify: '#' },
-            album: 'A Better Time'
+            album: 'Afro Rave'
           }
         ];
 
@@ -245,17 +245,17 @@ export const spotifyRouter = createTRPCRouter({
           const fallbackArtists = [
             {
               id: 'fallback-artist-1',
-              name: 'Burna Boy',
+              name: 'Rema',
               image: '/images/rema-image.png',
               followers: 8500000,
               popularity: 95,
               external_urls: { spotify: '#' },
-              genres: ['afrobeats', 'pop']
+              genres: ['afrobeats', 'trap']
             },
             {
               id: 'fallback-artist-2',
-              name: 'Wizkid',
-              image: '/images/wiz-image.png',
+              name: 'Shallipopi',
+              image: '/images/album2.png',
               followers: 7200000,
               popularity: 93,
               external_urls: { spotify: '#' },
@@ -263,8 +263,8 @@ export const spotifyRouter = createTRPCRouter({
             },
             {
               id: 'fallback-artist-3',
-              name: 'Davido',
-              image: '/images/david-image.png',
+              name: 'Asake',
+              image: '/images/album1.png',
               followers: 6800000,
               popularity: 91,
               external_urls: { spotify: '#' },
@@ -272,21 +272,21 @@ export const spotifyRouter = createTRPCRouter({
             },
             {
               id: 'fallback-artist-4',
-              name: 'Rema',
-              image: '/images/rema-image.png',
+              name: 'Burna Boy',
+              image: '/images/album3.png',
               followers: 4200000,
               popularity: 88,
               external_urls: { spotify: '#' },
-              genres: ['afrobeats', 'trap']
+              genres: ['afrobeats', 'pop']
             },
             {
               id: 'fallback-artist-5',
-              name: 'Tems',
-              image: '/images/placeholder.svg',
+              name: 'Wizkid',
+              image: '/images/wiz-image.png',
               followers: 3500000,
               popularity: 85,
               external_urls: { spotify: '#' },
-              genres: ['afrobeats', 'r&b']
+              genres: ['afrobeats', 'pop']
             }
           ];
           
@@ -307,17 +307,17 @@ export const spotifyRouter = createTRPCRouter({
         const fallbackArtists = [
           {
             id: 'error-fallback-1',
-            name: 'Burna Boy',
+            name: 'Rema',
             image: '/images/rema-image.png',
             followers: 8500000,
             popularity: 95,
             external_urls: { spotify: '#' },
-            genres: ['afrobeats', 'pop']
+            genres: ['afrobeats', 'trap']
           },
           {
             id: 'error-fallback-2',
-            name: 'Wizkid',
-            image: '/images/wiz-image.png',
+            name: 'Shallipopi',
+            image: '/images/album2.png',
             followers: 7200000,
             popularity: 93,
             external_urls: { spotify: '#' },
@@ -325,8 +325,8 @@ export const spotifyRouter = createTRPCRouter({
           },
           {
             id: 'error-fallback-3',
-            name: 'Davido',
-            image: '/images/david-image.png',
+            name: 'Asake',
+            image: '/images/album1.png',
             followers: 6800000,
             popularity: 91,
             external_urls: { spotify: '#' },

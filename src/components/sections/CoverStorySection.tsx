@@ -15,18 +15,21 @@ const generateArtistStory = (artist: any) => {
       description: "Loading artist information...",
     };
 
+  const currentTrack = artist.currentTrack || "latest hit";
+  const album = artist.album || "latest album";
+  
   const stories = [
     {
       title: `${artist.name}'s Chart-Topping Journey`,
-      description: `This week's chartbreaker is ${artist.name}, the Nigerian sensation whose latest releases have dominated streaming platforms worldwide. With millions of streams and a growing international fanbase, ${artist.name} continues to push the boundaries of Afrobeats, blending traditional rhythms with contemporary sounds. Their music represents the new wave of Nigerian artists taking the global stage by storm.`,
+      description: `This week's chartbreaker is ${artist.name}, whose hit "${currentTrack}" has dominated streaming platforms worldwide. With millions of streams and a growing international fanbase, ${artist.name} continues to push the boundaries of Afrobeats, blending traditional rhythms with contemporary sounds. Their music represents the new wave of Nigerian artists taking the global stage by storm.`,
     },
     {
       title: `Behind the Music with ${artist.name}`,
-      description: `${artist.name} has emerged as the #1 artist this week, captivating audiences with their unique sound and powerful storytelling. From Lagos streets to international stages, their journey embodies the spirit of modern Afrobeats. Each track tells a story of resilience, love, and the vibrant culture of Nigeria, resonating with fans across continents.`,
+      description: `${artist.name} has emerged as the #1 artist this week with "${currentTrack}", captivating audiences with their unique sound and powerful storytelling. From Lagos streets to international stages, their journey embodies the spirit of modern Afrobeats. Each track tells a story of resilience, love, and the vibrant culture of Nigeria, resonating with fans across continents.`,
     },
     {
       title: `${artist.name}: Breaking Records and Hearts`,
-      description: `Currently sitting at #1 on the charts, ${artist.name} has become the voice of a generation. Their latest work seamlessly weaves together Afrobeats, R&B, and contemporary sounds, creating music that speaks to both local and global audiences. This week's chart dominance is just another milestone in their incredible artistic journey.`,
+      description: `Currently sitting at #1 on the charts with "${currentTrack}", ${artist.name} has become the voice of a generation. Their latest work seamlessly weaves together Afrobeats, R&B, and contemporary sounds, creating music that speaks to both local and global audiences. This week's chart dominance is just another milestone in their incredible artistic journey.`,
     },
   ];
 
@@ -43,34 +46,46 @@ export default function CoverStorySection() {
     triggerOnce: false,
   });
 
-  // Use tRPC to fetch the #1 top Nigerian artist
+  // Use tRPC to fetch the top Nigerian tracks (chart data) and get #1 artist
   const { 
-    data: artistsData, 
+    data: tracksData, 
     isLoading, 
     error,
     isSuccess 
-  } = trpc.spotify.getArtists.useQuery(
-    { limit: 1 },
+  } = trpc.spotify.getTracks.useQuery(
+    { limit: 10 }, // Get more tracks to ensure we have the true #1
     {
       staleTime: 5 * 60 * 1000, // 5 minutes
       retry: 3,
     }
   );
 
-  // Get the top artist from tRPC data
+  // Get the top artist from chart data (tracks)
   const topArtist = (() => {
-    if (isSuccess && artistsData?.success && artistsData.artists?.length > 0) {
-      return artistsData.artists[0];
+    if (isSuccess && tracksData?.success && tracksData.tracks?.length > 0) {
+      const topTrack = tracksData.tracks[0];
+      return {
+        id: topTrack.id,
+        name: topTrack.artist,
+        image: topTrack.image || "/images/rema-image.png",
+        popularity: 95, // Chart-topper gets highest score
+        followers: 8000000,
+        genres: ["afrobeats", "trap"],
+        currentTrack: topTrack.name,
+        album: topTrack.album
+      };
     }
     
-    // Fallback data
+    // Only fallback if API completely fails
     return {
       id: "fallback-top",
-      name: "Wizkid",
-      image: "/images/wiz-image.png",
+      name: "Rema",
+      image: "/images/rema-image.png",
       popularity: 95,
       followers: 8000000,
-      genres: ["afrobeats", "pop"],
+      genres: ["afrobeats", "trap"],
+      currentTrack: "FUN",
+      album: "Rave & Roses Ultra"
     };
   })();
 

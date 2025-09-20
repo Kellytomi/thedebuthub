@@ -11,4 +11,4 @@ export const appRouter = createTRPCRouter({
 });
 
 // Export for inference (if using TypeScript elsewhere)
-// export type AppRouter = typeof appRouter;
+export type AppRouter = typeof appRouter;
