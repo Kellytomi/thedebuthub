@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getMostStreamedNigerianAlbums } from '@/lib/spotify';
+import { getMostStreamedNigerianAlbums } from '@/lib/api/spotify';
 
 export async function GET(request) {
   try {

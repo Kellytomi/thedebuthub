@@ -6,7 +6,7 @@
 /**
  * Validates Spotify artist response
  */
-export function validateSpotifyArtist(artist) {
+export function validateSpotifyArtist(artist: any) {
   if (!artist || typeof artist !== 'object') {
     return null;
   }
@@ -25,7 +25,7 @@ export function validateSpotifyArtist(artist) {
 /**
  * Validates Spotify album response
  */
-export function validateSpotifyAlbum(album) {
+export function validateSpotifyAlbum(album: any) {
   if (!album || typeof album !== 'object') {
     return null;
   }
@@ -34,10 +34,10 @@ export function validateSpotifyAlbum(album) {
     id: sanitizeString(album.id) || `unknown-album-${Date.now()}`,
     name: sanitizeString(album.name) || 'Unknown Album',
     image: validateImageUrl(album.images?.[0]?.url),
-    artists: Array.isArray(album.artists) ? album.artists.map(artist => ({
+    artists: Array.isArray(album.artists) ? album.artists.map((artist: any) => ({
       id: sanitizeString(artist.id),
       name: sanitizeString(artist.name) || 'Unknown Artist'
-    })).filter(artist => artist.id) : [],
+    })).filter((artist: any) => artist.id) : [],
     release_date: sanitizeString(album.release_date),
     total_tracks: typeof album.total_tracks === 'number' ? Math.max(0, album.total_tracks) : 0,
     external_urls: album.external_urls?.spotify ? sanitizeUrl(album.external_urls.spotify) : null
@@ -47,7 +47,7 @@ export function validateSpotifyAlbum(album) {
 /**
  * Validates Spotify track response
  */
-export function validateSpotifyTrack(track) {
+export function validateSpotifyTrack(track: any) {
   if (!track || typeof track !== 'object') {
     return null;
   }
@@ -55,10 +55,10 @@ export function validateSpotifyTrack(track) {
   return {
     id: sanitizeString(track.id) || `unknown-track-${Date.now()}`,
     name: sanitizeString(track.name) || 'Unknown Track',
-    artists: Array.isArray(track.artists) ? track.artists.map(artist => ({
+    artists: Array.isArray(track.artists) ? track.artists.map((artist: any) => ({
       id: sanitizeString(artist.id),
       name: sanitizeString(artist.name) || 'Unknown Artist'
-    })).filter(artist => artist.id) : [],
+    })).filter((artist: any) => artist.id) : [],
     album: track.album ? {
       id: sanitizeString(track.album.id),
       name: sanitizeString(track.album.name) || 'Unknown Album',
@@ -74,7 +74,7 @@ export function validateSpotifyTrack(track) {
 /**
  * Validates and sanitizes string input
  */
-function sanitizeString(input) {
+function sanitizeString(input: any): string | null {
   if (typeof input !== 'string') {
     return null;
   }
@@ -89,7 +89,7 @@ function sanitizeString(input) {
 /**
  * Validates image URL
  */
-function validateImageUrl(url) {
+function validateImageUrl(url: any): string {
   if (!url || typeof url !== 'string') {
     return '/images/placeholder.svg';
   }
@@ -106,7 +106,7 @@ function validateImageUrl(url) {
 /**
  * Validates audio URL
  */
-function validateAudioUrl(url) {
+function validateAudioUrl(url: any): string | null {
   if (!url || typeof url !== 'string') {
     return null;
   }
@@ -122,7 +122,7 @@ function validateAudioUrl(url) {
 /**
  * Validates and sanitizes URL
  */
-function sanitizeUrl(url) {
+function sanitizeUrl(url: any): string | null {
   if (!url || typeof url !== 'string') {
     return null;
   }
@@ -144,7 +144,7 @@ function sanitizeUrl(url) {
 /**
  * Validates entire API response structure
  */
-export function validateApiResponse(response, expectedType) {
+export function validateApiResponse(response: any, expectedType: string) {
   if (!response || typeof response !== 'object') {
     throw new Error('Invalid API response: Response is not an object');
   }
@@ -153,7 +153,7 @@ export function validateApiResponse(response, expectedType) {
     throw new Error(`API Error: ${response.message || 'Unknown error occurred'}`);
   }
 
-  const validators = {
+  const validators: any = {
     artists: validateSpotifyArtist,
     albums: validateSpotifyAlbum,
     tracks: validateSpotifyTrack
@@ -171,11 +171,11 @@ export function validateApiResponse(response, expectedType) {
   // Validate and filter out invalid items
   const validatedItems = response[expectedType]
     .map(validator)
-    .filter(item => item !== null);
+    .filter((item: any) => item !== null);
 
   return {
     ...response,
     [expectedType]: validatedItems,
     total: validatedItems.length
   };
-} 
+}

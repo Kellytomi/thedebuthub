@@ -1,9 +1,8 @@
 "use client";
 
-import { motion, useAnimation } from "framer-motion";
+import { motion, useAnimation, type Variants } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import IntroBody from "./IntroBody";
-import ActionButton from "./ActionButton";
+import { IntroBody, Button } from "@/components/ui";
 import Image from "next/image";
 import { useEffect } from "react";
 
@@ -24,7 +23,7 @@ export default function WhoWeAreSection() {
   }, [controls, inView]);
 
   // Animation variants
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -35,31 +34,31 @@ export default function WhoWeAreSection() {
     },
   };
 
-  const childVariants = {
+  const childVariants: Variants = {
     hidden: { y: 30, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
         duration: 0.6,
-        ease: [0.16, 0.77, 0.47, 0.97],
+        ease: [0.16, 1, 0.3, 1],
       },
     },
   };
 
-  const imageVariants = {
+  const imageVariants: Variants = {
     hidden: { opacity: 0, x: 50 },
     visible: {
       opacity: 1,
       x: 0,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
+        ease: [0.16, 1, 0.3, 1],
       },
     },
   };
 
-  const buttonVariants = {
+  const buttonVariants: Variants = {
     hidden: { scale: 0.9, opacity: 0 },
     visible: {
       scale: 1,
@@ -117,9 +116,9 @@ export default function WhoWeAreSection() {
               music landscape
             </motion.p>
             <motion.div variants={buttonVariants} whileHover="hover">
-              <ActionButton onClick={() => window.open("https://twitter.com/thedebuthub", "_blank")}>
+              <Button onClick={() => window.open("https://twitter.com/thedebuthub", "_blank")} ariaLabel="Learn more about us">
                 Know More
-              </ActionButton>
+              </Button>
             </motion.div>
           </motion.div>
 

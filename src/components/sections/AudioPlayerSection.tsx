@@ -6,7 +6,7 @@ export default function AudioPlayerSection() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [currentSong, setCurrentSong] = useState(0);
-  const audioRef = useRef(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const playlist = [
     {
@@ -50,7 +50,7 @@ export default function AudioPlayerSection() {
     }
   };
 
-  const changeSong = (index) => {
+  const changeSong = (index: number) => {
     setCurrentSong(index);
     setIsPlaying(false);
   };

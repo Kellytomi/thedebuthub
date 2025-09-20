@@ -1,70 +1,42 @@
 import { NextResponse } from 'next/server';
-import { getNigerianAlbums } from '@/lib/spotify';
+import { getNigerianAlbums } from '@/lib/api/spotify';
 
+/**
+ * GET /api/spotify/albums
+ * Fetches Nigerian albums with artist diversity
+ */
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get('limit')) || 12;
+    const limit = Math.min(parseInt(searchParams.get('limit')) || 12, 50); // Cap at 50
 
-    // Log for production debugging
-    if (process.env.NODE_ENV === 'production') {
-      console.log(`🎵 Albums API called from region: ${process.env.VERCEL_REGION || 'unknown'}`);
-    }
-
+    console.log(`🎵 Albums API called - fetching ${limit} albums`);
     const albums = await getNigerianAlbums(limit);
+
+    if (!albums || albums.length === 0) {
+      throw new Error('No albums returned from Spotify service');
+    }
 
     return NextResponse.json({
       success: true,
       albums,
-      count: albums.length
+      count: albums.length,
+      timestamp: Date.now()
     });
 
   } catch (error) {
-    console.error('API Error - Nigerian Albums:', error);
+    console.error('API Error - Nigerian Albums:', error.message);
     
-    // Return fallback data if Spotify API fails
-    const fallbackAlbums = [
+    // Return structured error response
+    return NextResponse.json(
       {
-        id: 'fallback-1',
-        name: 'Love, Damini',
-        artist: 'Burna Boy',
-        image: '/images/album3.png',
-        total_tracks: 19,
-        release_date: '2022-07-08',
-        popularity: 89,
-        album_type: 'album',
-        external_urls: { spotify: '#' }
+        success: false,
+        error: 'Failed to fetch Nigerian albums',
+        albums: [],
+        count: 0,
+        timestamp: Date.now()
       },
-      {
-        id: 'fallback-2',
-        name: 'Made in Lagos',
-        artist: 'Wizkid',
-        image: '/images/album1.png',
-        total_tracks: 14,
-        release_date: '2020-10-30',
-        popularity: 92,
-        album_type: 'album',
-        external_urls: { spotify: '#' }
-      },
-      {
-        id: 'fallback-3',
-        name: 'A Better Time',
-        artist: 'Davido',
-        image: '/images/album2.png',
-        total_tracks: 17,
-        release_date: '2020-11-13',
-        popularity: 85,
-        album_type: 'album',
-        external_urls: { spotify: '#' }
-      }
-    ];
-
-    return NextResponse.json({
-      success: false,
-      error: error.message,
-      albums: fallbackAlbums.slice(0, parseInt(searchParams.get('limit')) || 3),
-      fallback: true,
-      count: Math.min(fallbackAlbums.length, parseInt(searchParams.get('limit')) || 3)
-    });
+      { status: 500 }
+    );
   }
 } 

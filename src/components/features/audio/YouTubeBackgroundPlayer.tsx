@@ -1,10 +1,47 @@
 "use client";
 
 import { useEffect, useRef, useState } from 'react';
-import { useAudio } from '../contexts/AudioContext';
+
+// YouTube API type declarations
+type YouTubePlayer = {
+  playVideo: () => void;
+  pauseVideo: () => void;
+  mute: () => void;
+  unMute: () => void;
+  isMuted: () => boolean;
+  setVolume: (volume: number) => void;
+  getVolume: () => number;
+  getPlayerState: () => number;
+  destroy: () => void;
+};
+
+type YouTubePlayerEvent = {
+  target: YouTubePlayer;
+  data: number;
+};
+
+type YouTubeAPI = {
+  Player: new (element: HTMLElement, config: any) => YouTubePlayer;
+  PlayerState: {
+    UNSTARTED: -1;
+    ENDED: 0;
+    PLAYING: 1;
+    PAUSED: 2;
+    BUFFERING: 3;
+    CUED: 5;
+  };
+};
+
+declare global {
+  interface Window {
+    YT?: YouTubeAPI;
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
+import { useAudio } from '@/contexts/AudioContext';
 
 // Global player instance for external access
-let globalYouTubePlayer = null;
+let globalYouTubePlayer: YouTubePlayer | null = null;
 
 export default function YouTubeBackgroundPlayer() {
   const { isMuted, hasUserInteracted, pendingUnmute } = useAudio();
@@ -72,7 +109,7 @@ export default function YouTubeBackgroundPlayer() {
     return () => {
       // Cleanup global callback
       if (window.onYouTubeIframeAPIReady) {
-        window.onYouTubeIframeAPIReady = null;
+        window.onYouTubeIframeAPIReady = undefined;
       }
       
       // Cleanup player
@@ -99,7 +136,7 @@ export default function YouTubeBackgroundPlayer() {
 
     const initializePlayer = () => {
       try {
-        const player = new window.YT.Player(playerRef.current, {
+        const player = new window.YT!.Player(playerRef.current!, {
           videoId: 'IWXV5eFeGy8', // Afrobeats mix video ID
           width: '1',
           height: '1',
@@ -120,7 +157,7 @@ export default function YouTubeBackgroundPlayer() {
             origin: window.location.origin
           },
           events: {
-            onReady: (event) => {
+            onReady: (event: YouTubePlayerEvent) => {
               console.log('YouTube Background Player Ready');
               globalYouTubePlayer = event.target;
               setIsPlayerReady(true);
@@ -136,8 +173,8 @@ export default function YouTubeBackgroundPlayer() {
               
               console.log('🔇 YouTube player initialized - muted and ready for user interaction');
             },
-            onStateChange: (event) => {
-              const states = {
+            onStateChange: (event: YouTubePlayerEvent) => {
+              const states: { [key: number]: string } = {
                 '-1': 'unstarted',
                 '0': 'ended',
                 '1': 'playing',
@@ -148,13 +185,13 @@ export default function YouTubeBackgroundPlayer() {
               console.log('YouTube Player State:', states[event.data] || event.data);
               
               // Ensure continuous playback
-              if (event.data === window.YT.PlayerState.ENDED) {
+              if (event.data === window.YT!.PlayerState.ENDED) {
                 event.target.playVideo();
               }
             },
-            onError: (event) => {
+            onError: (event: YouTubePlayerEvent) => {
               console.error('YouTube Player Error:', event.data);
-              const errorMessages = {
+              const errorMessages: { [key: number]: string } = {
                 2: 'Invalid video ID',
                 5: 'HTML5 player error',
                 100: 'Video not found',

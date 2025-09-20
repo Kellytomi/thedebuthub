@@ -113,11 +113,13 @@ const nextConfig = {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
+            enforce: true,
           },
           framer: {
             test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
             name: 'framer-motion',
             chunks: 'all',
+            enforce: true,
           },
         },
       };

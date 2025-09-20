@@ -1,25 +1,30 @@
-import HeroSection from './components/HeroSection';
-import TopAlbumsSection from './components/TopAlbumsSection';
-import CoverStorySection from './components/CoverStorySection';
-import AudioPlayerSection from './components/AudioPlayerSection';
-import MusicPulseSection from './components/MusicPulseSection';
-import OurStorySection from './components/TopTrackSection';
-import WhoWeAreSection from './components/WhoWeAreSection';
-import SocialsSection from './components/SocialsSection';
-import StayInformedSection from './components/StayInformedSection';
+import {
+  Layout,
+  HeroSection,
+  TopAlbumsSection,
+  CoverStorySection,
+  AudioPlayerSection,
+  MusicPulseSection,
+  TopTrackSection,
+  WhoWeAreSection,
+  SocialsSection
+} from '@/components';
+import TopArticlesSection from '@/components/sections/TopArticlesSection';
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
-      <HeroSection />
-      <TopAlbumsSection />
-      <CoverStorySection />
-      {/* <AudioPlayerSection /> */}
-      <MusicPulseSection />
-      <OurStorySection />
-      <WhoWeAreSection />
-      <SocialsSection />
-      <StayInformedSection />
-    </main>
+    <Layout>
+      <main className="min-h-screen">
+        <HeroSection />
+        <TopAlbumsSection />
+        <TopArticlesSection />
+        <CoverStorySection />
+        {/* <AudioPlayerSection /> */}
+        <MusicPulseSection />
+        <TopTrackSection />
+        <WhoWeAreSection />
+        <SocialsSection />
+      </main>
+    </Layout>
   );
 }

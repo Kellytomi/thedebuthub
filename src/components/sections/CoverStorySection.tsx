@@ -2,14 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { motion, useAnimation } from "framer-motion";
+import { motion, useAnimation, type Variants } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import IntroBody from "./IntroBody";
-import IntroTitle from "./IntroTitle";
-import ActionButton from "./ActionButton";
+import { IntroBody, IntroTitle, Button } from "@/components/ui";
 
 // Generate dynamic artist story based on artist data
-const generateArtistStory = (artist) => {
+const generateArtistStory = (artist: any) => {
   if (!artist)
     return {
       title: "Details about artist's song",
@@ -37,7 +35,7 @@ const generateArtistStory = (artist) => {
 };
 
 export default function CoverStorySection() {
-  const [topArtist, setTopArtist] = useState(null);
+  const [topArtist, setTopArtist] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -98,7 +96,7 @@ export default function CoverStorySection() {
   const artistStory = generateArtistStory(topArtist);
 
   // Animation variants
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -109,26 +107,26 @@ export default function CoverStorySection() {
     },
   };
 
-  const childVariants = {
+  const childVariants: Variants = {
     hidden: { y: 30, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
         duration: 0.6,
-        ease: [0.16, 0.77, 0.47, 0.97],
+        ease: [0.16, 1, 0.3, 1],
       },
     },
   };
 
-  const imageVariants = {
+  const imageVariants: Variants = {
     hidden: { opacity: 0, scale: 0.95 },
     visible: {
       opacity: 1,
       scale: 1,
       transition: {
         duration: 0.8,
-        ease: "easeOut",
+        ease: [0.25, 0.46, 0.45, 0.94],
       },
     },
     hover: {
@@ -137,7 +135,7 @@ export default function CoverStorySection() {
     },
   };
 
-  const badgeVariants = {
+  const badgeVariants: Variants = {
     hidden: { scale: 0.5, opacity: 0 },
     visible: {
       scale: 1,
@@ -151,7 +149,7 @@ export default function CoverStorySection() {
     },
   };
 
-  const statsVariants = {
+  const statsVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -281,9 +279,9 @@ export default function CoverStorySection() {
                   className="mb-8"
                   variants={childVariants}
                 >
-                  <ActionButton onClick={() => window.open("https://twitter.com/thedebuthub", "_blank")}>
+                  <Button onClick={() => window.open("https://twitter.com/thedebuthub", "_blank")} ariaLabel="Read More">
                     Read More
-                  </ActionButton>
+                  </Button>
                 </motion.div>
 
                 {/* Artist Stats */}

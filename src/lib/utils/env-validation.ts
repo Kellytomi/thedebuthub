@@ -33,9 +33,9 @@ const optionalEnvVars = {
  * Validates environment variables and returns validation result
  */
 export function validateEnvironment() {
-  const errors = [];
-  const warnings = [];
-  const config = {};
+  const errors: Array<{variable: string, description: string, message: string}> = [];
+  const warnings: Array<{variable: string, description: string, message: string}> = [];
+  const config: {[key: string]: string | null} = {};
 
   // Check required variables
   for (const [key, { required, description, fallback }] of Object.entries(requiredEnvVars)) {
@@ -121,4 +121,4 @@ export function validateOnStartup() {
   }
 
   return result;
-} 
+}

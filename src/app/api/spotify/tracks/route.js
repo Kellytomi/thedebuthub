@@ -1,67 +1,42 @@
 import { NextResponse } from 'next/server';
-import { getNigerianTracks } from '@/lib/spotify';
+import { getNigerianTracks } from '@/lib/api/spotify';
 
+/**
+ * GET /api/spotify/tracks
+ * Fetches top Nigerian tracks from charts and artist searches
+ */
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get('limit')) || 12;
+    const limit = Math.min(parseInt(searchParams.get('limit')) || 12, 50); // Cap at 50
 
-    // Log for production debugging
-    if (process.env.NODE_ENV === 'production') {
-      console.log(`🎵 Tracks API called from region: ${process.env.VERCEL_REGION || 'unknown'}`);
-    }
-
+    console.log(`🎵 Tracks API called - fetching ${limit} tracks`);
     const tracks = await getNigerianTracks(limit);
+
+    if (!tracks || tracks.length === 0) {
+      throw new Error('No tracks returned from Spotify service');
+    }
 
     return NextResponse.json({
       success: true,
       tracks,
-      count: tracks.length
+      count: tracks.length,
+      timestamp: Date.now()
     });
 
   } catch (error) {
-    console.error('API Error - Nigerian Tracks:', error);
+    console.error('API Error - Nigerian Tracks:', error.message);
     
-    // Return fallback data if Spotify API fails
-    const fallbackTracks = [
+    // Return structured error response
+    return NextResponse.json(
       {
-        id: 'fallback-1',
-        name: 'Love',
-        artist: 'Burna Boy',
-        image: '/images/album3.png',
-        duration: '3:45',
-        preview_url: null,
-        external_urls: { spotify: '#' },
-        album: 'Love, Damini'
+        success: false,
+        error: 'Failed to fetch Nigerian tracks',
+        tracks: [],
+        count: 0,
+        timestamp: Date.now()
       },
-      {
-        id: 'fallback-2',
-        name: 'Essence',
-        artist: 'Wizkid',
-        image: '/images/album1.png',
-        duration: '3:12',
-        preview_url: null,
-        external_urls: { spotify: '#' },
-        album: 'Made in Lagos'
-      },
-      {
-        id: 'fallback-3',
-        name: 'Stand Strong',
-        artist: 'Davido',
-        image: '/images/album2.png',
-        duration: '2:55',
-        preview_url: null,
-        external_urls: { spotify: '#' },
-        album: 'A Better Time'
-      }
-    ];
-
-    return NextResponse.json({
-      success: false,
-      error: error.message,
-      tracks: fallbackTracks.slice(0, parseInt(searchParams.get('limit')) || 3),
-      fallback: true,
-      count: Math.min(fallbackTracks.length, parseInt(searchParams.get('limit')) || 3)
-    });
+      { status: 500 }
+    );
   }
 } 

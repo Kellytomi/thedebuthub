@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import FlankDecoration from "./FlankDecoration";
+import { FlankDecoration } from "@/components/ui";
 import { Play } from "iconsax-react";
 import dynamic from "next/dynamic";
 
@@ -11,16 +11,34 @@ const MotionDiv = dynamic(() => import("framer-motion").then(mod => ({ default: 
   ssr: false
 });
 
+const fallbackTracks = [
+  {
+    id: 1,
+    title: "Love",
+    artist: "Burna Boy",
+    cover: "/images/track3.png",
+    duration: "3:45",
+  },
+  {
+    id: 2,
+    title: "Essence",
+    artist: "Wizkid",
+    cover: "/images/track1.png",
+    duration: "3:12",
+  },
+  {
+    id: 3,
+    title: "Stand Strong",
+    artist: "Davido",
+    cover: "/images/track2.png",
+    duration: "2:55",
+  },
+];
+
 export default function TopTracksSection() {
-  const [tracks, setTracks] = useState([]);
+  const [tracks, setTracks] = useState<{ id: number; title: string; artist: string; cover: string; duration: string; spotifyUrl?: string; previewUrl?: string; }[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-
-
-
-  // Auto-rotation removed - now using vertical stack on mobile
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchNigerianTracks();
@@ -32,8 +50,8 @@ export default function TopTracksSection() {
       const response = await fetch("/api/spotify/tracks?limit=3");
       const data = await response.json();
 
-      if (data.success || data.fallback) {
-        const transformedTracks = data.tracks.map((track, index) => ({
+      if (data.success) {
+        const transformedTracks = data.tracks.map((track: any, index: number) => ({
           id: track.id || index + 1,
           title: track.name || `Track ${index + 1}`,
           artist: track.artist || "Unknown Artist",
@@ -44,85 +62,33 @@ export default function TopTracksSection() {
         }));
         setTracks(transformedTracks);
       } else {
-        setError(data.error || "Failed to fetch tracks");
-        // Fallback to static data on error
-        setTracks([
-          {
-            id: 1,
-            title: "Love",
-            artist: "Burna Boy",
-            cover: "/images/track3.png",
-            duration: "3:45",
-          },
-          {
-            id: 2,
-            title: "Essence",
-            artist: "Wizkid",
-            cover: "/images/track1.png",
-            duration: "3:12",
-          },
-          {
-            id: 3,
-            title: "Stand Strong",
-            artist: "Davido",
-            cover: "/images/track2.png",
-            duration: "2:55",
-          },
-        ]);
+        throw new Error(data.error || "Failed to fetch tracks");
       }
     } catch (err) {
       console.error("Error fetching Nigerian tracks:", err);
       setError("Failed to load tracks");
-      // Fallback to static data on error
-      setTracks([
-        {
-          id: 1,
-          title: "Love",
-          artist: "Burna Boy",
-          cover: "/images/track3.png",
-          duration: "3:45",
-        },
-        {
-          id: 2,
-          title: "Essence",
-          artist: "Wizkid",
-          cover: "/images/track1.png",
-          duration: "3:12",
-        },
-        {
-          id: 3,
-          title: "Stand Strong",
-          artist: "Davido",
-          cover: "/images/track2.png",
-          duration: "2:55",
-        },
-      ]);
+      setTracks(fallbackTracks);
     } finally {
       setLoading(false);
     }
   };
 
   const TrackSkeleton = () => (
-    <div className="group relative flex flex-col lg:flex-row xl:flex-col lg:justify-center w-[330px] md:w-[370px] lg:w-full xl:w-[370px] lg:h-auto h-[360px] md:h-[418px] gap-2">
-      <div className="relative w-full lg:w-[370px] xl:w-full h-[350px] overflow-hidden rounded-xl bg-[#171717]">
+    <div className="group relative flex flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2">
+      <div className="relative w-full h-[350px] overflow-hidden rounded-xl bg-[#171717]">
         <div className="absolute inset-0 bg-[#171717] animate-pulse" />
       </div>
-
-      <div className="text-white text-[20px] flex flex-col lg:justify-center gap-1">
-        <div className="h-6 w-3/4 lg:w-[250px] xl:w-3/4 bg-[#171717] rounded animate-pulse truncate" />
-
-        <div className="text-sm text-[#CCCCCC] flex flex-row items-center lg:items-start xl:items-center lg:flex-col xl:flex-row gap-2">
-          <div className="h-4 w-1/3 bg-[#171717] rounded animate-pulse truncate" />
-
-          <div className="flex flex-row items-center gap-2">
-            <div className="h-4 w-16 bg-[#171717] rounded animate-pulse flex-shrink-0" />
-          </div>
+      <div className="text-white text-[20px] flex flex-col gap-1">
+        <div className="h-6 w-3/4 bg-[#171717] rounded animate-pulse" />
+        <div className="text-sm text-[#CCCCCC] flex flex-row items-center gap-2">
+          <div className="h-4 w-1/3 bg-[#171717] rounded animate-pulse" />
+          <div className="h-4 w-16 bg-[#171717] rounded animate-pulse" />
         </div>
       </div>
     </div>
   );
 
-  const AlbumCard = ({ track, index }) => (
+  const TrackCard = ({ track, index }: { track: any; index: number; }) => (
     <div className="group relative flex flex-col xl:flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2 cursor-pointer">
       <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-[#FFDDB2]">
         <Image
@@ -130,7 +96,7 @@ export default function TopTracksSection() {
           alt={track.title}
           width={370}
           height={350}
-          priority={index < 3} // Priority for first 3 images
+          priority={index < 3}
           loading={index < 3 ? "eager" : "lazy"}
           sizes="(max-width: 768px) 330px, (max-width: 1200px) 370px, 370px"
           className="object-cover w-full h-full rounded-md transition-transform duration-300 group-hover:scale-105"
@@ -139,8 +105,7 @@ export default function TopTracksSection() {
             objectFit: 'cover'
           }}
           onError={(e) => {
-            e.currentTarget.src =
-              fallbackAlbums[index]?.cover || "/images/placeholder.png";
+            e.currentTarget.src = fallbackTracks[index]?.cover || "/images/placeholder.png";
           }}
         />
 
@@ -151,6 +116,7 @@ export default function TopTracksSection() {
             <Play size="42" color="black" variant="TwoTone" />
           </div>
         </div>
+        
         {track.spotifyUrl && (
           <a
             href={track.spotifyUrl}
@@ -161,6 +127,7 @@ export default function TopTracksSection() {
           />
         )}
       </div>
+      
       <div className="text-white text-[20px] flex flex-col gap-1">
         <h3 className="truncate" title={track.title}>
           {track.title}
@@ -168,34 +135,11 @@ export default function TopTracksSection() {
         <div className="text-sm text-[#CCCCCC] flex flex-row items-center xl:items-center xl:flex-row gap-2">
           <span className="truncate">{track.artist}</span>
           <div className="w-1 h-1 bg-[#2C2C2C] rounded-full xl:block flex-shrink-0" />
-          <div className="flex flex-row items-center gap-2">
-            <span className="flex-shrink-0">{track.duration}</span>
-          </div>
+          <span className="flex-shrink-0">{track.duration}</span>
         </div>
       </div>
     </div>
   );
-
-  const carouselVariants = {
-    enter: (direction) => ({
-      x: direction > 0 ? 1000 : -1000,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-      },
-    },
-    exit: (direction) => ({
-      x: direction < 0 ? 1000 : -1000,
-      opacity: 0,
-      transition: {
-        duration: 0.5,
-      },
-    }),
-  };
 
   return (
     <section className="relative overflow-hidden py-10 flex flex-col gap-10 w-full xl:h-[666px] bg-[#040507]">
@@ -227,18 +171,12 @@ export default function TopTracksSection() {
               <TrackSkeleton key={i} />
             ))}
           </div>
-                 ) : tracks.length > 0 ? (
-           tracks.map((track, i) => (
-             <div key={track.id} className="flex justify-center">
-               <AlbumCard track={track} index={i} />
-             </div>
-           ))
-         ) : (
-           fallbackAlbums.map((track, i) => (
-             <div key={track.id} className="flex justify-center">
-               <AlbumCard track={track} index={i} />
-             </div>
-           ))
+        ) : (
+          tracks.map((track, i) => (
+            <div key={track.id} className="flex justify-center">
+              <TrackCard track={track} index={i} />
+            </div>
+          ))
         )}
       </div>
 
@@ -246,12 +184,8 @@ export default function TopTracksSection() {
       <div className="hidden xl:flex relative z-20 justify-center items-center gap-[33px]">
         {loading
           ? [...Array(3)].map((_, i) => <TrackSkeleton key={i} />)
-          : tracks.length > 0
-          ? tracks.map((track, i) => (
-              <AlbumCard key={track.id} track={track} index={i} />
-            ))
-          : fallbackAlbums.map((track, i) => (
-              <AlbumCard key={track.id} track={track} index={i} />
+          : tracks.map((track, i) => (
+              <TrackCard key={track.id} track={track} index={i} />
             ))}
       </div>
     </section>

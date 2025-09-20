@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 
 export default function PerformanceOptimizer() {
   useEffect(() => {
-    // Preload critical images when component mounts
+    // Preload critical images
     const preloadCriticalImages = () => {
       const criticalImages = [
         '/images/album1.png',
@@ -28,7 +28,9 @@ export default function PerformanceOptimizer() {
       const deferYouTube = () => {
         const scripts = document.querySelectorAll('script[src*="youtube.com"]');
         scripts.forEach(script => {
-          script.defer = true;
+          if (script instanceof HTMLScriptElement) {
+            script.defer = true;
+          }
         });
       };
       deferYouTube();
@@ -36,7 +38,6 @@ export default function PerformanceOptimizer() {
 
     // Add passive event listeners optimization
     const addPassiveListeners = () => {
-      // Override addEventListener for touch events to be passive by default
       const originalAddEventListener = EventTarget.prototype.addEventListener;
       EventTarget.prototype.addEventListener = function(type, listener, options) {
         if (['touchstart', 'touchmove', 'wheel', 'mousewheel'].includes(type)) {
@@ -52,26 +53,27 @@ export default function PerformanceOptimizer() {
       };
     };
 
-    // Implement performance optimizations
     preloadCriticalImages();
     optimizeThirdPartyScripts();
     addPassiveListeners();
 
     // Web Vitals tracking (optional, for debugging)
     if (process.env.NODE_ENV === 'development') {
-      const reportWebVitals = (metric) => {
+      const reportWebVitals = (metric: any) => {
         console.log('[Performance]', metric.name, metric.value);
       };
 
-      // Simplified Web Vitals tracking
       if (typeof window !== 'undefined' && 'performance' in window) {
         const observer = new PerformanceObserver((list) => {
-          list.getEntries().forEach((entry) => {
+          list.getEntries().forEach((entry: any) => {
             if (entry.entryType === 'largest-contentful-paint') {
               reportWebVitals({ name: 'LCP', value: entry.startTime });
             }
             if (entry.entryType === 'first-input') {
-              reportWebVitals({ name: 'FID', value: entry.processingStart - entry.startTime });
+              const fidValue = (entry as any).processingStart ? 
+                (entry as any).processingStart - entry.startTime : 
+                entry.duration || 0;
+              reportWebVitals({ name: 'FID', value: fidValue });
             }
           });
         });
@@ -84,11 +86,10 @@ export default function PerformanceOptimizer() {
       }
     }
 
-    // Cleanup function
     return () => {
       // Clean up any observers if needed
     };
   }, []);
 
-  return null; // This component doesn't render anything
-} 
+  return null;
+}

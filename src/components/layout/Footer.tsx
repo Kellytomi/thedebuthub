@@ -1,15 +1,16 @@
 "use client";
 
+import React from "react";
 import Image from "next/image";
 import { useState } from "react";
-import ActionButton from "./ActionButton";
+import { Button } from "@/components/ui";
 import Link from "next/link";
 
-export default function StayInformedSection() {
+export default function Footer() {
   const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (email) {
       setIsSubscribed(true);
@@ -28,7 +29,7 @@ export default function StayInformedSection() {
   ];
 
   return (
-    <section className="relative bg-black h-[1276px] sm:h-[1296px] md:h-[1326px] lg:h-[1356px] xl:h-[1376px]">
+    <footer className="relative bg-black h-[1276px] sm:h-[1296px] md:h-[1326px] lg:h-[1356px] xl:h-[1376px]">
       <Image
         src="/images/grid-layers.svg"
         alt="grid pattern background"
@@ -96,9 +97,9 @@ export default function StayInformedSection() {
               className="w-full sm:flex-1 px-6 py-4 bg-[#252525]/30 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
               required
             />
-            <ActionButton onClick={() => alert("Action triggered!")}>
+            <Button onClick={() => alert("Action triggered!")} ariaLabel="Subscribe to newsletter">
               Subscribe
-            </ActionButton>
+            </Button>
           </div>
 
           {isSubscribed && (
@@ -162,6 +163,6 @@ export default function StayInformedSection() {
           THE DEBUT HUB
         </h1>
       </div>
-    </section>
+    </footer>
   );
 }

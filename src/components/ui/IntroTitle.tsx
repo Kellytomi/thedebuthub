@@ -3,9 +3,12 @@ import React from "react";
 const IntroTitle = ({ 
   line1, 
   line2 
+}: {
+  line1: string;
+  line2: string;
 }) => {
   return (
-    <div className="text-center pt-16 mb-6 md:mb-24">
+    <div className="relative text-center pt-16 mb-6 md:mb-24">
       <p
         className="italic font-dancing-script text-[32px]"
         style={{

@@ -4,10 +4,12 @@ import React from "react";
 const IntroSection = ({ 
   title,
   description
+}: {
+  title: string;
+  description: string;
 }) => {
   return (
     <div className="relative z-20">
-      {/* Cover Story Header */}
       <div className="text-center">
         <div className="flex flex-col items-center mb-4">
           <h2 className="text-white font-bold text-[32px] tracking-[-1px]">

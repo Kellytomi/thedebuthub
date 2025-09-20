@@ -1,11 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useAnimation } from "framer-motion";
+import { motion, useAnimation, type Variants } from "framer-motion";
 import { useEffect } from "react";
 import { useInView } from "react-intersection-observer";
-import IntroBody from "./IntroBody";
-import IntroTitle from "./IntroTitle";
+import { IntroBody, IntroTitle } from "@/components/ui";
 
 export default function MusicPulseSection() {
   const controls = useAnimation();
@@ -15,7 +14,7 @@ export default function MusicPulseSection() {
   });
 
   // Animation variants
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -26,20 +25,20 @@ export default function MusicPulseSection() {
     },
   };
 
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: { y: 50, opacity: 0 },
-    visible: (i) => ({
+    visible: (i: number) => ({
       y: 0,
       opacity: 1,
       transition: {
         delay: i * 0.15,
         duration: 0.8,
-        ease: "easeOut",
+        ease: [0.25, 0.46, 0.45, 0.94],
       },
     }),
   };
 
-  const badgeVariants = {
+  const badgeVariants: Variants = {
     hidden: { scale: 0.5, opacity: 0 },
     visible: {
       scale: 1,

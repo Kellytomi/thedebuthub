@@ -1,8 +1,8 @@
-  "use client";
-  import IntroBody from "./IntroBody";
-  import Link from "next/link";
-  import Image from "next/image";
-  import FlankDecoration from "./FlankDecoration";
+"use client";
+
+import { IntroBody, FlankDecoration } from "@/components/ui";
+import Link from "next/link";
+import Image from "next/image";
 
   export default function SocialsSection() {
     const socialLinks = [
