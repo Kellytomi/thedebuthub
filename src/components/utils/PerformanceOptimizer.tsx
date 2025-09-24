@@ -57,34 +57,6 @@ export default function PerformanceOptimizer() {
     optimizeThirdPartyScripts();
     addPassiveListeners();
 
-    // Web Vitals tracking (optional, for debugging)
-    if (process.env.NODE_ENV === 'development') {
-      const reportWebVitals = (metric: any) => {
-        console.log('[Performance]', metric.name, metric.value);
-      };
-
-      if (typeof window !== 'undefined' && 'performance' in window) {
-        const observer = new PerformanceObserver((list) => {
-          list.getEntries().forEach((entry: any) => {
-            if (entry.entryType === 'largest-contentful-paint') {
-              reportWebVitals({ name: 'LCP', value: entry.startTime });
-            }
-            if (entry.entryType === 'first-input') {
-              const fidValue = (entry as any).processingStart ? 
-                (entry as any).processingStart - entry.startTime : 
-                entry.duration || 0;
-              reportWebVitals({ name: 'FID', value: fidValue });
-            }
-          });
-        });
-
-        try {
-          observer.observe({ entryTypes: ['largest-contentful-paint', 'first-input'] });
-        } catch (e) {
-          // Fallback for browsers that don't support these metrics
-        }
-      }
-    }
 
     return () => {
       // Clean up any observers if needed

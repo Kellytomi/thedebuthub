@@ -5,6 +5,7 @@ import Image from "next/image";
 import { FlankDecoration } from "@/components/ui";
 import { Play } from "iconsax-react";
 import dynamic from "next/dynamic";
+import { trpc } from "@/lib/trpc-client";
 
 // Dynamic import for framer-motion to reduce bundle size
 const MotionDiv = dynamic(() => import("framer-motion").then(mod => ({ default: mod.motion.div })), {
@@ -14,64 +15,61 @@ const MotionDiv = dynamic(() => import("framer-motion").then(mod => ({ default: 
 const fallbackTracks = [
   {
     id: 1,
-    title: "Love",
-    artist: "Burna Boy",
-    cover: "/images/track3.png",
-    duration: "3:45",
+    title: "FUN",
+    artist: "Rema",
+    cover: "/images/rema-image.png",
+    duration: "3:27",
   },
   {
     id: 2,
-    title: "Essence",
-    artist: "Wizkid",
-    cover: "/images/track1.png",
-    duration: "3:12",
+    title: "you",
+    artist: "FOLA",
+    cover: "/images/album2.png",
+    duration: "2:48",
   },
   {
     id: 3,
-    title: "Stand Strong",
-    artist: "Davido",
-    cover: "/images/track2.png",
-    duration: "2:55",
+    title: "Na So",
+    artist: "Shallipopi",
+    cover: "/images/album1.png",
+    duration: "2:15",
   },
 ];
 
 export default function TopTracksSection() {
-  const [tracks, setTracks] = useState<{ id: number; title: string; artist: string; cover: string; duration: string; spotifyUrl?: string; previewUrl?: string; }[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    fetchNigerianTracks();
-  }, []);
-
-  const fetchNigerianTracks = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch("/api/spotify/tracks?limit=3");
-      const data = await response.json();
-
-      if (data.success) {
-        const transformedTracks = data.tracks.map((track: any, index: number) => ({
-          id: track.id || index + 1,
-          title: track.name || `Track ${index + 1}`,
-          artist: track.artist || "Unknown Artist",
-          cover: track.image || `/images/track${index + 1}.png`,
-          duration: track.duration || "0:00",
-          spotifyUrl: track.external_urls?.spotify,
-          previewUrl: track.preview_url,
-        }));
-        setTracks(transformedTracks);
-      } else {
-        throw new Error(data.error || "Failed to fetch tracks");
-      }
-    } catch (err) {
-      console.error("Error fetching Nigerian tracks:", err);
-      setError("Failed to load tracks");
-      setTracks(fallbackTracks);
-    } finally {
-      setLoading(false);
+  // Use tRPC to fetch Nigerian tracks
+  const { 
+    data: tracksData, 
+    isLoading: loading, 
+    error,
+    isSuccess 
+  } = trpc.spotify.getTracks.useQuery(
+    { limit: 3 },
+    {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 3,
     }
-  };
+  );
+
+  // Process tracks data from tRPC
+  const tracks = (() => {
+    if (isSuccess && tracksData?.tracks?.length > 0) {
+      return tracksData.tracks.map((track: any, index: number) => ({
+        id: track.id || index + 1,
+        title: track.name || `Track ${index + 1}`,
+        artist: track.artist || "Unknown Artist",
+        cover: track.image || fallbackTracks[index]?.cover || "/images/placeholder.svg",
+        duration: track.duration || "0:00",
+        spotifyUrl: track.external_urls?.spotify,
+        previewUrl: track.preview_url,
+      }));
+    }
+
+    // Fallback data if API fails or returns no data
+    return fallbackTracks;
+  })();
 
   const TrackSkeleton = () => (
     <div className="group relative flex flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2">
@@ -90,7 +88,7 @@ export default function TopTracksSection() {
 
   const TrackCard = ({ track, index }: { track: any; index: number; }) => (
     <div className="group relative flex flex-col xl:flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2 cursor-pointer">
-      <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-[#FFDDB2]">
+      <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-white">
         <Image
           src={track.cover}
           alt={track.title}
@@ -172,7 +170,7 @@ export default function TopTracksSection() {
             ))}
           </div>
         ) : (
-          tracks.map((track, i) => (
+          tracks.map((track: any, i: number) => (
             <div key={track.id} className="flex justify-center">
               <TrackCard track={track} index={i} />
             </div>
@@ -184,7 +182,7 @@ export default function TopTracksSection() {
       <div className="hidden xl:flex relative z-20 justify-center items-center gap-[33px]">
         {loading
           ? [...Array(3)].map((_, i) => <TrackSkeleton key={i} />)
-          : tracks.map((track, i) => (
+          : tracks.map((track: any, i: number) => (
               <TrackCard key={track.id} track={track} index={i} />
             ))}
       </div>

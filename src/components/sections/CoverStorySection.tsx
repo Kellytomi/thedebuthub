@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, useAnimation, type Variants } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { IntroBody, IntroTitle, Button } from "@/components/ui";
+import { trpc } from "@/lib/trpc-client";
 
 // Generate dynamic artist story based on artist data
 const generateArtistStory = (artist: any) => {
@@ -14,18 +15,21 @@ const generateArtistStory = (artist: any) => {
       description: "Loading artist information...",
     };
 
+  const currentTrack = artist.currentTrack || "latest hit";
+  const album = artist.album || "latest album";
+  
   const stories = [
     {
       title: `${artist.name}'s Chart-Topping Journey`,
-      description: `This week's chartbreaker is ${artist.name}, the Nigerian sensation whose latest releases have dominated streaming platforms worldwide. With millions of streams and a growing international fanbase, ${artist.name} continues to push the boundaries of Afrobeats, blending traditional rhythms with contemporary sounds. Their music represents the new wave of Nigerian artists taking the global stage by storm.`,
+      description: `This week's chartbreaker is ${artist.name}, whose hit "${currentTrack}" has dominated streaming platforms worldwide. With millions of streams and a growing international fanbase, ${artist.name} continues to push the boundaries of Afrobeats, blending traditional rhythms with contemporary sounds. Their music represents the new wave of Nigerian artists taking the global stage by storm.`,
     },
     {
       title: `Behind the Music with ${artist.name}`,
-      description: `${artist.name} has emerged as the #1 artist this week, captivating audiences with their unique sound and powerful storytelling. From Lagos streets to international stages, their journey embodies the spirit of modern Afrobeats. Each track tells a story of resilience, love, and the vibrant culture of Nigeria, resonating with fans across continents.`,
+      description: `${artist.name} has emerged as the #1 artist this week with "${currentTrack}", captivating audiences with their unique sound and powerful storytelling. From Lagos streets to international stages, their journey embodies the spirit of modern Afrobeats. Each track tells a story of resilience, love, and the vibrant culture of Nigeria, resonating with fans across continents.`,
     },
     {
       title: `${artist.name}: Breaking Records and Hearts`,
-      description: `Currently sitting at #1 on the charts, ${artist.name} has become the voice of a generation. Their latest work seamlessly weaves together Afrobeats, R&B, and contemporary sounds, creating music that speaks to both local and global audiences. This week's chart dominance is just another milestone in their incredible artistic journey.`,
+      description: `Currently sitting at #1 on the charts with "${currentTrack}", ${artist.name} has become the voice of a generation. Their latest work seamlessly weaves together Afrobeats, R&B, and contemporary sounds, creating music that speaks to both local and global audiences. This week's chart dominance is just another milestone in their incredible artistic journey.`,
     },
   ];
 
@@ -35,10 +39,6 @@ const generateArtistStory = (artist: any) => {
 };
 
 export default function CoverStorySection() {
-  const [topArtist, setTopArtist] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(false);
-
   // Animation controls
   const controls = useAnimation();
   const [ref, inView] = useInView({
@@ -46,43 +46,48 @@ export default function CoverStorySection() {
     triggerOnce: false,
   });
 
-  // Fetch the #1 top Nigerian artist
-  useEffect(() => {
-    async function fetchTopArtist() {
-      try {
-        const response = await fetch("/api/spotify/artists?limit=1");
-        const data = await response.json();
-
-        if (data.success && data.artists.length > 0) {
-          setTopArtist(data.artists[0]);
-        } else {
-          setTopArtist({
-            id: "fallback-top",
-            name: "Wizkid",
-            image: "/images/wiz-image.png",
-            popularity: 95,
-            followers: 8000000,
-            genres: ["afrobeats", "pop"],
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch top artist:", error);
-        setError(true);
-        setTopArtist({
-          id: "fallback-top",
-          name: "Wizkid",
-          image: "/images/wiz-image.png",
-          popularity: 95,
-          followers: 8000000,
-          genres: ["afrobeats", "pop"],
-        });
-      } finally {
-        setIsLoading(false);
-      }
+  // Use tRPC to fetch the top Nigerian tracks (chart data) and get #1 artist
+  const { 
+    data: tracksData, 
+    isLoading, 
+    error,
+    isSuccess 
+  } = trpc.spotify.getTracks.useQuery(
+    { limit: 10 }, // Get more tracks to ensure we have the true #1
+    {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 3,
     }
+  );
 
-    fetchTopArtist();
-  }, []);
+  // Get the top artist from chart data (tracks)
+  const topArtist = (() => {
+    if (isSuccess && tracksData?.success && tracksData.tracks?.length > 0) {
+      const topTrack = tracksData.tracks[0];
+      return {
+        id: topTrack.id,
+        name: topTrack.artist,
+        image: topTrack.image || "/images/rema-image.png",
+        popularity: 95, // Chart-topper gets highest score
+        followers: 8000000,
+        genres: ["afrobeats", "trap"],
+        currentTrack: topTrack.name,
+        album: topTrack.album
+      };
+    }
+    
+    // Only fallback if API completely fails
+    return {
+      id: "fallback-top",
+      name: "Rema",
+      image: "/images/rema-image.png",
+      popularity: 95,
+      followers: 8000000,
+      genres: ["afrobeats", "trap"],
+      currentTrack: "FUN",
+      album: "Rave & Roses Ultra"
+    };
+  })();
 
   // Handle inView changes
   useEffect(() => {

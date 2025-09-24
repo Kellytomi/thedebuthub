@@ -13,10 +13,13 @@ import {
   ArticleCard,
 } from "@/components/ui";
 import { motion } from "framer-motion";
+import SanityContent from "@/components/features/articles/SanityContent";
 
 export default function ArticlePage({ params }) {
   const resolvedParams = use(params);
   const [article, setArticle] = useState(null);
+  const [rawArticle, setRawArticle] = useState(null);
+  const [relatedArticles, setRelatedArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const router = useRouter();
@@ -25,12 +28,14 @@ export default function ArticlePage({ params }) {
     triggerOnce: false,
   });
 
-  const relatedArticleBase = {
+  // Fallback for related articles if none from Sanity
+  const fallbackRelatedArticle = {
     title:
       "All about her historic Song for becoming Youngest to Most Inspiring woman",
     author: "David Adeleke",
     date: "Dec 15, 2024",
     image: "/images/david-image.png",
+    slug: "fallback-article"
   };
 
   // Animation Variants
@@ -63,11 +68,18 @@ export default function ArticlePage({ params }) {
 
         if (data.success && data.article) {
           setArticle(data.article);
+          setRelatedArticles(data.relatedArticles || []);
+          
+          // Also fetch raw article data for rich content
+          const rawResponse = await fetch(`/api/articles/${resolvedParams.slug}?raw=true`);
+          const rawData = await rawResponse.json();
+          if (rawData.success && rawData.article) {
+            setRawArticle(rawData.article);
+          }
         } else {
           setNotFound(true);
         }
       } catch (error) {
-        console.error("Error fetching article:", error);
         setNotFound(true);
       } finally {
         setIsLoading(false);
@@ -125,7 +137,7 @@ export default function ArticlePage({ params }) {
 
   return (
     <Layout>
-      <article className="max-w-[1350px] mx-auto px-4 md:px-8 pt-20">
+      <article className="max-w-[1350px] mx-auto px-4 md:px-16 pt-20">
         <motion.header
           className="max-w-4xl mx-auto flex flex-col items-center gap-6 mb-6"
           initial="hidden"
@@ -152,7 +164,7 @@ export default function ArticlePage({ params }) {
 
         {/* Featured Image */}
         <motion.div
-          className="relative h-[300px] sm:h-[400px] md:h-[536px] rounded-[20px] overflow-hidden mb-8 border border-[#FFDDB2]"
+          className="relative w-full rounded-[20px] overflow-hidden mb-8"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
@@ -162,104 +174,56 @@ export default function ArticlePage({ params }) {
           <Image
             src={article.image}
             alt={article.title}
-            fill
-            className="object-cover"
+            width={1200}
+            height={800}
+            className="w-full h-auto rounded-[20px]"
             priority
           />
         </motion.div>
       </article>
 
-      {/* Content Section */}
+      {/* Article Content Section */}
       <section className="bg-[#040507] py-10">
         <motion.div
-          className="max-w-[1350px] mx-auto flex flex-col gap-6 px-4 md:px-8"
+          className="max-w-[1350px] mx-auto px-4 md:px-16"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={containerStagger}
         >
-          <motion.div
-            className="relative h-[300px] sm:h-[400px] md:h-[536px] w-full max-w-4xl rounded-[20px] overflow-hidden border border-[#FFDDB2] mx-auto"
-            variants={fadeUp}
-          >
-            <Image
-              src={article.image}
-              alt={article.title}
-              fill
-              className="object-cover"
-              priority
-            />
-          </motion.div>
-          <motion.div
-            className="text-white text-center text-[14px] max-w-4xl mx-auto"
-            variants={fadeUp}
-          >
-            This is the caption for this image.
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* Paragraph + Image Section */}
-      <section className="bg-[#040507] py-10">
-        <motion.div
-          className="max-w-[1350px] mx-auto flex flex-col gap-6 px-4 md:px-8"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={containerStagger}
-        >
-          <motion.p
-            className="text-white text-center text-[16px] md:text-[18px] max-w-4xl mx-auto"
-            variants={fadeUp}
-          >
-            LLorem ipsum dolor sit amet consectetur adipiscing elit sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident sunt in
-            culpa qui officia deserunt mollit anim id est laborum. Sed ut
-            perspiciatis unde omnis iste natus error sit voluptatem accusantium
-            doloremque laudantium totam rem aperiam eaque ipsa quae ab illo
-            inventore veritatis et quasi architecto beatae vitae dicta sunt
-            explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur
-            aut odit aut fugit sed quia consequuntur magni dolores eos qui
-            ratione voluptatem sequi nesciunt. Neque porro quisquam est qui
-            dolorem ipsum quia dolor sit amet consectetur adipiscing elit.
-          </motion.p>
-          <motion.div variants={fadeUp}>
-            <div className="relative h-[300px] sm:h-[400px] md:h-[536px] w-full max-w-4xl rounded-[20px] overflow-hidden border border-[#FFDDB2] mx-auto">
-              <Image
-                src={article.image}
-                alt={article.title}
-                fill
-                className="object-cover"
-                priority
-              />
-            </div>
-            <div className="text-white text-center text-[14px] max-w-4xl mx-auto mt-4">
-              This is the caption for this image.
-            </div>
-          </motion.div>
-          <motion.p
-            className="text-white text-center text-[16px] md:text-[18px] max-w-4xl mx-auto"
-            variants={fadeUp}
-          >
-            Lorem ipsum dolor sit amet consectetur adipiscing elit sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </motion.p>
+          {rawArticle && rawArticle.body ? (
+            <motion.div variants={fadeUp}>
+              <SanityContent content={rawArticle.body} />
+            </motion.div>
+          ) : article?.excerpt ? (
+            <motion.div
+              className="text-white text-center text-[16px] md:text-[18px] max-w-4xl mx-auto leading-relaxed"
+              variants={fadeUp}
+            >
+              <p className="mb-6">{article.excerpt}</p>
+              <div className="text-white/70 text-sm text-center">
+                Full article content is loading or not available from CMS...
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              className="text-white text-center text-[16px] md:text-[18px] max-w-4xl mx-auto"
+              variants={fadeUp}
+            >
+              <div className="animate-pulse">
+                <div className="h-4 bg-[#171717] rounded mb-4 w-full"></div>
+                <div className="h-4 bg-[#171717] rounded mb-4 w-3/4"></div>
+                <div className="h-4 bg-[#171717] rounded mb-4 w-5/6"></div>
+              </div>
+            </motion.div>
+          )}
         </motion.div>
       </section>
 
       {/* Related Articles */}
       <section className="relative py-10 flex flex-col w-full bg-[#040507]">
         <FlankDecoration />
-        <div className="relative flex flex-col px-4 z-20">
+        <div className="relative flex flex-col px-4 md:px-16 z-20">
           <IntroTitle
             line1="What’s been going on?"
             line2="Similar articles for you"
@@ -273,44 +237,38 @@ export default function ArticlePage({ params }) {
           >
             {/* Mobile/Tablet */}
             <div className="xl:hidden w-full flex flex-col items-center gap-6">
-              {Array.from({ length: 3 }, (_, index) => {
-                const article = {
-                  ...relatedArticleBase,
-                  id: index + 1,
-                  slug: `related-article-${index + 1}`,
-                };
-                return (
-                  <motion.div
-                    key={index}
-                    className="w-full max-w-[370px] block"
-                    variants={fadeUp}
-                    custom={index}
-                  >
-                    <ArticleCard article={article} index={index} />
-                  </motion.div>
-                );
-              })}
+              {(relatedArticles.length > 0 ? relatedArticles : Array.from({ length: 3 }, (_, index) => ({
+                ...fallbackRelatedArticle,
+                id: index + 1,
+                slug: `related-article-${index + 1}`,
+              }))).slice(0, 3).map((relatedArticle, index) => (
+                <motion.div
+                  key={relatedArticle.id || index}
+                  className="w-full max-w-[370px] block"
+                  variants={fadeUp}
+                  custom={index}
+                >
+                  <ArticleCard article={relatedArticle} index={index} />
+                </motion.div>
+              ))}
             </div>
 
             {/* Desktop */}
             <div className="hidden xl:grid md:grid-cols-[370px_370px_370px] md:gap-6 justify-center">
-              {Array.from({ length: 3 }, (_, index) => {
-                const article = {
-                  ...relatedArticleBase,
-                  id: index + 1,
-                  slug: `related-article-${index + 1}`,
-                };
-                return (
-                  <motion.div
-                    key={index}
-                    className="w-full max-w-[370px] block"
-                    variants={fadeUp}
-                    custom={index}
-                  >
-                    <ArticleCard article={article} index={index} />
-                  </motion.div>
-                );
-              })}
+              {(relatedArticles.length > 0 ? relatedArticles : Array.from({ length: 3 }, (_, index) => ({
+                ...fallbackRelatedArticle,
+                id: index + 1,
+                slug: `related-article-${index + 1}`,
+              }))).slice(0, 3).map((relatedArticle, index) => (
+                <motion.div
+                  key={relatedArticle.id || index}
+                  className="w-full max-w-[370px] block"
+                  variants={fadeUp}
+                  custom={index}
+                >
+                  <ArticleCard article={relatedArticle} index={index} />
+                </motion.div>
+              ))}
             </div>
           </motion.div>
         </div>

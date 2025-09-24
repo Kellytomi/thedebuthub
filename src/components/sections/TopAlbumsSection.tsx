@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FlankDecoration } from "@/components/ui";
 import dynamic from "next/dynamic";
+import { trpc } from "@/lib/trpc-client";
 
 // Dynamic import for framer-motion to reduce bundle size
 const MotionDiv = dynamic(() => import("framer-motion").then(mod => ({ default: mod.motion.div })), {
@@ -13,81 +14,64 @@ const MotionDiv = dynamic(() => import("framer-motion").then(mod => ({ default: 
 const fallbackAlbums = [
   {
     id: 1,
-    title: "Love, Damini",
-    artist: "Burna Boy",
-    cover: "/images/album3.png",
-    tracks: "19 tracks",
-    popularity: 89,
+    title: "FUN",
+    artist: "Rema",
+    cover: "/images/rema-image.png",
+    tracks: "1 track",
+    popularity: 95,
   },
   {
     id: 2,
-    title: "Made in Lagos",
-    artist: "Wizkid",
-    cover: "/images/album1.png",
-    tracks: "14 tracks",
+    title: "HEIS",
+    artist: "Rema",
+    cover: "/images/rema-image.png",
+    tracks: "11 tracks",
     popularity: 92,
   },
   {
     id: 3,
-    title: "A Better Time",
-    artist: "Davido",
-    cover: "/images/album2.png",
-    tracks: "17 tracks",
-    popularity: 85,
+    title: "No Sign Of Weakness",
+    artist: "Burna Boy",
+    cover: "/images/album1.png",
+    tracks: "16 tracks",
+    popularity: 90,
   },
 ];
 
 export default function TopAlbumsSection() {
-  const [albums, setAlbums] = useState<{ id: number; title: string; artist: string; cover: string; tracks: string; popularity: number; spotifyUrl?: string; }[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    fetchMostStreamedAlbums();
-  }, []);
-
-  const fetchMostStreamedAlbums = async () => {
-    try {
-      setLoading(true);
-      console.log("🇳🇬 Fetching top albums from Nigeria's official charts...");
-      const res = await fetch("/api/spotify/albums/most-streamed?limit=3");
-
-      if (!res.ok) {
-        throw new Error("Failed to fetch Nigeria chart data");
-      }
-
-      const data = await res.json();
-
-      if (data.success) {
-        const transformed = data.albums?.map((album: any, i: number) => ({
-          id: album.id || i + 1,
-          title: album.name || `Album ${i + 1}`,
-          artist: album.artist || "Unknown Artist",
-          cover: album.image || fallbackAlbums[i]?.cover,
-          tracks: album.total_tracks
-            ? `${album.total_tracks} tracks`
-            : "Tracks unknown",
-          popularity: album.popularity || 85,
-          spotifyUrl: album.external_urls?.spotify ?? "#",
-        })) || [];
-
-        if (transformed.length > 0) {
-          console.log("✅ Successfully loaded Nigeria chart albums:", transformed.map((a: any) => `${a.artist} - ${a.title}`));
-          setAlbums(transformed);
-        } else {
-          throw new Error("No albums received");
-        }
-      } else {
-        throw new Error("API returned failure");
-      }
-    } catch (err) {
-      console.error("❌ Nigeria chart data fetch error:", err);
-      setError(true);
-      setAlbums(fallbackAlbums);
-    } finally {
-      setLoading(false);
+  // Use tRPC to fetch most streamed albums
+  const { 
+    data: albumsData, 
+    isLoading: loading, 
+    error,
+    isSuccess 
+  } = trpc.spotify.getMostStreamedAlbums.useQuery(
+    { limit: 3 },
+    {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      retry: 3,
     }
-  };
+  );
+
+  // Process albums data from tRPC
+  const albums = (() => {
+    if (isSuccess && albumsData?.albums?.length > 0) {
+      return albumsData.albums.map((album: any, i: number) => ({
+        id: album.id || i + 1,
+        title: album.name || `Album ${i + 1}`,
+        artist: album.artist || "Unknown Artist",
+        cover: album.image || "/images/placeholder.svg",
+        tracks: album.total_tracks ? `${album.total_tracks} tracks` : "Tracks unknown",
+        popularity: album.popularity || 85,
+        spotifyUrl: album.external_urls?.spotify ?? "#",
+      }));
+    }
+
+    // Return empty array if no data from API
+    return [];
+  })();
 
   const AlbumSkeleton = () => (
     <div className="group relative flex flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2">
@@ -106,7 +90,7 @@ export default function TopAlbumsSection() {
 
   const AlbumCard = ({ album, index }: { album: any; index: number; }) => (
     <div className="group relative flex flex-col xl:flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2 cursor-pointer">
-      <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-[#FFDDB2]">
+      <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-white">
         <Image
           src={album.cover}
           alt={album.title}
@@ -165,7 +149,7 @@ export default function TopAlbumsSection() {
         </h2>
         {error && (
           <p className="text-red-400 text-sm mt-2">
-            Could not fetch albums – showing fallback data.
+            Could not fetch albums from Spotify API.
           </p>
         )}
       </div>
@@ -178,22 +162,34 @@ export default function TopAlbumsSection() {
               <AlbumSkeleton key={i} />
             ))}
           </div>
-        ) : (
-          albums.map((album, i) => (
+        ) : albums.length > 0 ? (
+          albums.map((album: any, i: number) => (
             <div key={album.id} className="flex justify-center">
               <AlbumCard album={album} index={i} />
             </div>
           ))
+        ) : (
+          <div className="text-center text-white py-8">
+            <p className="text-lg mb-2">No albums found</p>
+            <p className="text-sm text-[#CCCCCC]">Unable to fetch albums from Spotify API</p>
+          </div>
         )}
       </div>
 
       {/* Desktop Grid (xl and above) */}
       <div className="hidden xl:flex relative z-20 justify-center items-center gap-[33px]">
-        {loading
-          ? [...Array(3)].map((_, i) => <AlbumSkeleton key={i} />)
-          : albums.map((album, i) => (
-              <AlbumCard key={album.id} album={album} index={i} />
-            ))}
+        {loading ? (
+          [...Array(3)].map((_, i) => <AlbumSkeleton key={i} />)
+        ) : albums.length > 0 ? (
+          albums.map((album: any, i: number) => (
+            <AlbumCard key={album.id} album={album} index={i} />
+          ))
+        ) : (
+          <div className="text-center text-white py-8">
+            <p className="text-lg mb-2">No albums found</p>
+            <p className="text-sm text-[#CCCCCC]">Unable to fetch albums from Spotify API</p>
+          </div>
+        )}
       </div>
     </section>
   );

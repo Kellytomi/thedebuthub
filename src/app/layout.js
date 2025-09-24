@@ -1,10 +1,9 @@
 import { Geist, Geist_Mono, Montserrat, Dancing_Script, DM_Sans } from "next/font/google";
 import "./globals.css";
-import { AudioProvider } from "@/contexts/AudioContext";
-import { YouTubeBackgroundPlayer } from "@/components/features/audio";
 import { validateOnStartup } from "@/lib/utils/env-validation";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import { PerformanceOptimizer } from "@/components/utils";
+import { TRPCProvider } from "@/components/sections";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -99,24 +98,25 @@ export const metadata = {
   // Favicon and icons
   icons: {
     icon: [
-      { url: "/favicon.ico", sizes: "any" },
-      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      { url: "/favicon.ico?v=2", sizes: "any" },
+      { url: "/favicon-16x16.png?v=2", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png?v=2", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-48x48.png?v=2", sizes: "48x48", type: "image/png" },
+      { url: "/favicon-96x96.png?v=2", sizes: "96x96", type: "image/png" },
     ],
     apple: [
-      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      { url: "/apple-touch-icon.png?v=2", sizes: "180x180", type: "image/png" },
     ],
     other: [
       {
         rel: "icon",
-        url: "/android-chrome-192x192.png",
+        url: "/android-chrome-192x192.png?v=2",
         sizes: "192x192",
         type: "image/png",
       },
       {
         rel: "icon", 
-        url: "/android-chrome-512x512.png",
+        url: "/android-chrome-512x512.png?v=2",
         sizes: "512x512",
         type: "image/png",
       },
@@ -152,7 +152,7 @@ if (typeof window === 'undefined') {
   try {
     validateOnStartup();
   } catch (error) {
-    console.error('Environment validation failed:', error.message);
+    // Environment validation failed
   }
 }
 
@@ -162,17 +162,16 @@ export default function RootLayout({ children }) {
       <head>
         {/* Preload critical resources */}
         <link rel="preload" href="/images/tdh-logo.svg" as="image" />
-        <link rel="preload" href="/api/spotify/albums/most-streamed?limit=3" as="fetch" crossOrigin="anonymous" />
-        <link rel="preload" href="/api/spotify/tracks?limit=3" as="fetch" crossOrigin="anonymous" />
         
-        {/* Favicons */}
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="manifest" href="/site.webmanifest" />
+        {/* Favicons - with cache busting */}
+        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png?v=2" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?v=2" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
+        <link rel="manifest" href="/site.webmanifest?v=2" />
         
         {/* Theme colors */}
         <meta name="theme-color" content="#006dff" />
@@ -219,10 +218,9 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${dancingScript.variable} ${dmSans.variable} antialiased bg-slate-900`}
       >
         <PerformanceOptimizer />
-        <AudioProvider>
-          <YouTubeBackgroundPlayer />
+        <TRPCProvider>
           {children}
-        </AudioProvider>
+        </TRPCProvider>
         <Analytics />
       </body>
     </html>

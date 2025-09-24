@@ -58,12 +58,6 @@ export function validateEnvironment() {
       }
     } else {
       config[key] = value;
-      
-      // Log masked credentials in production for debugging
-      if (process.env.NODE_ENV === 'production') {
-        const maskedValue = value.substring(0, 8) + '...';
-        console.log(`✅ ${key}: ${maskedValue}`);
-      }
     }
   }
 
@@ -88,10 +82,6 @@ export function validateEnvironment() {
 export function validateOnStartup() {
   const result = validateEnvironment();
   
-  // Log environment info
-  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🚀 Platform: ${process.env.VERCEL_ENV ? 'Vercel' : 'Local'}`);
-  
   if (!result.isValid) {
     const errorMessage = [
       '❌ Environment validation failed:',
@@ -106,18 +96,7 @@ export function validateOnStartup() {
 
     if (process.env.NODE_ENV === 'production') {
       throw new Error(errorMessage);
-    } else {
-      console.warn(errorMessage);
-      console.warn('\n⚠️  Running in development mode with missing environment variables.');
-      console.warn('🎵 Music features will use fallback data.\n');
     }
-  }
-
-  // Log warnings for fallback usage
-  if (result.warnings.length > 0) {
-    result.warnings.forEach(warning => {
-      console.warn(`⚠️  ${warning.message}`);
-    });
   }
 
   return result;

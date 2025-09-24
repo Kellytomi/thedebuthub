@@ -47,6 +47,77 @@ export interface SpotifyTrack {
   popularity?: number;
 }
 
+// Sanity Article Types
+export interface SanityImage {
+  _type: 'image';
+  asset: {
+    _ref: string;
+    _type: 'reference';
+  };
+  alt?: string;
+  caption?: string;
+}
+
+export interface SanityBlock {
+  _type: 'block';
+  _key: string;
+  style: 'normal' | 'h2' | 'h3' | 'h4' | 'blockquote';
+  children: Array<{
+    _type: 'span';
+    _key: string;
+    text: string;
+    marks?: string[];
+  }>;
+  markDefs?: Array<{
+    _type: 'link';
+    _key: string;
+    href: string;
+  }>;
+}
+
+export interface SanityCodeBlock {
+  _type: 'code';
+  _key: string;
+  code: string;
+  language: string;
+}
+
+export interface SanityImageBlock {
+  _type: 'image';
+  _key: string;
+  asset: {
+    _ref: string;
+    _type: 'reference';
+  };
+  alt?: string;
+  caption?: string;
+}
+
+export type SanityBlockContent = SanityBlock | SanityCodeBlock | SanityImageBlock;
+
+export interface SanityArticle {
+  _id: string;
+  _type: 'article';
+  title: string;
+  slug: {
+    current: string;
+  };
+  excerpt?: string;
+  body: SanityBlockContent[];
+  mainImage: SanityImage;
+  publishedAt: string;
+  category: string;
+  author: string;
+  featured?: boolean;
+  tags?: string[];
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+  };
+  estimatedReadingTime?: number;
+}
+
+// Legacy Article interface for backward compatibility
 export interface Article {
   id: number;
   title: string;

@@ -10,8 +10,5 @@ export * from './sections';
 // UI Components
 export * from './ui';
 
-// Feature Components
-export * from './features/audio';
-
 // Utility Components
 export * from './utils';
