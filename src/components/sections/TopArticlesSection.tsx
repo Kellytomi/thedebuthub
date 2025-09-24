@@ -86,7 +86,7 @@ const TopArticlesSection = () => {
             fontSize: "24px",
           }}
         >
-          <span className="text-[#646464]">What's been going on?</span>
+          <span className="text-[#646464]">What&apos;s been going on?</span>
           <span className="text-white">Latest articles for you</span>
         </h2>
         {error && (

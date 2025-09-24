@@ -372,7 +372,7 @@ export async function getNigerianAlbums(limit = 12) {
         }))
         .slice(0, limit);
       
-      console.log(`📀 Returning ${albums.length} albums:`, albums.map(a => `${a.name} - ${a.artist}`));
+      console.log(`📀 Returning ${albums.length} albums:`, albums.map((a: any) => `${a.name} - ${a.artist}`));
       return albums;
     }
     

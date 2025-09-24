@@ -1,11 +1,11 @@
 'use client';
 
-import { PortableText } from '@portabletext/react';
+import { PortableText, type PortableTextReactComponents } from '@portabletext/react';
 import Image from 'next/image';
 import { urlFor } from '@/lib/sanity/config';
 
 // Custom components for rendering Sanity blocks with dark theme
-const components = {
+const components: Partial<PortableTextReactComponents> = {
   types: {
     image: ({ value }: { value: any }) => {
       if (!value?.asset) return null;
@@ -41,47 +41,47 @@ const components = {
     },
   },
   block: {
-    h2: ({ children }: { children: React.ReactNode }) => (
+    h2: ({ children }) => (
       <h2 className="text-white text-2xl md:text-3xl font-bold mt-10 mb-6 text-center max-w-4xl mx-auto">
         {children}
       </h2>
     ),
-    h3: ({ children }: { children: React.ReactNode }) => (
+    h3: ({ children }) => (
       <h3 className="text-white text-xl md:text-2xl font-semibold mt-8 mb-4 text-center max-w-4xl mx-auto">
         {children}
       </h3>
     ),
-    h4: ({ children }: { children: React.ReactNode }) => (
+    h4: ({ children }) => (
       <h4 className="text-white text-lg md:text-xl font-medium mt-6 mb-3 text-center max-w-4xl mx-auto">
         {children}
       </h4>
     ),
-    normal: ({ children }: { children: React.ReactNode }) => (
+    normal: ({ children }) => (
       <p className="text-white text-center text-[16px] md:text-[18px] max-w-4xl mx-auto mb-6 leading-relaxed">
         {children}
       </p>
     ),
-    blockquote: ({ children }: { children: React.ReactNode }) => (
+    blockquote: ({ children }) => (
       <blockquote className="border-l-4 border-[#FFDDB2] pl-6 my-8 italic text-white/80 max-w-4xl mx-auto">
         {children}
       </blockquote>
     ),
   },
   marks: {
-    strong: ({ children }: { children: React.ReactNode }) => (
+    strong: ({ children }) => (
       <strong className="font-semibold text-[#FFDDB2]">{children}</strong>
     ),
-    em: ({ children }: { children: React.ReactNode }) => (
+    em: ({ children }) => (
       <em className="italic">{children}</em>
     ),
-    code: ({ children }: { children: React.ReactNode }) => (
+    code: ({ children }) => (
       <code className="bg-[#171717] text-[#FFDDB2] px-2 py-1 rounded text-sm font-mono">
         {children}
       </code>
     ),
-    link: ({ children, value }: { children: React.ReactNode; value: any }) => (
+    link: ({ children, value }) => (
       <a
-        href={value.href}
+        href={value?.href || '#'}
         target="_blank"
         rel="noopener noreferrer"
         className="text-[#006DFF] hover:text-[#0056cc] underline transition-colors duration-300"
@@ -91,18 +91,18 @@ const components = {
     ),
   },
   list: {
-    bullet: ({ children }: { children: React.ReactNode }) => (
+    bullet: ({ children }) => (
       <ul className="list-disc list-inside mb-6 space-y-3 text-white max-w-4xl mx-auto">{children}</ul>
     ),
-    number: ({ children }: { children: React.ReactNode }) => (
+    number: ({ children }) => (
       <ol className="list-decimal list-inside mb-6 space-y-3 text-white max-w-4xl mx-auto">{children}</ol>
     ),
   },
   listItem: {
-    bullet: ({ children }: { children: React.ReactNode }) => (
+    bullet: ({ children }) => (
       <li className="text-white text-[16px] md:text-[18px] leading-relaxed">{children}</li>
     ),
-    number: ({ children }: { children: React.ReactNode }) => (
+    number: ({ children }) => (
       <li className="text-white text-[16px] md:text-[18px] leading-relaxed">{children}</li>
     ),
   },
