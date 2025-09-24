@@ -3,6 +3,7 @@ import {
   getAllArticles,
   getArticlesByCategory,
   getFeaturedArticles,
+  searchArticles,
 } from "@/lib/sanity/api";
 
 export async function GET(request) {
@@ -13,11 +14,15 @@ export async function GET(request) {
     const sort = searchParams.get("sort");
     const limit = parseInt(searchParams.get("limit") || "15");
     const offset = parseInt(searchParams.get("offset") || "0");
+    const searchQuery = searchParams.get("search"); // Get search query
 
     let articles;
 
     // Fetch articles from Sanity based on query params
-    if (isFeatured) {
+    if (searchQuery) {
+      // Handle search query
+      articles = await searchArticles(searchQuery);
+    } else if (isFeatured) {
       articles = await getFeaturedArticles();
     } else if (category) {
       articles = await getArticlesByCategory(category);

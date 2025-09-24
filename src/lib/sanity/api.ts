@@ -86,3 +86,12 @@ export async function getRawArticleBySlug(slug: string) {
   }
 }
 
+// Search articles by query
+export async function searchArticles(query: string) {
+  try {
+    const articles = await client.fetch(queries.searchArticles, { query: `*${query}*` } as any)
+    return articles.map(transformSanityArticle)
+  } catch (error) {
+    return []
+  }
+}

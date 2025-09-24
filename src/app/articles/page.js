@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { ArticleCard } from "@/components/ui";
@@ -8,7 +8,9 @@ import { Layout } from "@/components";
 
 export default function ArticlesPage() {
   const [articles, setArticles] = useState([]);
+  const [allArticles, setAllArticles] = useState([]); // Store all articles for searching
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [ref, inView] = useInView({
     threshold: 0.1,
     triggerOnce: false,
@@ -17,49 +19,104 @@ export default function ArticlesPage() {
   // Loading skeleton data
   const skeletonCount = 15;
 
-  useEffect(() => {
-    async function fetchArticles() {
-      try {
-        // Aggressive cache-busting with multiple parameters
-        const timestamp = Date.now();
-        const randomId = Math.random().toString(36).substring(7);
-        const response = await fetch(`/api/articles?_t=${timestamp}&_r=${randomId}&nocache=true`, {
-          cache: 'no-store',
-          headers: {
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-          }
-        });
-        const data = await response.json();
-
-        if (data.success && Array.isArray(data.articles)) {
-          // Use actual article images from Sanity
-          const validatedArticles = data.articles
-            .filter(article => article && article.id && article.title) // Only valid articles
-            .map(article => ({
-              ...article,
-              // Keep the original image from Sanity, with fallback
-              image: article.image || '/images/david-image.png',
-              // Ensure required fields exist
-              title: article.title || 'Untitled Article',
-              author: article.author || 'The Debut Hub',
-              date: article.date || 'Unknown Date',
-              slug: article.slug || `article-${article.id}`
-            }));
-          
-          setArticles(validatedArticles);
-        } else {
-          setArticles([]);
+  const fetchArticles = useCallback(async () => {
+    try {
+      // Aggressive cache-busting with multiple parameters
+      const timestamp = Date.now();
+      const randomId = Math.random().toString(36).substring(7);
+      const response = await fetch(`/api/articles?_t=${timestamp}&_r=${randomId}&nocache=true`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
         }
-      } catch (error) {
-        setArticles([]);
-      } finally {
-        setIsLoading(false);
-      }
-    }
+      });
+      const data = await response.json();
 
-    fetchArticles();
+      if (data.success && Array.isArray(data.articles)) {
+        // Use actual article images from Sanity
+        const validatedArticles = data.articles
+          .filter(article => article && article.id && article.title) // Only valid articles
+          .map(article => ({
+            ...article,
+            // Keep the original image from Sanity, with fallback
+            image: article.image || '/images/david-image.png',
+            // Ensure required fields exist
+            title: article.title || 'Untitled Article',
+            author: article.author || 'The Debut Hub',
+            date: article.date || 'Unknown Date',
+            slug: article.slug || `article-${article.id}`
+          }));
+        
+        setAllArticles(validatedArticles); // Store all articles
+        setArticles(validatedArticles); // Display all articles initially
+      } else {
+        setAllArticles([]);
+        setArticles([]);
+      }
+    } catch (error) {
+      setAllArticles([]);
+      setArticles([]);
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchArticles();
+  }, [fetchArticles]);
+
+  // Handle search functionality
+  const handleSearch = async (e) => {
+    e.preventDefault();
+    
+    if (searchTerm.trim() === "") {
+      // If search is empty, show all articles
+      setArticles(allArticles);
+      return;
+    }
+    
+    setIsLoading(true);
+    
+    try {
+      const timestamp = Date.now();
+      const randomId = Math.random().toString(36).substring(7);
+      const response = await fetch(`/api/articles?search=${encodeURIComponent(searchTerm)}&_t=${timestamp}&_r=${randomId}&nocache=true`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+        }
+      });
+      const data = await response.json();
+
+      if (data.success && Array.isArray(data.articles)) {
+        const validatedArticles = data.articles
+          .filter(article => article && article.id && article.title)
+          .map(article => ({
+            ...article,
+            image: article.image || '/images/david-image.png',
+            title: article.title || 'Untitled Article',
+            author: article.author || 'The Debut Hub',
+            date: article.date || 'Unknown Date',
+            slug: article.slug || `article-${article.id}`
+          }));
+        
+        setArticles(validatedArticles);
+      } else {
+        setArticles([]);
+      }
+    } catch (error) {
+      setArticles([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
 
   return (
     <Layout>
@@ -74,16 +131,21 @@ export default function ArticlesPage() {
 
         {/* Search Bar */}
         <div className="max-w-md w-full mx-auto mb-10 md:mb-24">
-          <div className="flex flex-col sm:flex-row gap-3 w-full">
+          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 w-full">
             <input
               type="text"
               placeholder="Search for an artiste"
+              value={searchTerm}
+              onChange={handleSearchChange}
               className="w-full sm:flex-1 px-6 py-4 bg-[#252525]/30 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
             />
-            <button className="bg-[#006DFF] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#0056cc] transition-colors duration-300">
+            <button 
+              type="submit"
+              className="bg-[#006DFF] text-white px-8 py-4 rounded-lg font-medium hover:bg-[#0056cc] transition-colors duration-300"
+            >
               Search
             </button>
-          </div>
+          </form>
         </div>
       </div>
 
@@ -93,10 +155,10 @@ export default function ArticlesPage() {
       >
         <div className="relative z-10">
           {/* Articles Grid */}
-          <div className="max-w-6xl mx-auto px-4 md:px-8">
+          <div className="max-w-6xl mx-auto px-4 sm:px-8">
             {isLoading ? (
               // Mobile: 1 column, Tablet: 2 columns, Desktop: 3 columns
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[33px]">
+              <div className="grid grid-cols-[350px] lg:grid-cols-[370px_370px] xl:grid-cols-3 gap-[33px] justify-center">
                 {Array.from({ length: skeletonCount }, (_, index) => (
                   <div
                     key={index}
@@ -113,10 +175,10 @@ export default function ArticlesPage() {
                   </div>
                 ))}
               </div>
-            ) : (
+            ) : articles.length > 0 ? (
               // Mobile: 1 column, Tablet: 2 columns, Desktop: 3 columns
               <div
-                className="grid grid-cols-1 sm:grid-cols-[370px_370px] lg:grid-cols-[370px_370px_370px] gap-[33px]"
+                className="grid grid-cols-[350px] md:grid-cols-[370px] lg:grid-cols-[370px_370px] xl:grid-cols-[370px_370px_370px] gap-7 xl:gap-[33px] justify-center"
               >
                 {articles.map((article, index) => (
                   <ArticleCard 
@@ -125,6 +187,11 @@ export default function ArticlesPage() {
                     index={index} 
                   />
                 ))}
+              </div>
+            ) : (
+              <div className="text-center py-10">
+                <h3 className="text-white text-xl">No articles found</h3>
+                <p className="text-white/70 mt-2">Try adjusting your search terms</p>
               </div>
             )}
           </div>

@@ -342,7 +342,7 @@ export default function ArticlePage({ params }) {
             line2="Similar articles for you"
           />
           <motion.div
-            className="w-full py-10"
+            className="w-full pb-10"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}

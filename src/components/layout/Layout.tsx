@@ -30,7 +30,7 @@ export default function Layout({ children }: LayoutProps) {
       </div>
 
       {/* Header Navigation */}
-      <div className="fixed top-4 sm:top-8 left-0 right-0 z-50">
+      <div className="absolute top-4 sm:top-8 left-0 right-0 z-50">
         <div className="flex justify-between items-center px-4 sm:px-8 lg:px-12 max-w-[1440px] mx-auto">
           {/* Logo */}
           <Link href="/" className="flex items-center">

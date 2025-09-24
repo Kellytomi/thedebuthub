@@ -281,7 +281,7 @@ export default function CoverStorySection() {
 
                 {/* Read more button */}
                 <motion.div
-                  className="mb-8"
+                  className="mb-8 flex justify-center sm:justify-start"
                   variants={childVariants}
                 >
                   <Button onClick={() => window.open("https://twitter.com/thedebuthub", "_blank")} ariaLabel="Read More">

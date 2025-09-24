@@ -83,6 +83,24 @@ export const queries = {
     publishedAt,
     category,
     author
+  }`,
+  
+  // Search articles by title, excerpt or tags
+  searchArticles: `*[_type == "article" && (
+    title match $query || 
+    excerpt match $query || 
+    tags match $query ||
+    category match $query
+  )] | order(publishedAt desc) {
+    _id,
+    title,
+    slug,
+    excerpt,
+    mainImage,
+    publishedAt,
+    category,
+    author,
+    tags
   }`
 }
 

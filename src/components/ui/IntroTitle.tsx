@@ -8,7 +8,7 @@ const IntroTitle = ({
   line2: string;
 }) => {
   return (
-    <div className="relative text-center pt-16 mb-6 md:mb-24">
+    <div className="relative text-center pt-16 mb-6 md:mb-12">
       <p
         className="italic font-dancing-script text-[32px]"
         style={{
