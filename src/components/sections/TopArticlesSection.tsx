@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import { ArticleCard, Button, FlankDecoration, IntroTitle, ArticleCardSkeleton } from "../ui";
-import { motion, type Variants } from "framer-motion";
 interface ProcessedArticle {
   id: string;
   title: string;
@@ -50,30 +49,6 @@ const TopArticlesSection = () => {
     fetchLatestArticles();
   }, []);
 
-  // ✅ Container animation (staggered children)
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        when: "beforeChildren",
-      },
-    },
-  };
-
-  // ✅ Each card animation
-  const cardVariants: Variants = {
-    hidden: { y: 30, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.6,
-        ease: [0.16, 0.77, 0.47, 0.97],
-      },
-    },
-  };
 
   return (
     <section className="relative overflow-hidden py-10 flex flex-col gap-10 w-full bg-[#040507]">
@@ -96,25 +71,18 @@ const TopArticlesSection = () => {
         )}
 
         {/* Articles Container */}
-        <motion.div
-          className="w-full"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-        >
+        <div className="w-full">
           {/* Desktop: Grid Layout */}
-          <div className="grid grid-cols-[330px] sm:grid-cols-[370px] lg:grid-cols-[370px_370px] xl:grid-cols-[370px_370px_370px] grid-rows-[444px_444px] gap-6 justify-center">
+          <div className="grid grid-cols-[330px] sm:grid-cols-[370px] lg:grid-cols-[370px_370px] xl:grid-cols-[370px_370px_370px] gap-6 justify-center">
             {isLoading
               ? Array.from({ length: 6 }).map((_, index) => (
                   <ArticleCardSkeleton key={`skeleton-${index}`} />
                 ))
               : articles.length > 0
               ? articles.map((article, index) => (
-                  <motion.div
+                  <div
                     key={article.id}
                     className="w-full max-w-[370px]"
-                    variants={cardVariants}
                   >
                     <ArticleCard
                       article={{
@@ -127,7 +95,7 @@ const TopArticlesSection = () => {
                       }}
                       index={index}
                     />
-                  </motion.div>
+                  </div>
                 ))
               : error
               ? (
@@ -148,12 +116,14 @@ const TopArticlesSection = () => {
                   </div>
                 )}
           </div>
-        </motion.div>
-      </div>
-
-
-      <div className="relative flex justify-center z-20">
-        <Button href="/articles">View All</Button>
+          
+          {/* View All Button - positioned right after the grid */}
+          {articles.length > 0 && (
+            <div className="flex justify-center mt-8">
+              <Button href="/articles">View All</Button>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );
