@@ -88,7 +88,7 @@ export default function TopTracksSection() {
 
   const TrackCard = ({ track, index }: { track: any; index: number; }) => (
     <div className="group relative flex flex-col xl:flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2 cursor-pointer">
-      <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-[#FFDDB2]">
+      <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-white">
         <Image
           src={track.cover}
           alt={track.title}

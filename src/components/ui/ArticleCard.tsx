@@ -31,22 +31,36 @@ export default function ArticleCard({
 
   return (
     <Link href={`/articles/${article.slug}`} passHref>
-      <div className="group flex flex-col items-center justify-between text-white bg-[#0D0D0D] w-full h-[444px] rounded-lg p-4 transition-all duration-300 ease-in-out hover:bg-[#1a1a1a] hover:shadow-lg">
-        <div className="relative w-full h-[250px] mb-4 overflow-hidden rounded-md">
+      <div className="group relative flex flex-col xl:flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2 cursor-pointer">
+        <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-white">
           <Image
             src={imageUrl}
             alt={article.title || "Article image"}
-            fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover object-top transition-transform duration-500 ease-in-out group-hover:scale-105"
+            width={370}
+            height={350}
+            priority={index < 3}
+            loading={index < 3 ? "eager" : "lazy"}
+            sizes="(max-width: 768px) 330px, (max-width: 1200px) 370px, 370px"
+            className="object-cover w-full h-full rounded-md transition-transform duration-300 group-hover:scale-105"
+            style={{
+              aspectRatio: '370/350',
+              objectFit: 'cover'
+            }}
+            onError={(e) => {
+              e.currentTarget.src = "/images/david-image.png";
+            }}
           />
+          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-md" />
         </div>
-        <div className="flex flex-col items-start w-full">
-          <h3 className="text-xl font-bold mb-2 leading-tight group-hover:text-[#006DFF]">
+        <div className="text-white text-[20px] flex flex-col gap-1">
+          <h3 className="truncate" title={article.title}>
             {article.title}
           </h3>
-          <p className="text-sm text-gray-400">By {article.author}</p>
-          <p className="text-sm text-gray-400 mt-1">{article.date}</p>
+          <div className="text-sm text-[#CCCCCC] flex flex-row items-center xl:items-center xl:flex-row gap-2">
+            <span className="truncate">{article.author}</span>
+            <div className="w-1 h-1 bg-[#2C2C2C] rounded-full xl:block flex-shrink-0" />
+            <span className="flex-shrink-0">{article.date}</span>
+          </div>
         </div>
       </div>
     </Link>

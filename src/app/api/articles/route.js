@@ -10,6 +10,7 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
     const isFeatured = searchParams.get("featured") === "true";
+    const sort = searchParams.get("sort");
     const limit = parseInt(searchParams.get("limit") || "15");
     const offset = parseInt(searchParams.get("offset") || "0");
 
@@ -22,6 +23,15 @@ export async function GET(request) {
       articles = await getArticlesByCategory(category);
     } else {
       articles = await getAllArticles();
+    }
+
+    // Sort articles if requested
+    if (sort === "latest" && articles.length > 0) {
+      articles = articles.sort((a, b) => {
+        const dateA = new Date(a.publishedAt || a._createdAt);
+        const dateB = new Date(b.publishedAt || b._createdAt);
+        return dateB - dateA; // Latest first
+      });
     }
 
     // Apply limit and offset for pagination

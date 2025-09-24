@@ -20,7 +20,6 @@ const components = {
             className="w-full h-auto rounded-[20px]"
             priority={false}
           />
-        </div>
           {value.caption && (
             <p className="text-white text-center text-[14px] max-w-4xl mx-auto mt-4">
               {value.caption}
