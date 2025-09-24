@@ -108,7 +108,7 @@ export default function ArticlesPage() {
             ) : (
               // Mobile: 1 column, Tablet: 2 columns, Desktop: 3 columns
               <div
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                className="grid grid-cols-1 sm:grid-cols-[370px_370px] lg:grid-cols-[370px_370px_370px] gap-[33px]"
               >
                 {articles.map((article, index) => (
                   <ArticleCard 

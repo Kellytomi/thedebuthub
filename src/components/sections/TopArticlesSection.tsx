@@ -51,7 +51,7 @@ const TopArticlesSection = () => {
   return (
     <section className="relative overflow-hidden py-10 flex flex-col gap-10 w-full bg-[#040507]">
       <FlankDecoration />
-      <div className="relative flex flex-col z-20 px-4">
+      <div className="relative flex flex-col z-20">
         <h2
           className="mb-8 flex flex-col text-lg text-center"
           style={{
@@ -71,7 +71,7 @@ const TopArticlesSection = () => {
         {/* Articles Container */}
         <div className="w-full">
           {/* Desktop: Grid Layout */}
-          <div className="grid grid-cols-[330px] sm:grid-cols-[370px] lg:grid-cols-[370px_370px] xl:grid-cols-[370px_370px_370px] gap-6 justify-center">
+          <div className="grid grid-cols-[330px] sm:grid-cols-[370px] lg:grid-cols-[370px_370px] xl:grid-cols-[370px_370px_370px] gap-[33px] justify-center">
             {isLoading
               ? Array.from({ length: 6 }).map((_, index) => (
                   <ArticleCardSkeleton key={`skeleton-${index}`} />
