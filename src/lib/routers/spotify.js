@@ -12,13 +12,9 @@ export const spotifyRouter = createTRPCRouter({
     )
     .query(async ({ input }) => {
       try {
-        console.log(`🎵 tRPC: Fetching top ${input.limit} most streamed Nigerian albums...`);
-        
         const albums = await getMostStreamedNigerianAlbums(input.limit);
         
         if (albums && albums.length > 0) {
-          console.log(`✅ tRPC: Successfully fetched ${albums.length} most streamed albums`);
-          
           return {
             success: true,
             albums,
@@ -26,8 +22,6 @@ export const spotifyRouter = createTRPCRouter({
             message: `Top ${albums.length} most streamed Nigerian albums`,
           };
         } else {
-          console.log('❌ tRPC: No albums found from API');
-          
           return {
             success: false,
             albums: [],
@@ -36,8 +30,6 @@ export const spotifyRouter = createTRPCRouter({
           };
         }
       } catch (error) {
-        console.error('🚨 tRPC Error - Most Streamed Albums:', error);
-        
         return {
           success: false,
           error: error.message,
@@ -58,11 +50,6 @@ export const spotifyRouter = createTRPCRouter({
     )
     .query(async ({ input }) => {
       try {
-        // Log for production debugging
-        if (process.env.NODE_ENV === 'production') {
-          console.log(`🎵 tRPC: Tracks called from region: ${process.env.VERCEL_REGION || 'unknown'}`);
-        }
-
         const tracks = await getNigerianTracks(input.limit, input.playlistId);
 
         return {
@@ -71,8 +58,6 @@ export const spotifyRouter = createTRPCRouter({
           count: tracks.length,
         };
       } catch (error) {
-        console.error('🚨 tRPC Error - Nigerian Tracks:', error);
-
         return {
           success: false,
           error: error.message,
@@ -91,13 +76,9 @@ export const spotifyRouter = createTRPCRouter({
     )
     .query(async ({ input }) => {
       try {
-        console.log(`🎤 tRPC: Fetching top ${input.limit} Nigerian artists...`);
-        
         const artists = await getNigerianArtists(input.limit);
 
         if (artists && artists.length > 0) {
-          console.log(`✅ tRPC: Successfully fetched ${artists.length} artists`);
-          
           return {
             success: true,
             artists,
@@ -105,8 +86,6 @@ export const spotifyRouter = createTRPCRouter({
             message: `Top ${artists.length} Nigerian artists`,
           };
         } else {
-          console.log('🔄 tRPC: No artists found, returning fallback data');
-          
           // Fallback data - popular Nigerian artists
           const fallbackArtists = [
             {
@@ -167,8 +146,6 @@ export const spotifyRouter = createTRPCRouter({
           };
         }
       } catch (error) {
-        console.error('🚨 tRPC Error - Nigerian Artists:', error);
-        
         // Return error with fallback data
         const fallbackArtists = [
           {

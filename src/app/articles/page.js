@@ -47,14 +47,11 @@ export default function ArticlesPage() {
               slug: article.slug || `article-${article.id}`
             }));
           
-          console.log(`✅ Loaded ${validatedArticles.length} validated articles with actual images from Sanity`);
           setArticles(validatedArticles);
         } else {
-          console.error('API returned unsuccessful response:', data);
           setArticles([]);
         }
       } catch (error) {
-        console.error("Error fetching articles:", error);
         setArticles([]);
       } finally {
         setIsLoading(false);

@@ -7,9 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate-favicons": "node scripts/generate-favicons.js",
-    "studio": "sanity dev",
-    "deploy-studio": "sanity deploy"
+    "generate-favicons": "node scripts/generate-favicons.js"
   },
   "dependencies": {
     "@portabletext/react": "^4.0.3",

@@ -35,11 +35,9 @@ const TopArticlesSection = () => {
         if (data.success && data.articles) {
           setArticles(data.articles);
         } else {
-          console.warn("API returned success=false or no articles:", data);
           setError("No articles available");
         }
       } catch (error) {
-        console.error("Error fetching latest articles:", error);
         setError("Failed to load articles");
       } finally {
         setIsLoading(false);

@@ -1,7 +1,5 @@
 import { Geist, Geist_Mono, Montserrat, Dancing_Script, DM_Sans } from "next/font/google";
 import "./globals.css";
-import { AudioProvider } from "@/contexts/AudioContext";
-import { YouTubeBackgroundPlayer } from "@/components/features/audio";
 import { validateOnStartup } from "@/lib/utils/env-validation";
 import { Analytics } from "@vercel/analytics/next";
 import { PerformanceOptimizer } from "@/components/utils";
@@ -154,7 +152,7 @@ if (typeof window === 'undefined') {
   try {
     validateOnStartup();
   } catch (error) {
-    console.error('Environment validation failed:', error.message);
+    // Environment validation failed
   }
 }
 
@@ -221,10 +219,7 @@ export default function RootLayout({ children }) {
       >
         <PerformanceOptimizer />
         <TRPCProvider>
-          <AudioProvider>
-            <YouTubeBackgroundPlayer />
-            {children}
-          </AudioProvider>
+          {children}
         </TRPCProvider>
         <Analytics />
       </body>

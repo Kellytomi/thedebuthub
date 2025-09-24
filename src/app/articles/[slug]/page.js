@@ -80,7 +80,6 @@ export default function ArticlePage({ params }) {
           setNotFound(true);
         }
       } catch (error) {
-        console.error("Error fetching article:", error);
         setNotFound(true);
       } finally {
         setIsLoading(false);

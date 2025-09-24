@@ -4,11 +4,9 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui";
 import { motion, type Variants } from "framer-motion";
-import { useAudio } from "@/contexts/AudioContext";
 import { trpc } from "@/lib/trpc-client";
 
 export default function HeroSection() {
-  const { isMuted, toggleMute, hasUserInteracted, pendingUnmute } = useAudio();
   const [currentArtistIndex, setCurrentArtistIndex] = useState(0);
   const [isAutoRotating, setIsAutoRotating] = useState(true);
 

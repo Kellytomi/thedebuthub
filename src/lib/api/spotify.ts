@@ -60,7 +60,6 @@ async function getAccessToken() {
     
     return accessToken;
   } catch (error) {
-    console.error('Error getting Spotify access token:', error);
     throw error;
   }
 }
@@ -90,8 +89,6 @@ async function spotifyFetch(endpoint: string, options: any = {}) {
   
   // Rebuild endpoint with forced parameters
   enhancedEndpoint = `${baseEndpoint}?${urlParams.toString()}`;
-  
-  console.log(`🇳🇬 Spotify API call (Nigeria market): ${enhancedEndpoint}`);
   
   const response = await fetch(`https://api.spotify.com/v1${enhancedEndpoint}`, {
     ...options,
@@ -125,8 +122,6 @@ function formatDuration(durationMs: number): string {
  */
 export async function getMostStreamedNigerianAlbums(limit = 3) {
   try {
-    console.log('🇳🇬 Fetching most streamed albums from Top 50 - Nigeria playlist...');
-    
     const playlistId = await findNigerianPlaylist();
     if (!playlistId) {
       throw new Error('Could not find accessible Nigeria playlist');
@@ -141,7 +136,6 @@ export async function getMostStreamedNigerianAlbums(limit = 3) {
     return processAlbumsFromPlaylist(playlistResponse.items, limit);
 
   } catch (error) {
-    console.error('Error fetching most streamed Nigerian albums from charts:', error);
     return [];
   }
 }
@@ -173,7 +167,6 @@ async function findNigerianPlaylist() {
         });
         
         if (officialPlaylist) {
-          console.log(`✅ Found official Nigeria playlist: "${officialPlaylist.name}"`);
           return officialPlaylist.id;
         }
         
@@ -184,12 +177,11 @@ async function findNigerianPlaylist() {
         });
         
         if (nigeriaPlaylist) {
-          console.log(`📋 Using Nigeria playlist: "${nigeriaPlaylist.name}"`);
           return nigeriaPlaylist.id;
         }
       }
     } catch (searchError: any) {
-      console.warn(`Playlist search failed for "${searchTerm}":`, searchError.message);
+      // Playlist search failed for this term
     }
   }
   
@@ -206,11 +198,10 @@ async function findNigerianPlaylist() {
     try {
       const testResponse = await spotifyFetch(`/playlists/${id}?market=NG`);
       if (testResponse.id) {
-        console.log(`✅ Using fallback playlist: "${testResponse.name}"`);
         return id;
       }
     } catch (error: any) {
-      console.warn(`Playlist ${id} not accessible:`, error.message);
+      // Playlist not accessible
     }
   }
   
@@ -250,7 +241,6 @@ function processAlbumsFromPlaylist(playlistItems: any[], limit: number) {
       };
       
       detailedAlbums.push(albumData);
-      console.log(`✅ Album #${detailedAlbums.length}: ${albumData.artist} - ${albumData.name}`);
     }
   }
   
@@ -344,16 +334,12 @@ function getFallbackAlbums(limit: number) {
  */
 export async function getNigerianAlbums(limit = 12) {
   try {
-    console.log('🎵 Fetching Nigerian albums from Spotify API...');
-    
     // Simple search for Nigerian albums
     const searchResponse = await spotifyFetch(
       `/search?q=nigeria&type=album&market=NG&limit=${limit * 2}`
     );
     
     if (searchResponse.albums?.items?.length > 0) {
-      console.log(`✅ Found ${searchResponse.albums.items.length} albums from API`);
-      
       const albums = searchResponse.albums.items
         .filter((album: any) => 
           album.images?.length > 0 && 
@@ -372,15 +358,12 @@ export async function getNigerianAlbums(limit = 12) {
         }))
         .slice(0, limit);
       
-      console.log(`📀 Returning ${albums.length} albums:`, albums.map((a: any) => `${a.name} - ${a.artist}`));
       return albums;
     }
     
-    console.log('❌ No albums found in API response');
     return [];
     
   } catch (error) {
-    console.error('❌ Error fetching Nigerian albums:', error);
     return [];
   }
 }
@@ -399,7 +382,7 @@ export async function getNigerianTracks(limit = 12, playlistIdOverride?: string)
         return processTracksFromPlaylist(primaryResponse.items, limit);
       }
     } catch (e) {
-      console.warn(`Primary playlist fetch failed (${primaryPlaylistId}):`, (e as Error).message);
+      // Primary playlist fetch failed
     }
 
     // Fallback to discovering a Nigeria playlist programmatically
@@ -415,7 +398,6 @@ export async function getNigerianTracks(limit = 12, playlistIdOverride?: string)
     return await getTracksFromArtistSearch(limit);
     
   } catch (error) {
-    console.error('Error fetching Nigerian tracks:', error);
     // No fallback data – respect user's preference for real API-only results
     return [];
   }
@@ -498,7 +480,7 @@ async function getTracksFromArtistSearch(limit: number) {
         }
       }
     } catch (error: any) {
-      console.warn(`Track search for ${artist} failed:`, error.message);
+      // Track search failed for this artist
     }
   }
 
@@ -555,8 +537,6 @@ function getFallbackTracks(limit: number) {
  */
 export async function getNigerianArtists(limit = 7) {
   try {
-    console.log(`🎤 Fetching top ${limit} Nigerian artists...`);
-    
     const artists: any[] = [];
     const seenArtists = new Set();
 
@@ -577,8 +557,6 @@ export async function getNigerianArtists(limit = 7) {
             const searchName = artistName.replace(/['"]/g, '').toLowerCase();
             
             if (normalizedName.includes(searchName) || searchName.includes(normalizedName)) {
-              console.log(`✅ Found ${artist.name} via Spotify API`);
-              
               let imageUrl = artistImage;
               if (!imageUrl) {
                 const artistLower = artist.name.toLowerCase();
@@ -607,7 +585,7 @@ export async function getNigerianArtists(limit = 7) {
           }
         }
       } catch (error: any) {
-        console.warn(`❌ Search for ${artistName} failed:`, error.message);
+        // Search for this artist failed
       }
     }
 
@@ -616,11 +594,9 @@ export async function getNigerianArtists(limit = 7) {
       .sort((a, b) => (b.popularity || 0) - (a.popularity || 0))
       .slice(0, limit);
 
-    console.log(`✅ Successfully fetched ${sortedArtists.length} Nigerian artists`);
     return sortedArtists;
 
   } catch (error) {
-    console.error('Error fetching top Nigerian artists:', error);
     return getFallbackArtists(limit);
   }
 }

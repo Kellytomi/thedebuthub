@@ -54,11 +54,3 @@ export interface ImageProps {
 export interface FlankDecorationProps {
   variant?: 'default' | 'compact';
 }
-
-export interface AudioContextType {
-  isMuted: boolean;
-  setIsMuted: (muted: boolean) => void;
-  toggleMute: () => void;
-  hasUserInteracted: boolean;
-  pendingUnmute: boolean;
-}

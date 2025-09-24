@@ -30,7 +30,6 @@ export async function getAllArticles() {
     const articles = await client.fetch(queries.getAllArticles)
     return articles.map(transformSanityArticle)
   } catch (error) {
-    console.error('Error fetching articles:', error)
     return []
   }
 }
@@ -41,7 +40,6 @@ export async function getArticleBySlug(slug: string) {
     const article = await client.fetch(queries.getArticleBySlug, { slug })
     return article ? transformSanityArticle(article) : null
   } catch (error) {
-    console.error('Error fetching article by slug:', error)
     return null
   }
 }
@@ -55,7 +53,6 @@ export async function getRelatedArticles(category: string, currentId: string) {
     })
     return articles.map(transformSanityArticle)
   } catch (error) {
-    console.error('Error fetching related articles:', error)
     return []
   }
 }
@@ -66,7 +63,6 @@ export async function getArticlesByCategory(category: string) {
     const articles = await client.fetch(queries.getArticlesByCategory, { category })
     return articles.map(transformSanityArticle)
   } catch (error) {
-    console.error('Error fetching articles by category:', error)
     return []
   }
 }
@@ -77,7 +73,6 @@ export async function getFeaturedArticles() {
     const articles = await client.fetch(queries.getFeaturedArticles)
     return articles.map(transformSanityArticle)
   } catch (error) {
-    console.error('Error fetching featured articles:', error)
     return []
   }
 }
@@ -87,7 +82,6 @@ export async function getRawArticleBySlug(slug: string) {
   try {
     return await client.fetch(queries.getArticleBySlug, { slug })
   } catch (error) {
-    console.error('Error fetching raw article:', error)
     return null
   }
 }

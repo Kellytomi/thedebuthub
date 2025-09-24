@@ -65,8 +65,6 @@ export async function GET(request) {
 
     return response;
   } catch (error) {
-    console.error("Error fetching articles:", error);
-
     // Fallback to empty array if Sanity is unavailable
     return NextResponse.json(
       {
