@@ -8,8 +8,8 @@ export default defineConfig({
   name: 'thedebuthub',
   title: 'The Debut Hub CMS',
 
-  projectId: 'kc23wdnh',
-  dataset: 'production',
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
 
   plugins: [
     structureTool(),
