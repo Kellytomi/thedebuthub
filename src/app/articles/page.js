@@ -96,13 +96,21 @@ export default function ArticlesPage() {
           <div className="max-w-6xl mx-auto px-4 md:px-8">
             {isLoading ? (
               // Mobile: 1 column, Tablet: 2 columns, Desktop: 3 columns
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[33px]">
                 {Array.from({ length: skeletonCount }, (_, index) => (
                   <div
                     key={index}
-                    className="aspect-square bg-[#171717] animate-pulse rounded-lg"
+                    className="flex flex-col w-full h-auto gap-2"
                     style={{ animationDelay: `${index * 50}ms` }}
-                  />
+                  >
+                    {/* Image skeleton with border */}
+                    <div className="relative w-full h-[350px] overflow-hidden rounded-xl bg-[#171717] animate-pulse"></div>
+                    {/* Text content skeleton */}
+                    <div className="flex flex-col gap-1">
+                      {/* Title skeleton */}
+                      <div className="h-6 bg-[#171717] animate-pulse rounded w-4/5"></div>
+                    </div>
+                  </div>
                 ))}
               </div>
             ) : (
