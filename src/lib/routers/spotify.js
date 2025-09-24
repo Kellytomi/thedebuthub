@@ -26,124 +26,24 @@ export const spotifyRouter = createTRPCRouter({
             message: `Top ${albums.length} most streamed Nigerian albums`,
           };
         } else {
-          console.log('🔄 tRPC: No albums found, returning fallback data');
-          
-          // Fallback data - most streamed albums
-          const fallbackAlbums = [
-            {
-              id: 'fallback-most-streamed-1',
-              name: 'Rave & Roses Ultra',
-              artist: 'Rema',
-              image: '/images/rema-image.png',
-              total_tracks: 15,
-              release_date: '2023-04-28',
-              popularity: 95,
-              album_type: 'album',
-              external_urls: { spotify: '#' }
-            },
-            {
-              id: 'fallback-most-streamed-2',
-              name: 'Afro Rave',
-              artist: 'Shallipopi',
-              image: '/images/album2.png',
-              total_tracks: 12,
-              release_date: '2023-08-11',
-              popularity: 92,
-              album_type: 'album',
-              external_urls: { spotify: '#' }
-            },
-            {
-              id: 'fallback-most-streamed-3',
-              name: 'Work of Art',
-              artist: 'Asake',
-              image: '/images/album1.png',
-              total_tracks: 14,
-              release_date: '2023-06-16',
-              popularity: 90,
-              album_type: 'album',
-              external_urls: { spotify: '#' }
-            },
-            {
-              id: 'fallback-most-streamed-4',
-              name: 'Love, Damini',
-              artist: 'Burna Boy',
-              image: '/images/album3.png',
-              total_tracks: 19,
-              release_date: '2022-07-08',
-              popularity: 88,
-              album_type: 'album',
-              external_urls: { spotify: '#' }
-            },
-            {
-              id: 'fallback-most-streamed-5',
-              name: 'Made in Lagos',
-              artist: 'Wizkid',
-              image: '/images/album1.png',
-              total_tracks: 14,
-              release_date: '2020-10-30',
-              popularity: 85,
-              album_type: 'album',
-              external_urls: { spotify: '#' }
-            }
-          ];
-          
-          const limitedFallback = fallbackAlbums.slice(0, input.limit);
+          console.log('❌ tRPC: No albums found from API');
           
           return {
             success: false,
-            albums: limitedFallback,
-            count: limitedFallback.length,
-            fallback: true,
-            message: `Fallback: Top ${limitedFallback.length} most streamed albums`,
+            albums: [],
+            count: 0,
+            message: 'No albums found from Spotify API',
           };
         }
       } catch (error) {
         console.error('🚨 tRPC Error - Most Streamed Albums:', error);
         
-        // Return error with fallback data
-        const fallbackAlbums = [
-          {
-            id: 'error-fallback-1',
-            name: 'Rave & Roses Ultra',
-            artist: 'Rema',
-            image: '/images/rema-image.png',
-            total_tracks: 15,
-            release_date: '2023-04-28',
-            popularity: 95,
-            album_type: 'album',
-            external_urls: { spotify: '#' }
-          },
-          {
-            id: 'error-fallback-2',
-            name: 'Afro Rave',
-            artist: 'Shallipopi',
-            image: '/images/album2.png',
-            total_tracks: 12,
-            release_date: '2023-08-11',
-            popularity: 92,
-            album_type: 'album',
-            external_urls: { spotify: '#' }
-          },
-          {
-            id: 'error-fallback-3',
-            name: 'Work of Art',
-            artist: 'Asake',
-            image: '/images/album1.png',
-            total_tracks: 14,
-            release_date: '2023-06-16',
-            popularity: 90,
-            album_type: 'album',
-            external_urls: { spotify: '#' }
-          }
-        ];
-        
         return {
           success: false,
           error: error.message,
-          albums: fallbackAlbums.slice(0, input.limit),
-          count: Math.min(fallbackAlbums.length, input.limit),
-          fallback: true,
-          message: 'Error fallback data',
+          albums: [],
+          count: 0,
+          message: 'Error fetching albums from Spotify API',
         };
       }
     }),
@@ -153,6 +53,7 @@ export const spotifyRouter = createTRPCRouter({
     .input(
       z.object({
         limit: z.number().int().min(1).max(50).default(12),
+        playlistId: z.string().optional(),
       })
     )
     .query(async ({ input }) => {
@@ -162,7 +63,7 @@ export const spotifyRouter = createTRPCRouter({
           console.log(`🎵 tRPC: Tracks called from region: ${process.env.VERCEL_REGION || 'unknown'}`);
         }
 
-        const tracks = await getNigerianTracks(input.limit);
+        const tracks = await getNigerianTracks(input.limit, input.playlistId);
 
         return {
           success: true,
@@ -171,47 +72,12 @@ export const spotifyRouter = createTRPCRouter({
         };
       } catch (error) {
         console.error('🚨 tRPC Error - Nigerian Tracks:', error);
-        
-        // Return fallback data if Spotify API fails
-        const fallbackTracks = [
-          {
-            id: 'fallback-1',
-            name: 'FUN',
-            artist: 'Rema',
-            image: '/images/rema-image.png',
-            duration: '3:27',
-            preview_url: null,
-            external_urls: { spotify: '#' },
-            album: 'Rave & Roses Ultra'
-          },
-          {
-            id: 'fallback-2',
-            name: 'you',
-            artist: 'FOLA',
-            image: '/images/album2.png',
-            duration: '2:48',
-            preview_url: null,
-            external_urls: { spotify: '#' },
-            album: 'Single'
-          },
-          {
-            id: 'fallback-3',
-            name: 'Na So',
-            artist: 'Shallipopi',
-            image: '/images/album1.png',
-            duration: '2:15',
-            preview_url: null,
-            external_urls: { spotify: '#' },
-            album: 'Afro Rave'
-          }
-        ];
 
         return {
           success: false,
           error: error.message,
-          tracks: fallbackTracks.slice(0, input.limit),
-          fallback: true,
-          count: Math.min(fallbackTracks.length, input.limit),
+          tracks: [],
+          count: 0,
         };
       }
     }),

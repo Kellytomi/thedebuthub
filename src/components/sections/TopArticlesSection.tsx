@@ -44,7 +44,7 @@ const TopArticlesSection = () => {
       <FlankDecoration />
       <div className="relative flex flex-col z-20 px-4">
         <IntroTitle
-          line1="What’s been going on?"
+          line1="What's been going on?"
           line2="New articles for you"
         />
 
@@ -67,7 +67,7 @@ const TopArticlesSection = () => {
                 <ArticleCard
                   article={{
                     ...relatedArticleBase,
-                    id: index + 1,
+                    id: `${index + 1}`,
                     slug: `related-article-${index + 1}`,
                   }}
                   index={index}

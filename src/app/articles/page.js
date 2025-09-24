@@ -33,13 +33,13 @@ export default function ArticlesPage() {
         const data = await response.json();
 
         if (data.success && Array.isArray(data.articles)) {
-          // Force all articles to use only david-image.png
+          // Use actual article images from Sanity
           const validatedArticles = data.articles
             .filter(article => article && article.id && article.title) // Only valid articles
             .map(article => ({
               ...article,
-              // Force use of david-image.png only, ignore any other image references
-              image: '/images/david-image.png',
+              // Keep the original image from Sanity, with fallback
+              image: article.image || '/images/david-image.png',
               // Ensure required fields exist
               title: article.title || 'Untitled Article',
               author: article.author || 'The Debut Hub',
@@ -47,7 +47,7 @@ export default function ArticlesPage() {
               slug: article.slug || `article-${article.id}`
             }));
           
-          console.log(`✅ Loaded ${validatedArticles.length} validated articles with forced image paths`);
+          console.log(`✅ Loaded ${validatedArticles.length} validated articles with actual images from Sanity`);
           setArticles(validatedArticles);
         } else {
           console.error('API returned unsuccessful response:', data);

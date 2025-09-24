@@ -170,7 +170,7 @@ export default function TopTracksSection() {
             ))}
           </div>
         ) : (
-          tracks.map((track, i) => (
+          tracks.map((track: any, i: number) => (
             <div key={track.id} className="flex justify-center">
               <TrackCard track={track} index={i} />
             </div>
@@ -182,7 +182,7 @@ export default function TopTracksSection() {
       <div className="hidden xl:flex relative z-20 justify-center items-center gap-[33px]">
         {loading
           ? [...Array(3)].map((_, i) => <TrackSkeleton key={i} />)
-          : tracks.map((track, i) => (
+          : tracks.map((track: any, i: number) => (
               <TrackCard key={track.id} track={track} index={i} />
             ))}
       </div>

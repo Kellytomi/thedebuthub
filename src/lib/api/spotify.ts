@@ -21,6 +21,9 @@ const NIGERIAN_ARTISTS = [
   'Fireboy DML', 'Rema', 'Asake', 'Kizz Daniel', 'Ayra Starr'
 ];
 
+// Default working Nigeria playlist
+const DEFAULT_NG_TOP50_PLAYLIST_ID = process.env.NG_TOP50_PLAYLIST_ID || '6nvDix6ABiGTqZghg4qaHs';
+
 /**
  * Get Spotify access token using Client Credentials flow
  */
@@ -139,7 +142,7 @@ export async function getMostStreamedNigerianAlbums(limit = 3) {
 
   } catch (error) {
     console.error('Error fetching most streamed Nigerian albums from charts:', error);
-    return getFallbackAlbums(limit);
+    return [];
   }
 }
 
@@ -190,9 +193,10 @@ async function findNigerianPlaylist() {
     }
   }
   
-  // Try fallback playlist IDs
+  // Try fallback playlist IDs (working ones)
   const fallbackPlaylistIds = [
-    '37i9dQZEVXbKY7jLzlJ11V', // Top 50 - Nigeria
+    '6nvDix6ABiGTqZghg4qaHs', // Top 100 Nigeria (working)
+    '37i9dQZEVXbKY7jLzlJ11V', // Top 50 - Nigeria (may not work)
     '37i9dQZEVXbNx2OGnb4lSJ', // Afrobeats Hits
     '37i9dQZEVXbMDoHDwVN2tF', // Global Top 50
     '37i9dQZEVXbJNjKfUHPuo1', // Africa Now
@@ -228,11 +232,10 @@ function processAlbumsFromPlaylist(playlistItems: any[], limit: number) {
     if (seenAlbums.has(album.id)) continue;
     seenAlbums.add(album.id);
     
-    // Only include full albums (8+ tracks)
-    const isFullAlbum = album.total_tracks >= 8 && 
-      (album.album_type === 'album' || album.total_tracks >= 10);
+    // Include singles, EPs, and albums from chart hits
+    const isValidRelease = album.total_tracks >= 1;
     
-    if (isFullAlbum) {
+    if (isValidRelease) {
       const albumData: any = {
         id: album.id,
         name: album.name,
@@ -251,7 +254,7 @@ function processAlbumsFromPlaylist(playlistItems: any[], limit: number) {
     }
   }
   
-  return detailedAlbums.length > 0 ? detailedAlbums : getFallbackAlbums(limit);
+  return detailedAlbums;
 }
 
 /**
@@ -273,23 +276,23 @@ function getFallbackAlbums(limit: number) {
   const fallbackAlbums: any[] = [
     {
       id: 'fallback-1',
-      name: 'Rave & Roses Ultra',
+      name: 'FUN',
       artist: 'Rema',
       image: '/images/rema-image.png',
-      total_tracks: 15,
-      release_date: '2023-04-28',
+      total_tracks: 1,
+      release_date: '2025-09-05',
       popularity: 95,
-      album_type: 'album',
+      album_type: 'single',
       external_urls: { spotify: '#' },
       chartPosition: 1
     },
     {
       id: 'fallback-2',
-      name: 'Afro Rave',
-      artist: 'Shallipopi',
-      image: '/images/album2.png',
-      total_tracks: 12,
-      release_date: '2023-08-11',
+      name: 'HEIS',
+      artist: 'Rema',
+      image: '/images/rema-image.png',
+      total_tracks: 11,
+      release_date: '2024-07-10',
       popularity: 92,
       album_type: 'album',
       external_urls: { spotify: '#' },
@@ -297,15 +300,39 @@ function getFallbackAlbums(limit: number) {
     },
     {
       id: 'fallback-3',
-      name: 'Work of Art',
-      artist: 'Asake',
+      name: 'No Sign Of Weakness',
+      artist: 'Burna Boy',
       image: '/images/album1.png',
-      total_tracks: 14,
-      release_date: '2023-06-16',
+      total_tracks: 16,
+      release_date: '2025-07-10',
       popularity: 90,
       album_type: 'album',
       external_urls: { spotify: '#' },
       chartPosition: 3
+    },
+    {
+      id: 'fallback-4',
+      name: 'Morayo',
+      artist: 'Wizkid',
+      image: '/images/album2.png',
+      total_tracks: 16,
+      release_date: '2024-11-22',
+      popularity: 88,
+      album_type: 'album',
+      external_urls: { spotify: '#' },
+      chartPosition: 4
+    },
+    {
+      id: 'fallback-5',
+      name: 'Made In Lagos',
+      artist: 'Wizkid',
+      image: '/images/album3.png',
+      total_tracks: 14,
+      release_date: '2020-10-29',
+      popularity: 85,
+      album_type: 'album',
+      external_urls: { spotify: '#' },
+      chartPosition: 5
     }
   ];
   
@@ -317,91 +344,80 @@ function getFallbackAlbums(limit: number) {
  */
 export async function getNigerianAlbums(limit = 12) {
   try {
-    const albumsByArtist = new Map();
-    const seenAlbums = new Set();
-    const seenArtists = new Set();
-
-    for (const artist of NIGERIAN_ARTISTS) {
-      if (albumsByArtist.size >= limit) break;
+    console.log('🎵 Fetching Nigerian albums from Spotify API...');
+    
+    // Simple search for Nigerian albums
+    const searchResponse = await spotifyFetch(
+      `/search?q=nigeria&type=album&market=NG&limit=${limit * 2}`
+    );
+    
+    if (searchResponse.albums?.items?.length > 0) {
+      console.log(`✅ Found ${searchResponse.albums.items.length} albums from API`);
       
-      try {
-        const artistSearch = await spotifyFetch(
-          `/search?q=artist%3A"${encodeURIComponent(artist)}"&type=album&market=NG&limit=5`
-        );
-        
-        if (artistSearch.albums?.items) {
-          const artistAlbums = artistSearch.albums.items
-            .filter((album: any) => 
-              album.images?.length > 0 && 
-              !seenAlbums.has(album.id) && 
-              album.artists[0]?.name?.toLowerCase().includes(artist.toLowerCase())
-            )
-            .sort((a: any, b: any) => {
-              const dateA = new Date(b.release_date).getTime();
-              const dateB = new Date(a.release_date).getTime();
-              return dateA - dateB;
-            });
-
-          if (artistAlbums.length > 0) {
-            const album = artistAlbums[0];
-            const normalizedArtist = album.artists[0].name.toLowerCase();
-            
-            const isFullAlbum = album.total_tracks >= 8 && 
-              (album.album_type === 'album' || album.total_tracks >= 10);
-            
-            if (!seenArtists.has(normalizedArtist) && isFullAlbum) {
-              albumsByArtist.set(normalizedArtist, {
-                id: album.id,
-                name: album.name,
-                artist: album.artists[0].name,
-                image: album.images[0]?.url,
-                total_tracks: album.total_tracks,
-                release_date: album.release_date,
-                popularity: album.popularity || 0,
-                album_type: album.album_type || 'album',
-                external_urls: album.external_urls
-              });
-              seenAlbums.add(album.id);
-              seenArtists.add(normalizedArtist);
-            }
-          }
-        }
-      } catch (error: any) {
-        console.warn(`Search for ${artist} failed:`, error.message);
-      }
+      const albums = searchResponse.albums.items
+        .filter((album: any) => 
+          album.images?.length > 0 && 
+          album.artists?.[0]?.name
+        )
+        .map((album: any) => ({
+          id: album.id,
+          name: album.name,
+          artist: album.artists[0].name,
+          image: album.images[0]?.url,
+          total_tracks: album.total_tracks,
+          release_date: album.release_date,
+          popularity: album.popularity || 0,
+          album_type: album.album_type || 'album',
+          external_urls: album.external_urls
+        }))
+        .slice(0, limit);
+      
+      console.log(`📀 Returning ${albums.length} albums:`, albums.map(a => `${a.name} - ${a.artist}`));
+      return albums;
     }
-
-    return Array.from(albumsByArtist.values())
-      .sort((a: any, b: any) => new Date(b.release_date).getTime() - new Date(a.release_date).getTime())
-      .slice(0, limit);
-
+    
+    console.log('❌ No albums found in API response');
+    return [];
+    
   } catch (error) {
-    console.error('Error fetching Nigerian albums:', error);
-    return getFallbackAlbums(limit);
+    console.error('❌ Error fetching Nigerian albums:', error);
+    return [];
   }
 }
 
 /**
  * Get top Nigerian tracks from charts or search
  */
-export async function getNigerianTracks(limit = 12) {
+export async function getNigerianTracks(limit = 12, playlistIdOverride?: string) {
   try {
-    // Try to get tracks from charts first
-    const playlistId = await findNigerianPlaylist();
-    if (playlistId) {
-      const playlistResponse = await spotifyFetch(`/playlists/${playlistId}/tracks?market=NG&limit=${Math.min(limit * 2, 50)}`);
-      
-      if (playlistResponse.items?.length > 0) {
-        return processTracksFromPlaylist(playlistResponse.items, limit);
+    // Prefer explicit Top 50 - Nigeria playlist
+    const primaryPlaylistId = playlistIdOverride || DEFAULT_NG_TOP50_PLAYLIST_ID;
+
+    try {
+      const primaryResponse = await spotifyFetch(`/playlists/${primaryPlaylistId}/tracks?market=NG&limit=${Math.min(limit * 2, 50)}`);
+      if (primaryResponse.items?.length > 0) {
+        return processTracksFromPlaylist(primaryResponse.items, limit);
+      }
+    } catch (e) {
+      console.warn(`Primary playlist fetch failed (${primaryPlaylistId}):`, (e as Error).message);
+    }
+
+    // Fallback to discovering a Nigeria playlist programmatically
+    const discoveredPlaylistId = await findNigerianPlaylist();
+    if (discoveredPlaylistId) {
+      const discoveredResponse = await spotifyFetch(`/playlists/${discoveredPlaylistId}/tracks?market=NG&limit=${Math.min(limit * 2, 50)}`);
+      if (discoveredResponse.items?.length > 0) {
+        return processTracksFromPlaylist(discoveredResponse.items, limit);
       }
     }
-    
-    // Fallback to artist-based search
+
+    // Final fallback: artist-based search (still real API data, no mock)
     return await getTracksFromArtistSearch(limit);
     
   } catch (error) {
     console.error('Error fetching Nigerian tracks:', error);
-    return getFallbackTracks(limit);
+    // No fallback data – respect user's preference for real API-only results
+    return [];
   }
 }
 

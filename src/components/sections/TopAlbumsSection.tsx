@@ -14,26 +14,26 @@ const MotionDiv = dynamic(() => import("framer-motion").then(mod => ({ default: 
 const fallbackAlbums = [
   {
     id: 1,
-    title: "Rave & Roses Ultra",
+    title: "FUN",
     artist: "Rema",
     cover: "/images/rema-image.png",
-    tracks: "15 tracks",
+    tracks: "1 track",
     popularity: 95,
   },
   {
     id: 2,
-    title: "Afro Rave",
-    artist: "Shallipopi",
-    cover: "/images/album2.png",
-    tracks: "12 tracks",
+    title: "HEIS",
+    artist: "Rema",
+    cover: "/images/rema-image.png",
+    tracks: "11 tracks",
     popularity: 92,
   },
   {
     id: 3,
-    title: "Work of Art",
-    artist: "Asake",
+    title: "No Sign Of Weakness",
+    artist: "Burna Boy",
     cover: "/images/album1.png",
-    tracks: "14 tracks",
+    tracks: "16 tracks",
     popularity: 90,
   },
 ];
@@ -62,15 +62,15 @@ export default function TopAlbumsSection() {
         id: album.id || i + 1,
         title: album.name || `Album ${i + 1}`,
         artist: album.artist || "Unknown Artist",
-        cover: album.image || fallbackAlbums[i]?.cover || "/images/placeholder.svg",
+        cover: album.image || "/images/placeholder.svg",
         tracks: album.total_tracks ? `${album.total_tracks} tracks` : "Tracks unknown",
         popularity: album.popularity || 85,
         spotifyUrl: album.external_urls?.spotify ?? "#",
       }));
     }
 
-    // Fallback data if API fails or returns no data
-    return fallbackAlbums;
+    // Return empty array if no data from API
+    return [];
   })();
 
   const AlbumSkeleton = () => (
@@ -149,7 +149,7 @@ export default function TopAlbumsSection() {
         </h2>
         {error && (
           <p className="text-red-400 text-sm mt-2">
-            Could not fetch albums – showing fallback data.
+            Could not fetch albums from Spotify API.
           </p>
         )}
       </div>
@@ -162,22 +162,34 @@ export default function TopAlbumsSection() {
               <AlbumSkeleton key={i} />
             ))}
           </div>
-        ) : (
-          albums.map((album, i) => (
+        ) : albums.length > 0 ? (
+          albums.map((album: any, i: number) => (
             <div key={album.id} className="flex justify-center">
               <AlbumCard album={album} index={i} />
             </div>
           ))
+        ) : (
+          <div className="text-center text-white py-8">
+            <p className="text-lg mb-2">No albums found</p>
+            <p className="text-sm text-[#CCCCCC]">Unable to fetch albums from Spotify API</p>
+          </div>
         )}
       </div>
 
       {/* Desktop Grid (xl and above) */}
       <div className="hidden xl:flex relative z-20 justify-center items-center gap-[33px]">
-        {loading
-          ? [...Array(3)].map((_, i) => <AlbumSkeleton key={i} />)
-          : albums.map((album, i) => (
-              <AlbumCard key={album.id} album={album} index={i} />
-            ))}
+        {loading ? (
+          [...Array(3)].map((_, i) => <AlbumSkeleton key={i} />)
+        ) : albums.length > 0 ? (
+          albums.map((album: any, i: number) => (
+            <AlbumCard key={album.id} album={album} index={i} />
+          ))
+        ) : (
+          <div className="text-center text-white py-8">
+            <p className="text-lg mb-2">No albums found</p>
+            <p className="text-sm text-[#CCCCCC]">Unable to fetch albums from Spotify API</p>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -10,9 +10,8 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'p.scdn.co',
+        hostname: 'cdn.sanity.io',
         port: '',
-        pathname: '/**',
       },
     ],
     // Image optimization settings
