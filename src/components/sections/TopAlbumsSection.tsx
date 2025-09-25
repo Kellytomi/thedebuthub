@@ -14,11 +14,11 @@ const MotionDiv = dynamic(() => import("framer-motion").then(mod => ({ default: 
 const fallbackAlbums = [
   {
     id: 1,
-    title: "FUN",
-    artist: "Rema",
-    cover: "/images/rema-image.png",
-    tracks: "1 track",
-    popularity: 95,
+    title: "Morayo",
+    artist: "Wizkid",
+    cover: "/images/album2.png",
+    tracks: "16 tracks",
+    popularity: 98,
   },
   {
     id: 2,
@@ -26,20 +26,21 @@ const fallbackAlbums = [
     artist: "Rema",
     cover: "/images/rema-image.png",
     tracks: "11 tracks",
-    popularity: 92,
+    popularity: 95,
   },
   {
     id: 3,
     title: "No Sign Of Weakness",
     artist: "Burna Boy",
     cover: "/images/album1.png",
-    tracks: "16 tracks",
-    popularity: 90,
+    tracks: "15 tracks",
+    popularity: 92,
   },
 ];
 
 export default function TopAlbumsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState(new Date());
 
   // Use tRPC to fetch most streamed albums
   const { 
@@ -50,8 +51,11 @@ export default function TopAlbumsSection() {
   } = trpc.spotify.getMostStreamedAlbums.useQuery(
     { limit: 3 },
     {
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 3 * 60 * 1000, // 3 minutes for fresher data
       retry: 3,
+      onSuccess: () => {
+        setLastUpdated(new Date());
+      },
     }
   );
 
@@ -91,6 +95,10 @@ export default function TopAlbumsSection() {
   const AlbumCard = ({ album, index }: { album: any; index: number; }) => (
     <div className="group relative flex flex-col xl:flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2 cursor-pointer">
       <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-white">
+        {/* Chart Position Badge */}
+        <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-sm text-white px-3 py-1.5 rounded-full z-10 border border-white/20">
+          <span className="font-bold text-sm">#{index + 1}</span>
+        </div>
         <Image
           src={album.cover}
           alt={album.title}
@@ -144,9 +152,17 @@ export default function TopAlbumsSection() {
             fontSize: "24px",
           }}
         >
-          <span className="text-[#646464]">Top Albums Nigeria</span>
-          <span className="text-white">From Official Charts</span>
+          <span className="text-[#646464]">Top Albums of the Week</span>
+          <span className="text-white">Nigeria's Official Charts</span>
         </h2>
+        {isSuccess && (
+          <p className="text-xs text-[#646464] mt-2">
+            Last updated: {lastUpdated.toLocaleTimeString('en-US', { 
+              hour: '2-digit', 
+              minute: '2-digit' 
+            })}
+          </p>
+        )}
         {error && (
           <p className="text-red-400 text-sm mt-2">
             Could not fetch albums from Spotify API.

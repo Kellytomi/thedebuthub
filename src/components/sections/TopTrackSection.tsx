@@ -38,6 +38,7 @@ const fallbackTracks = [
 
 export default function TopTracksSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [lastUpdated, setLastUpdated] = useState(new Date());
 
   // Use tRPC to fetch Nigerian tracks
   const { 
@@ -48,8 +49,11 @@ export default function TopTracksSection() {
   } = trpc.spotify.getTracks.useQuery(
     { limit: 3 },
     {
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 3 * 60 * 1000, // 3 minutes for fresher data
       retry: 3,
+      onSuccess: () => {
+        setLastUpdated(new Date());
+      },
     }
   );
 
@@ -89,6 +93,10 @@ export default function TopTracksSection() {
   const TrackCard = ({ track, index }: { track: any; index: number; }) => (
     <div className="group relative flex flex-col xl:flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2 cursor-pointer">
       <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-white">
+        {/* Chart Position Badge */}
+        <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-sm text-white px-3 py-1.5 rounded-full z-20 border border-white/20">
+          <span className="font-bold text-sm">#{index + 1}</span>
+        </div>
         <Image
           src={track.cover}
           alt={track.title}
@@ -154,6 +162,14 @@ export default function TopTracksSection() {
           <span className="text-[#646464]">Top Nigerian Tracks</span>
           <span className="text-white">This week</span>
         </h2>
+        {isSuccess && (
+          <p className="text-xs text-[#646464] mt-2">
+            Last updated: {lastUpdated.toLocaleTimeString('en-US', { 
+              hour: '2-digit', 
+              minute: '2-digit' 
+            })}
+          </p>
+        )}
         {error && (
           <p className="text-red-400 text-sm mt-2">
             Could not fetch tracks – showing fallback data.

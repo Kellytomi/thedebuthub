@@ -21,7 +21,7 @@ const NIGERIAN_ARTISTS = [
   'Fireboy DML', 'Rema', 'Asake', 'Kizz Daniel', 'Ayra Starr'
 ];
 
-// Default working Nigeria playlist
+// Default working Nigeria playlist - Using accessible Top 100 Nigeria playlist
 const DEFAULT_NG_TOP50_PLAYLIST_ID = process.env.NG_TOP50_PLAYLIST_ID || '6nvDix6ABiGTqZghg4qaHs';
 
 /**
@@ -118,16 +118,40 @@ function formatDuration(durationMs: number): string {
 }
 
 /**
- * Get most streamed Nigerian albums from official charts
+ * Get most streamed Nigerian albums from top Nigerian playlists
+ * Extracts the top albums from the week's most popular tracks
  */
 export async function getMostStreamedNigerianAlbums(limit = 3) {
   try {
+    // Primary playlists to check for top albums (ordered by priority)
+    const topPlaylistIds = [
+      '6nvDix6ABiGTqZghg4qaHs', // Top 100 Nigeria (accessible)
+      '46iQn1DHoYNlHwBIOnfAxi', // Top 100 Nigeria on Apple Music (user playlist)
+    ];
+    
+    // Try each playlist in order
+    for (const playlistId of topPlaylistIds) {
+      try {
+        const playlistResponse = await spotifyFetch(`/playlists/${playlistId}/tracks?limit=100`);
+        
+        if (playlistResponse.items && playlistResponse.items.length > 0) {
+          const albums = processAlbumsFromPlaylist(playlistResponse.items, limit);
+          if (albums.length > 0) {
+            return albums;
+          }
+        }
+      } catch (e) {
+        // This playlist not accessible, try next
+      }
+    }
+    
+    // Fallback to finding any accessible Nigeria playlist
     const playlistId = await findNigerianPlaylist();
     if (!playlistId) {
       throw new Error('Could not find accessible Nigeria playlist');
     }
     
-    const playlistResponse = await spotifyFetch(`/playlists/${playlistId}/tracks?market=NG&limit=50`);
+    const playlistResponse = await spotifyFetch(`/playlists/${playlistId}/tracks?limit=100`);
     
     if (!playlistResponse.items || playlistResponse.items.length === 0) {
       throw new Error('Playlist has no tracks or is empty');
@@ -185,13 +209,11 @@ async function findNigerianPlaylist() {
     }
   }
   
-  // Try fallback playlist IDs (working ones)
+  // Try fallback playlist IDs (only accessible ones)
   const fallbackPlaylistIds = [
     '6nvDix6ABiGTqZghg4qaHs', // Top 100 Nigeria (working)
-    '37i9dQZEVXbKY7jLzlJ11V', // Top 50 - Nigeria (may not work)
-    '37i9dQZEVXbNx2OGnb4lSJ', // Afrobeats Hits
-    '37i9dQZEVXbMDoHDwVN2tF', // Global Top 50
-    '37i9dQZEVXbJNjKfUHPuo1', // Africa Now
+    '46iQn1DHoYNlHwBIOnfAxi', // Top 100 Nigeria on Apple Music (user playlist, working)
+    '37i9dQZEVXbMDoHDwVN2tF', // Global Top 50 (if others fail)
   ];
   
   for (const id of fallbackPlaylistIds) {
@@ -209,12 +231,21 @@ async function findNigerianPlaylist() {
 }
 
 /**
- * Process albums from playlist tracks
+ * Process albums from playlist tracks - prioritizes unique albums
  */
 function processAlbumsFromPlaylist(playlistItems: any[], limit: number) {
   const detailedAlbums: any[] = [];
   const seenAlbums = new Set();
+  const albumFrequency = new Map();
   
+  // First pass: count album frequency to prioritize most popular albums
+  for (const item of playlistItems) {
+    if (!item.track?.album) continue;
+    const albumId = item.track.album.id;
+    albumFrequency.set(albumId, (albumFrequency.get(albumId) || 0) + 1);
+  }
+  
+  // Second pass: collect unique albums
   for (let i = 0; i < playlistItems.length && detailedAlbums.length < limit; i++) {
     const item = playlistItems[i];
     if (!item.track?.album) continue;
@@ -237,14 +268,19 @@ function processAlbumsFromPlaylist(playlistItems: any[], limit: number) {
         popularity: album.popularity || 50,
         album_type: album.album_type || 'album',
         external_urls: album.external_urls,
-        chartPosition: detailedAlbums.length + 1
+        chartPosition: detailedAlbums.length + 1,
+        frequency: albumFrequency.get(album.id) || 1 // Track how many times album appears
       };
       
       detailedAlbums.push(albumData);
     }
   }
   
-  return detailedAlbums;
+  // Sort by frequency (albums that appear more in the playlist = more popular)
+  return detailedAlbums
+    .sort((a, b) => b.frequency - a.frequency)
+    .slice(0, limit)
+    .map((album, index) => ({ ...album, chartPosition: index + 1 }));
 }
 
 /**
