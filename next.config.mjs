@@ -10,9 +10,8 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'p.scdn.co',
+        hostname: 'cdn.sanity.io',
         port: '',
-        pathname: '/**',
       },
     ],
     // Image optimization settings
@@ -46,7 +45,9 @@ const nextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; media-src 'self' https:; connect-src 'self' https://vitals.vercel-insights.com https://api.spotify.com https://accounts.spotify.com;",
+            value: process.env.NODE_ENV === 'production' 
+              ? "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://vercel.live https://va.vercel-scripts.com https://core.sanity-cdn.com https://www.youtube.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob:; media-src 'self' https:; connect-src 'self' https://vitals.vercel-insights.com https://api.spotify.com https://accounts.spotify.com https://*.sanity.io https://*.api.sanity.io;"
+              : "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:; script-src 'self' 'unsafe-eval' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; font-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; media-src 'self' https:; connect-src 'self' https:;",
           },
         ],
       },
@@ -113,11 +114,13 @@ const nextConfig = {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
+            enforce: true,
           },
           framer: {
             test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
             name: 'framer-motion',
             chunks: 'all',
+            enforce: true,
           },
         },
       };

@@ -7,36 +7,44 @@
 ## 🌟 Features
 
 ### 🎵 **Dynamic Music Discovery**
-- **Top 3 Nigerian Albums**: Real-time fetching from Spotify Web API
-- **Top Songs This Week**: Popular Nigerian tracks with diversity algorithm
-- **Smart Diversity**: Ensures one album/track per artist for varied representation
-- **Popularity-Based Ranking**: Tracks ranked by Spotify's popularity scores
+- **Top Albums of the Week**: Real-time Nigerian chart-toppers from Spotify
+- **Top Nigerian Tracks**: Current week's trending songs with chart positions
+- **#1 Artist Spotlight**: Featured artist with actual Spotify profile image
+- **Smart Album Ranking**: Albums ranked by chart presence (multiple hit tracks)
+- **Auto-Refresh**: All sections update every 3 minutes with fresh data
 
 ### 🎨 **Modern UI/UX**
-- **Responsive Design**: Mobile-first approach with Tailwind CSS
-- **Interactive Hover Effects**: Smooth animations and transitions
+- **Responsive Design**: Mobile-first approach with Tailwind CSS v4
+- **Chart Position Badges**: Visual #1, #2, #3 rankings on albums and tracks
+- **Interactive Hover Effects**: Smooth animations with Framer Motion
 - **Loading States**: Elegant skeleton loaders during data fetching
 - **Error Handling**: Graceful fallbacks when APIs are unavailable
 - **WCAG Compliant**: Accessible design with proper ARIA labels
 
 ### 🔄 **Real-time Integration**
-- **Spotify Web API**: Live data from the world's largest music platform
-- **Auto-updating Content**: Fresh music data on every page load
-- **High-Quality Images**: Optimized album covers from Spotify's CDN
+- **Spotify Web API**: Live data from Nigeria's Top 100 playlist
+- **3-Minute Cache Strategy**: Auto-refresh for current charts
+- **Artist Profile Images**: Actual artist photos from Spotify profiles
+- **High-Quality Images**: Optimized covers and artist images from Spotify CDN
 - **Direct Spotify Links**: One-click access to full tracks and albums
+- **tRPC Integration**: Type-safe API calls with React Query
 
 ## 🛠️ Tech Stack
 
 ### **Frontend**
-- **Next.js 14+** - React framework with App Router
-- **React 18** - Component-based UI library
-- **Tailwind CSS** - Utility-first CSS framework
+- **Next.js 15.4** - React framework with App Router
+- **React 19** - Latest React with improved performance
+- **Tailwind CSS v4** - Modern utility-first CSS framework
+- **Framer Motion** - Smooth animations and transitions
+- **tRPC + React Query** - Type-safe API with caching
 - **next/image** - Optimized image loading
 
 ### **Backend**
 - **Next.js API Routes** - Serverless API endpoints
-- **Spotify Web API** - Music data and metadata
+- **tRPC Router** - Type-safe API layer
+- **Spotify Web API** - Music data with Nigerian market focus
 - **Client Credentials Flow** - Secure API authentication
+- **Intelligent Caching** - 3-minute stale time for fresh data
 
 ### **Development**
 - **ESLint** - Code linting and formatting
@@ -110,26 +118,30 @@ thedebuthub/
 ├── src/
 │   ├── app/                          # Next.js App Router
 │   │   ├── api/                      # API Routes
-│   │   │   └── spotify/              # Spotify API endpoints
-│   │   │       ├── albums/           # Nigerian albums endpoint
-│   │   │       └── tracks/           # Nigerian tracks endpoint
-│   │   ├── components/               # React Components
-│   │   │   ├── AlbumCard.js          # Album/track display card
-│   │   │   ├── TopAlbumsSection.js   # Top 3 Nigerian albums
-│   │   │   ├── OurStorySection.js    # Top songs this week
-│   │   │   ├── HeroSection.js        # Landing hero section
-│   │   │   ├── MusicPulseSection.js  # Music pulse animation
-│   │   │   └── ...                   # Other UI components
-│   │   ├── globals.css               # Global styles
+│   │   │   ├── trpc/                 # tRPC endpoint
+│   │   │   └── articles/             # Articles API
 │   │   ├── layout.js                 # Root layout
-│   │   └── page.js                   # Home page
-│   ├── components/ui/                # Reusable UI components
-│   └── lib/                          # Utility libraries
-│       ├── spotify.js                # Spotify API integration
-│       ├── constants.js              # App constants
-│       └── utils.ts                  # Helper utilities
+│   │   ├── page.js                   # Home page
+│   │   └── sitemap.js                # SEO sitemap
+│   ├── components/
+│   │   ├── sections/                 # Page sections
+│   │   │   ├── TopAlbumsSection.tsx  # Top albums with chart positions
+│   │   │   ├── TopTrackSection.tsx   # Top tracks with rankings
+│   │   │   ├── CoverStorySection.tsx # #1 Artist spotlight
+│   │   │   ├── HeroSection.tsx       # Landing hero with artist carousel
+│   │   │   └── ...                   # Other sections
+│   │   └── ui/                       # Reusable UI components
+│   ├── lib/
+│   │   ├── api/
+│   │   │   └── spotify.ts            # Spotify API integration
+│   │   ├── routers/
+│   │   │   └── spotify.js            # tRPC router for Spotify
+│   │   ├── trpc.js                   # tRPC configuration
+│   │   └── trpc-client.ts            # tRPC client setup
+│   └── types/                        # TypeScript types
+├── docs/                             # Documentation
+├── scripts/                          # Build and test scripts
 ├── public/                           # Static assets
-│   └── images/                       # Album covers and assets
 ├── next.config.mjs                   # Next.js configuration
 ├── tailwind.config.js                # Tailwind CSS config
 └── package.json                      # Dependencies
@@ -197,20 +209,25 @@ Fetches top Nigerian tracks sorted by popularity.
 
 ### Algorithm Features
 
-#### **Diversity Algorithm**
-- Ensures one album/track per artist
-- Uses `Map` and `Set` data structures for deduplication
-- Prioritizes popular content while maintaining variety
+#### **Smart Album Ranking**
+- Albums ranked by chart presence (tracks in top 100)
+- More charting tracks = higher album rank
+- Frequency-based sorting for accurate weekly charts
 
-#### **Multi-Strategy Search**
-1. **Artist-Specific**: Search major Nigerian artists individually
-2. **Genre-Based**: Search Afrobeats and related genres
-3. **Market-Specific**: Filter for Nigerian market (NG)
+#### **Artist Profile Fetching**
+- Fetches actual artist profile images from Spotify
+- Separate API call to get artist data (not album art)
+- Fallback to album image if profile unavailable
 
-#### **Popularity Ranking**
-- Sorts by Spotify's popularity score (0-100)
-- Higher scores indicate more popular tracks
-- Considers plays, saves, and engagement metrics
+#### **Auto-Refresh Strategy**
+- 3-minute cache duration (staleTime)
+- Automatic background refetch
+- Seamless data updates without page reload
+
+#### **Playlist Sources**
+- Primary: Top 100 Nigeria (`6nvDix6ABiGTqZghg4qaHs`)
+- Fallback: Multiple Nigerian playlists
+- Smart playlist discovery algorithm
 
 ## 🎨 Styling Guide
 
@@ -292,23 +309,32 @@ SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 
 ## 📊 Features in Detail
 
-### **Top Nigerian Albums Section**
-- Fetches latest albums from major Nigerian artists
-- Displays album cover, name, and artist
-- Direct links to Spotify for full listening experience
-- White border styling matching design system
-- Hover effects with smooth transitions
+### **Top Albums of the Week Section**
+- Displays top 3 albums from current Nigerian charts
+- Chart position badges (#1, #2, #3)
+- Albums ranked by number of tracks charting
+- Real-time data from Nigeria's Top 100 playlist
+- Auto-refreshes every 3 minutes
+- Direct Spotify links for each album
 
-### **Top Songs This Week Section**
-- Shows most popular Nigerian tracks by Spotify metrics
-- Popularity-based ranking (81, 75, 74 scores)
-- Artist diversity ensuring different musicians
-- Album metadata and track duration
-- Clickable cards linking to Spotify
+### **Top Nigerian Tracks Section**
+- Current week's top 3 tracks from charts
+- Visual chart position indicators
+- Track duration and album information
+- Play button overlay on hover
+- Auto-updates every 3 minutes
+- Direct Spotify links for streaming
+
+### **#1 Artist Spotlight (Cover Story)**
+- Features the current #1 artist from charts
+- Displays actual Spotify profile image (not album art)
+- Dynamic story generation about the artist
+- Chart position and follower count display
+- Auto-refreshes with latest chart data
 
 ### **Loading & Error States**
 - Skeleton loaders during API calls
-- Fallback data when Spotify API unavailable
+- Graceful fallback data when Spotify API unavailable
 - Error messages with helpful context
 - Consistent styling between loading and loaded states
 

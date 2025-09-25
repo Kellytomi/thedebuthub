@@ -1,0 +1,324 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { motion, useAnimation, type Variants } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import { IntroBody, IntroTitle, Button } from "@/components/ui";
+import { trpc } from "@/lib/trpc-client";
+
+// Generate dynamic artist story based on artist data
+const generateArtistStory = (artist: any) => {
+  if (!artist)
+    return {
+      title: "Details about artist's song",
+      description: "Loading artist information...",
+    };
+
+  const currentTrack = artist.currentTrack || "latest hit";
+  const album = artist.album || "latest album";
+  
+  const stories = [
+    {
+      title: `${artist.name}'s Chart-Topping Journey`,
+      description: `This week's chartbreaker is ${artist.name}, whose hit "${currentTrack}" has dominated streaming platforms worldwide. With millions of streams and a growing international fanbase, ${artist.name} continues to push the boundaries of Afrobeats, blending traditional rhythms with contemporary sounds. Their music represents the new wave of Nigerian artists taking the global stage by storm.`,
+    },
+    {
+      title: `Behind the Music with ${artist.name}`,
+      description: `${artist.name} has emerged as the #1 artist this week with "${currentTrack}", captivating audiences with their unique sound and powerful storytelling. From Lagos streets to international stages, their journey embodies the spirit of modern Afrobeats. Each track tells a story of resilience, love, and the vibrant culture of Nigeria, resonating with fans across continents.`,
+    },
+    {
+      title: `${artist.name}: Breaking Records and Hearts`,
+      description: `Currently sitting at #1 on the charts with "${currentTrack}", ${artist.name} has become the voice of a generation. Their latest work seamlessly weaves together Afrobeats, R&B, and contemporary sounds, creating music that speaks to both local and global audiences. This week's chart dominance is just another milestone in their incredible artistic journey.`,
+    },
+  ];
+
+  // Use artist name to consistently pick the same story variant
+  const storyIndex = artist.name.length % stories.length;
+  return stories[storyIndex];
+};
+
+export default function CoverStorySection() {
+  // Animation controls
+  const controls = useAnimation();
+  const [ref, inView] = useInView({
+    threshold: 0.1,
+    triggerOnce: false,
+  });
+
+  // Use tRPC to fetch the #1 artist with their actual profile image
+  const { 
+    data: artistData, 
+    isLoading, 
+    error,
+    isSuccess 
+  } = trpc.spotify.getTopChartArtist.useQuery(
+    undefined, // No parameters needed
+    {
+      staleTime: 3 * 60 * 1000, // 3 minutes for fresher data
+      retry: 3,
+    }
+  );
+
+  // Get the top artist with their actual profile image
+  const topArtist = (() => {
+    if (isSuccess && artistData?.success && artistData.artist) {
+      // This now has the actual artist profile image from Spotify
+      return artistData.artist;
+    }
+    
+    // Only fallback if API completely fails
+    return {
+      id: "fallback-top",
+      name: "Rema",
+      image: "/images/rema-image.png",
+      followers: 8000000,
+      genres: ["afrobeats", "trap"],
+      currentTrack: "FUN",
+      album: "Rave & Roses Ultra",
+      chartPosition: 1
+    };
+  })();
+
+  // Handle inView changes
+  useEffect(() => {
+    if (inView) {
+      controls.start("visible");
+    } else {
+      controls.start("hidden");
+    }
+  }, [controls, inView]);
+
+  const artistStory = generateArtistStory(topArtist);
+
+  // Animation variants
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        when: "beforeChildren",
+      },
+    },
+  };
+
+  const childVariants: Variants = {
+    hidden: { y: 30, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.6,
+        ease: [0.16, 1, 0.3, 1],
+      },
+    },
+  };
+
+  const imageVariants: Variants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      transition: {
+        duration: 0.8,
+        ease: [0.25, 0.46, 0.45, 0.94],
+      },
+    },
+    hover: {
+      scale: 1.02,
+      transition: { duration: 0.3 },
+    },
+  };
+
+  const badgeVariants: Variants = {
+    hidden: { scale: 0.5, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 200,
+        damping: 10,
+        delay: 0.3,
+      },
+    },
+  };
+
+  const statsVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.4,
+      },
+    },
+  };
+
+  return (
+    <motion.section
+      ref={ref}
+      className="relative overflow-hidden mx-auto w-full h-[1440px] md:h-[1280px] xl:h-[1024px] bg-[#030303]"
+      initial="hidden"
+      animate={controls}
+    >
+      <div className="absolute w-8 h-[1024px] top-[14px] left-[1298px] bg-[#006DFF] backdrop-blur-[300px] blur-[150px]" />
+
+      <div className="relative z-10 h-full">
+        <IntroTitle line1="Where words fail," line2="Music speaks" />
+
+        <IntroBody
+          title="Cover Story"
+          description="Meet the artist who broke the charts this week. Get an exclusive look into their journey, inspirations, and what's next for them."
+        />
+
+        <div className="flex flex-col xl:flex-row items-center justify-center px-4 md:px-16 mt-16 gap-16">
+          {/* Dynamic Artist Image */}
+          <motion.div
+            className="relative"
+            style={{
+              height: "427px",
+              width: "360px",
+            }}
+            variants={imageVariants}
+            whileHover="hover"
+          >
+            <div className="w-full h-full overflow-hidden relative rounded-lg">
+              {isLoading ? (
+                <div className="w-full h-full bg-[#171717] animate-pulse rounded-lg" />
+              ) : topArtist ? (
+                <Image
+                  src={topArtist.image}
+                  alt={`${topArtist.name} - #1 Nigerian Artist`}
+                  fill
+                  style={{
+                    objectFit: "cover",
+                    objectPosition: "center",
+                  }}
+                  className="absolute inset-0 rounded-lg"
+                />
+              ) : null}
+            </div>
+
+            {/* Top Artist Badge */}
+            <motion.div
+              className="absolute w-full inset-0"
+              initial="hidden"
+              animate={controls}
+              variants={badgeVariants}
+            >
+              <Image
+                src="/images/tp-artiste.svg"
+                alt="Top Artist Badge"
+                height={100}
+                width={100}
+                className="absolute -top-12 -left-3 mg:-left-12"
+              />
+            </motion.div>
+
+            {/* Artist Rank Indicator */}
+            {!isLoading && topArtist && (
+              <motion.div
+                className="absolute bottom-4 left-4 bg-black/80 backdrop-blur-sm rounded-lg px-3 py-2"
+                initial={{ y: 20, opacity: 0 }}
+                animate={inView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+                transition={{ delay: 0.5 }}
+              >
+                <div className="text-[#00ccff] text-sm font-semibold">
+                  #1 This Week
+                </div>
+                <div className="text-white text-xs">{topArtist.name}</div>
+              </motion.div>
+            )}
+          </motion.div>
+
+          {/* Dynamic Artist Details */}
+          <motion.div
+            className="flex-1 max-w-xl"
+            initial="hidden"
+            animate={controls}
+            variants={containerVariants}
+          >
+            {isLoading ? (
+              <div className="space-y-6">
+                <div className="h-8 bg-[#171717] animate-pulse rounded w-3/4" />
+                <div className="space-y-2">
+                  <div className="h-4 bg-[#171717] animate-pulse rounded" />
+                  <div className="h-4 bg-[#171717] animate-pulse rounded" />
+                  <div className="h-4 bg-[#171717] animate-pulse rounded w-2/3" />
+                </div>
+                <div className="flex gap-6">
+                  <div className="h-16 w-16 bg-[#171717] animate-pulse rounded" />
+                  <div className="h-16 w-16 bg-[#171717] animate-pulse rounded" />
+                  <div className="h-16 w-16 bg-[#171717] animate-pulse rounded" />
+                </div>
+              </div>
+            ) : (
+              <>
+                <motion.h3
+                  className="text-white font-bold mb-6 font-montserrat text-[32px] tracking-tight"
+                  variants={childVariants}
+                >
+                  {artistStory.title}
+                </motion.h3>
+
+                <motion.p
+                  className="text-white/70 mb-8 leading-relaxed font-dm-sans text-[16px]"
+                  variants={childVariants}
+                >
+                  {artistStory.description}
+                </motion.p>
+
+                {/* Read more button */}
+                <motion.div
+                  className="mb-8 flex justify-center sm:justify-start"
+                  variants={childVariants}
+                >
+                  <Button onClick={() => window.open("https://twitter.com/thedebuthub", "_blank")} ariaLabel="Read More">
+                    Read More
+                  </Button>
+                </motion.div>
+
+                {/* Artist Stats */}
+                {topArtist && (
+                  <motion.div
+                    className="flex items-center justify-center xl:justify-start gap-6"
+                    initial="hidden"
+                    animate={controls}
+                    variants={statsVariants}
+                  >
+                    <motion.div
+                      className="text-center"
+                      variants={childVariants}
+                    >
+                      <div className="text-white text-xl font-bold">#{1}</div>
+                      <div className="text-white/60 text-sm">
+                        Chart Position
+                      </div>
+                    </motion.div>
+                    <motion.div
+                      className="w-px h-8 bg-white/20"
+                      variants={childVariants}
+                    />
+                    <motion.div
+                      className="text-center"
+                      variants={childVariants}
+                    >
+                      <div className="text-white text-xl font-bold">
+                        {topArtist.followers
+                          ? `${(topArtist.followers / 1000000).toFixed(1)}M`
+                          : "8.0M"}
+                      </div>
+                      <div className="text-white/60 text-sm">Followers</div>
+                    </motion.div>
+                  </motion.div>
+                )}
+              </>
+            )}
+          </motion.div>
+        </div>
+      </div>
+    </motion.section>
+  );
+}
