@@ -569,6 +569,70 @@ function getFallbackTracks(limit: number) {
 }
 
 /**
+ * Get the #1 artist from current charts with their actual profile image
+ */
+export async function getTopChartArtist() {
+  try {
+    // First get the top track to find who's #1
+    const tracks = await getNigerianTracks(1);
+    if (!tracks || tracks.length === 0) {
+      throw new Error('No tracks found');
+    }
+    
+    const topTrack = tracks[0];
+    const artistName = topTrack.artist;
+    
+    // Now fetch the actual artist data to get their profile image
+    try {
+      const artistSearch = await spotifyFetch(
+        `/search?q="${encodeURIComponent(artistName)}"&type=artist&limit=1`
+      );
+      
+      if (artistSearch.artists?.items?.length > 0) {
+        const artist = artistSearch.artists.items[0];
+        
+        // Return artist with actual profile image
+        return {
+          id: artist.id,
+          name: artist.name,
+          image: artist.images?.[0]?.url || '/images/rema-image.png', // This is the actual artist profile image
+          followers: artist.followers?.total || 0,
+          genres: artist.genres || ['afrobeats'],
+          currentTrack: topTrack.name,
+          album: topTrack.album,
+          chartPosition: 1
+        };
+      }
+    } catch (searchError) {
+      // If artist search fails, use track data
+      return {
+        id: topTrack.id,
+        name: artistName,
+        image: topTrack.image, // Fallback to album image
+        followers: 0,
+        genres: ['afrobeats'],
+        currentTrack: topTrack.name,
+        album: topTrack.album,
+        chartPosition: 1
+      };
+    }
+    
+  } catch (error) {
+    // Complete fallback
+    return {
+      id: 'fallback-top',
+      name: 'Rema',
+      image: '/images/rema-image.png',
+      followers: 8000000,
+      genres: ['afrobeats'],
+      currentTrack: 'FUN',
+      album: 'Rave & Roses Ultra',
+      chartPosition: 1
+    };
+  }
+}
+
+/**
  * Get top Nigerian artists with their images
  */
 export async function getNigerianArtists(limit = 7) {
@@ -697,7 +761,8 @@ const spotifyService = {
   getMostStreamedNigerianAlbums,
   getNigerianAlbums,
   getNigerianTracks,
-  getNigerianArtists
+  getNigerianArtists,
+  getTopChartArtist
 };
 
 export default spotifyService;

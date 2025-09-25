@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { createTRPCRouter, publicProcedure } from '../trpc';
-import { getMostStreamedNigerianAlbums, getNigerianTracks, getNigerianArtists } from '../api/spotify';
+import { getMostStreamedNigerianAlbums, getNigerianTracks, getNigerianArtists, getTopChartArtist } from '../api/spotify';
 
 export const spotifyRouter = createTRPCRouter({
   // Get most streamed Nigerian albums
@@ -63,6 +63,24 @@ export const spotifyRouter = createTRPCRouter({
           error: error.message,
           tracks: [],
           count: 0,
+        };
+      }
+    }),
+
+  // Get top chart artist with profile image
+  getTopChartArtist: publicProcedure
+    .query(async () => {
+      try {
+        const artist = await getTopChartArtist();
+        return {
+          success: true,
+          artist,
+        };
+      } catch (error) {
+        return {
+          success: false,
+          error: error.message,
+          artist: null,
         };
       }
     }),

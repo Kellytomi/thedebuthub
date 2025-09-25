@@ -46,34 +46,25 @@ export default function CoverStorySection() {
     triggerOnce: false,
   });
 
-  // Use tRPC to fetch the top Nigerian tracks (chart data) and get #1 artist
+  // Use tRPC to fetch the #1 artist with their actual profile image
   const { 
-    data: tracksData, 
+    data: artistData, 
     isLoading, 
     error,
     isSuccess 
-  } = trpc.spotify.getTracks.useQuery(
-    { limit: 10 }, // Get more tracks to ensure we have the true #1
+  } = trpc.spotify.getTopChartArtist.useQuery(
+    undefined, // No parameters needed
     {
       staleTime: 3 * 60 * 1000, // 3 minutes for fresher data
       retry: 3,
     }
   );
 
-  // Get the top artist from chart data (tracks)
+  // Get the top artist with their actual profile image
   const topArtist = (() => {
-    if (isSuccess && tracksData?.success && tracksData.tracks?.length > 0) {
-      const topTrack = tracksData.tracks[0];
-      // Use the actual track image which shows the real artist
-      return {
-        id: topTrack.id,
-        name: topTrack.artist,
-        image: topTrack.image || "/images/rema-image.png", // This is the actual artist image from Spotify
-        followers: 8000000,
-        genres: ["afrobeats"],
-        currentTrack: topTrack.name,
-        album: topTrack.album
-      };
+    if (isSuccess && artistData?.success && artistData.artist) {
+      // This now has the actual artist profile image from Spotify
+      return artistData.artist;
     }
     
     // Only fallback if API completely fails
@@ -81,11 +72,11 @@ export default function CoverStorySection() {
       id: "fallback-top",
       name: "Rema",
       image: "/images/rema-image.png",
-      popularity: 95,
       followers: 8000000,
       genres: ["afrobeats", "trap"],
       currentTrack: "FUN",
-      album: "Rave & Roses Ultra"
+      album: "Rave & Roses Ultra",
+      chartPosition: 1
     };
   })();
 
