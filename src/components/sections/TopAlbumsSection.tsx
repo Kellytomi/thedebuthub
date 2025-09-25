@@ -40,7 +40,6 @@ const fallbackAlbums = [
 
 export default function TopAlbumsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [lastUpdated, setLastUpdated] = useState(new Date());
 
   // Use tRPC to fetch most streamed albums
   const { 
@@ -53,9 +52,6 @@ export default function TopAlbumsSection() {
     {
       staleTime: 3 * 60 * 1000, // 3 minutes for fresher data
       retry: 3,
-      onSuccess: () => {
-        setLastUpdated(new Date());
-      },
     }
   );
 
@@ -152,17 +148,9 @@ export default function TopAlbumsSection() {
             fontSize: "24px",
           }}
         >
-          <span className="text-[#646464]">Top Albums of the Week</span>
-          <span className="text-white">Nigeria's Official Charts</span>
+          <span className="text-[#646464]">Top Albums Nigeria</span>
+          <span className="text-white">From Official Charts</span>
         </h2>
-        {isSuccess && (
-          <p className="text-xs text-[#646464] mt-2">
-            Last updated: {lastUpdated.toLocaleTimeString('en-US', { 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })}
-          </p>
-        )}
         {error && (
           <p className="text-red-400 text-sm mt-2">
             Could not fetch albums from Spotify API.

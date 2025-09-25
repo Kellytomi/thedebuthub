@@ -38,7 +38,6 @@ const fallbackTracks = [
 
 export default function TopTracksSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [lastUpdated, setLastUpdated] = useState(new Date());
 
   // Use tRPC to fetch Nigerian tracks
   const { 
@@ -51,9 +50,6 @@ export default function TopTracksSection() {
     {
       staleTime: 3 * 60 * 1000, // 3 minutes for fresher data
       retry: 3,
-      onSuccess: () => {
-        setLastUpdated(new Date());
-      },
     }
   );
 
@@ -162,14 +158,6 @@ export default function TopTracksSection() {
           <span className="text-[#646464]">Top Nigerian Tracks</span>
           <span className="text-white">This week</span>
         </h2>
-        {isSuccess && (
-          <p className="text-xs text-[#646464] mt-2">
-            Last updated: {lastUpdated.toLocaleTimeString('en-US', { 
-              hour: '2-digit', 
-              minute: '2-digit' 
-            })}
-          </p>
-        )}
         {error && (
           <p className="text-red-400 text-sm mt-2">
             Could not fetch tracks – showing fallback data.
