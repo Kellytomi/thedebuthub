@@ -55,7 +55,7 @@ export default function CoverStorySection() {
   } = trpc.spotify.getTracks.useQuery(
     { limit: 10 }, // Get more tracks to ensure we have the true #1
     {
-      staleTime: 5 * 60 * 1000, // 5 minutes
+      staleTime: 3 * 60 * 1000, // 3 minutes for fresher data
       retry: 3,
     }
   );
@@ -64,13 +64,13 @@ export default function CoverStorySection() {
   const topArtist = (() => {
     if (isSuccess && tracksData?.success && tracksData.tracks?.length > 0) {
       const topTrack = tracksData.tracks[0];
+      // Use the actual track image which shows the real artist
       return {
         id: topTrack.id,
         name: topTrack.artist,
-        image: topTrack.image || "/images/rema-image.png",
-        popularity: 95, // Chart-topper gets highest score
+        image: topTrack.image || "/images/rema-image.png", // This is the actual artist image from Spotify
         followers: 8000000,
-        genres: ["afrobeats", "trap"],
+        genres: ["afrobeats"],
         currentTrack: topTrack.name,
         album: topTrack.album
       };
@@ -304,21 +304,6 @@ export default function CoverStorySection() {
                       <div className="text-white text-xl font-bold">#{1}</div>
                       <div className="text-white/60 text-sm">
                         Chart Position
-                      </div>
-                    </motion.div>
-                    <motion.div
-                      className="w-px h-8 bg-white/20"
-                      variants={childVariants}
-                    />
-                    <motion.div
-                      className="text-center"
-                      variants={childVariants}
-                    >
-                      <div className="text-white text-xl font-bold">
-                        {topArtist.popularity || 95}
-                      </div>
-                      <div className="text-white/60 text-sm">
-                        Popularity Score
                       </div>
                     </motion.div>
                     <motion.div
