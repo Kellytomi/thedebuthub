@@ -189,9 +189,44 @@ export default function ArticlesPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-10">
-                <h3 className="text-white text-xl">No articles found</h3>
-                <p className="text-white/70 mt-2">Try adjusting your search terms</p>
+              <div className="col-span-full flex items-center justify-center min-h-[400px]">
+                <div className="text-center max-w-md mx-auto px-4">
+                  <div className="mb-4">
+                    <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                    </svg>
+                  </div>
+                  {searchTerm.trim() !== "" ? (
+                    <>
+                      <h3 className="text-white text-xl font-medium mb-2">No articles found</h3>
+                      <p className="text-gray-400 text-sm mb-4">
+                        We couldn't find any articles matching "<span className="text-white">{searchTerm}</span>". Try adjusting your search terms.
+                      </p>
+                      <button 
+                        onClick={() => {
+                          setSearchTerm("");
+                          setArticles(allArticles);
+                        }}
+                        className="inline-flex items-center px-4 py-2 bg-[#006DFF] text-white text-sm font-medium rounded-lg hover:bg-[#0056cc] transition-colors duration-300"
+                      >
+                        Clear Search
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <h3 className="text-white text-xl font-medium mb-2">No Articles Available</h3>
+                      <p className="text-gray-400 text-sm mb-4">
+                        There are currently no articles to display. Check back soon for new content!
+                      </p>
+                      <button 
+                        onClick={() => fetchArticles()}
+                        className="inline-flex items-center px-4 py-2 bg-[#006DFF] text-white text-sm font-medium rounded-lg hover:bg-[#0056cc] transition-colors duration-300"
+                      >
+                        Refresh
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             )}
           </div>
