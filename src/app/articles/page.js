@@ -200,7 +200,7 @@ export default function ArticlesPage() {
                     <>
                       <h3 className="text-white text-xl font-medium mb-2">No articles found</h3>
                       <p className="text-gray-400 text-sm mb-4">
-                        We couldn't find any articles matching "<span className="text-white">{searchTerm}</span>". Try adjusting your search terms.
+                        We couldn&apos;t find any articles matching &quot;<span className="text-white">{searchTerm}</span>&quot;. Try adjusting your search terms.
                       </p>
                       <button 
                         onClick={() => {

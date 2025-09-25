@@ -379,7 +379,7 @@ export default function ArticlePage({ params }) {
                   </div>
                   <h3 className="text-white text-xl font-medium mb-2">No Similar Articles Found</h3>
                   <p className="text-gray-400 text-sm mb-4">
-                    We couldn't find any related articles at the moment. Check back later or explore more articles.
+                    We couldn&apos;t find any related articles at the moment. Check back later or explore more articles.
                   </p>
                   <Link 
                     href="/articles" 
