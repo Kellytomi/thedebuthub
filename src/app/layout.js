@@ -56,15 +56,15 @@ export const metadata = {
     siteName: "The Debut Hub",
     images: [
       {
-        url: "/images/The Debut Hub.png",  // Using the black text logo for better contrast
-        width: 636,
-        height: 696,
+        url: "/images/The Debut Hub-black.png",  // Black background with white text for perfect visibility
+        width: 1200,
+        height: 630,
         alt: "The Debut Hub - Nigerian Music Discovery Platform",
       },
       {
-        url: "/Preview 512x512.png?v=2",  // Fallback to original
-        width: 512,
-        height: 512,
+        url: "/images/The Debut Hub.png",  // Fallback
+        width: 636,
+        height: 696,
         alt: "The Debut Hub Logo",
       },
     ],
@@ -77,7 +77,7 @@ export const metadata = {
     card: "summary_large_image",
     title: "The Debut Hub - Discover Nigerian Music",
     description: "Explore trending music from Nigeria. Emerging artists and the latest hits you need to hear.",
-    images: ["/images/The Debut Hub.png"],  // Using black text logo for better visibility
+    images: ["/images/The Debut Hub-black.png"],  // Black background version for perfect visibility
     creator: "@thedebuthub",
     site: "@thedebuthub",
   },
@@ -203,7 +203,7 @@ export default function RootLayout({ children }) {
                 "url": "https://thedebuthub.com",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://thedebuthub.com/images/The%20Debut%20Hub.png"
+                "url": "https://thedebuthub.com/images/The%20Debut%20Hub-black.png"
               }
               },
               "sameAs": [
