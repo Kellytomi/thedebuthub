@@ -98,25 +98,25 @@ export const metadata = {
   // Favicon and icons
   icons: {
     icon: [
-      { url: "/favicon.ico?v=2", sizes: "any" },
-      { url: "/favicon-16x16.png?v=2", sizes: "16x16", type: "image/png" },
-      { url: "/favicon-32x32.png?v=2", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-48x48.png?v=2", sizes: "48x48", type: "image/png" },
-      { url: "/favicon-96x96.png?v=2", sizes: "96x96", type: "image/png" },
+      { url: "/favicon.ico?v=3", sizes: "any" },
+      { url: "/favicon-16x16.png?v=3", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png?v=3", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-48x48.png?v=3", sizes: "48x48", type: "image/png" },
+      { url: "/favicon-96x96.png?v=3", sizes: "96x96", type: "image/png" },
     ],
     apple: [
-      { url: "/apple-touch-icon.png?v=2", sizes: "180x180", type: "image/png" },
+      { url: "/apple-touch-icon.png?v=3", sizes: "180x180", type: "image/png" },
     ],
     other: [
       {
         rel: "icon",
-        url: "/android-chrome-192x192.png?v=2",
+        url: "/android-chrome-192x192.png?v=3",
         sizes: "192x192",
         type: "image/png",
       },
       {
         rel: "icon", 
-        url: "/android-chrome-512x512.png?v=2",
+        url: "/android-chrome-512x512.png?v=3",
         sizes: "512x512",
         type: "image/png",
       },
@@ -164,14 +164,14 @@ export default function RootLayout({ children }) {
         <link rel="preload" href="/images/tdh-logo.svg" as="image" />
         
         {/* Favicons - with cache busting */}
-        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2" />
-        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=2" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=2" />
-        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png?v=2" />
-        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?v=2" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
-        <link rel="manifest" href="/site.webmanifest?v=2" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico?v=3" />
+        <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=3" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=3" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=3" />
+        <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png?v=3" />
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?v=3" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=3" />
+        <link rel="manifest" href="/site.webmanifest?v=3" />
         
         {/* Theme colors */}
         <meta name="theme-color" content="#006dff" />

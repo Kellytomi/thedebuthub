@@ -3,15 +3,15 @@ const fs = require('fs');
 const path = require('path');
 
 async function generateFavicons() {
-  const inputPath = path.join(__dirname, '..', 'public', 'favicon-original.png');
+  const inputPath = path.join(__dirname, '..', 'public', 'images', 'The Debut Hub-black.png');
   const outputDir = path.join(__dirname, '..', 'public');
 
-  console.log('🎨 Generating favicons from The Debut Hub logo...');
+  console.log('🎨 Generating favicons from The Debut Hub black logo...');
 
   try {
     // Check if input file exists
     if (!fs.existsSync(inputPath)) {
-      throw new Error('favicon-original.png not found in public folder');
+      throw new Error('The Debut Hub-black.png not found in public/images folder');
     }
 
     // Create different favicon sizes
@@ -30,7 +30,7 @@ async function generateFavicons() {
       await sharp(inputPath)
         .resize(size, size, {
           fit: 'contain',
-          background: { r: 0, g: 0, b: 0, alpha: 0 } // Transparent background
+          background: { r: 0, g: 0, b: 0, alpha: 1 } // Black background for better visibility
         })
         .png()
         .toFile(path.join(outputDir, name));
@@ -42,7 +42,7 @@ async function generateFavicons() {
     await sharp(inputPath)
       .resize(32, 32, {
         fit: 'contain',
-        background: { r: 0, g: 0, b: 0, alpha: 0 }
+        background: { r: 0, g: 0, b: 0, alpha: 1 } // Black background for better visibility
       })
       .png()
       .toFile(path.join(outputDir, 'favicon-temp.png'));

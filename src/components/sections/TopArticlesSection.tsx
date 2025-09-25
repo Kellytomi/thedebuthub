@@ -32,13 +32,16 @@ const TopArticlesSection = () => {
         
         const data = await response.json();
         
-        if (data.success && data.articles) {
+        if (data.success && data.articles && data.articles.length > 0) {
           setArticles(data.articles);
         } else {
           setError("No articles available");
+          setArticles([]); // Ensure articles is empty array
         }
       } catch (error) {
+        console.error('Error fetching articles:', error);
         setError("Failed to load articles");
+        setArticles([]); // Ensure articles is empty array
       } finally {
         setIsLoading(false);
       }
@@ -62,11 +65,6 @@ const TopArticlesSection = () => {
           <span className="text-[#646464]">What&apos;s been going on?</span>
           <span className="text-white">Latest articles for you</span>
         </h2>
-        {error && (
-          <p className="text-red-400 text-sm mt-2 text-center">
-            Could not fetch articles – showing fallback data.
-          </p>
-        )}
 
         {/* Articles Container */}
         <div className="w-full">
@@ -95,22 +93,36 @@ const TopArticlesSection = () => {
                     />
                   </div>
                 ))
-              : error
-              ? (
-                  <div className="col-span-full flex items-center justify-center min-h-[400px]">
-                    <div className="text-center">
-                      <p className="text-red-400 mb-2">{error}</p>
-                      <p className="text-gray-400 text-sm">
-                        Please check your CMS connection or try refreshing the page.
-                      </p>
-                    </div>
-                  </div>
-                )
               : (
                   <div className="col-span-full flex items-center justify-center min-h-[400px]">
-                    <p className="text-white text-center">
-                      No articles found. Please add some in the CMS.
-                    </p>
+                    <div className="text-center max-w-md mx-auto px-4">
+                      <div className="mb-4">
+                        <svg className="mx-auto h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                        </svg>
+                      </div>
+                      {error ? (
+                        <>
+                          <h3 className="text-white text-xl font-medium mb-2">Unable to Load Articles</h3>
+                          <p className="text-gray-400 text-sm mb-4">
+                            {error}. Please check your connection or try refreshing the page.
+                          </p>
+                          <button 
+                            onClick={() => window.location.reload()} 
+                            className="inline-flex items-center px-4 py-2 bg-[#006DFF] text-white text-sm font-medium rounded-lg hover:bg-[#0056cc] transition-colors duration-300"
+                          >
+                            Retry
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <h3 className="text-white text-xl font-medium mb-2">No Articles Available</h3>
+                          <p className="text-gray-400 text-sm mb-4">
+                            There are currently no articles to display. Check back soon for new content!
+                          </p>
+                        </>
+                      )}
+                    </div>
                   </div>
                 )}
           </div>

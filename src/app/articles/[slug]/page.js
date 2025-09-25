@@ -28,15 +28,6 @@ export default function ArticlePage({ params }) {
     triggerOnce: false,
   });
 
-  // Fallback for related articles if none from Sanity
-  const fallbackRelatedArticle = {
-    title:
-      "All about her historic Song for becoming Youngest to Most Inspiring woman",
-    author: "David Adeleke",
-    date: "Dec 15, 2024",
-    image: "/images/david-image.png",
-    slug: "fallback-article",
-  };
 
   // Animation Variants
   const fadeUp = {
@@ -348,64 +339,72 @@ export default function ArticlePage({ params }) {
             viewport={{ once: true }}
             variants={containerStagger}
           >
-            {/* Mobile/Tablet */}
-            <div className="xl:hidden w-full flex flex-col items-center gap-6">
-              {(relatedArticles.length > 0
-                ? relatedArticles
-                : Array.from({ length: 3 }, (_, index) => ({
-                    ...fallbackRelatedArticle,
-                    id: index + 1,
-                    slug: `related-article-${index + 1}`,
-                  }))
-              )
-                .slice(0, 3)
-                .map((relatedArticle, index) => (
-                  <motion.div
-                    key={relatedArticle.id || index}
-                    className="w-full max-w-[370px] block"
-                    variants={fadeUp}
-                    custom={index}
-                  >
-                    <ArticleCard article={relatedArticle} index={index} />
-                  </motion.div>
-                ))}
-            </div>
+            {relatedArticles.length > 0 ? (
+              <>
+                {/* Mobile/Tablet */}
+                <div className="xl:hidden w-full flex flex-col items-center gap-6">
+                  {relatedArticles.slice(0, 3).map((relatedArticle, index) => (
+                    <motion.div
+                      key={relatedArticle.id || index}
+                      className="w-full max-w-[370px] block"
+                      variants={fadeUp}
+                      custom={index}
+                    >
+                      <ArticleCard article={relatedArticle} index={index} />
+                    </motion.div>
+                  ))}
+                </div>
 
-            {/* Desktop */}
-            <div className="hidden xl:grid md:grid-cols-[370px_370px_370px] md:gap-6 justify-center">
-              {(relatedArticles.length > 0
-                ? relatedArticles
-                : Array.from({ length: 3 }, (_, index) => ({
-                    ...fallbackRelatedArticle,
-                    id: index + 1,
-                    slug: `related-article-${index + 1}`,
-                  }))
-              )
-                .slice(0, 3)
-                .map((relatedArticle, index) => (
-                  <motion.div
-                    key={relatedArticle.id || index}
-                    className="w-full max-w-[370px] block"
-                    variants={fadeUp}
-                    custom={index}
+                {/* Desktop */}
+                <div className="hidden xl:grid md:grid-cols-[370px_370px_370px] md:gap-6 justify-center">
+                  {relatedArticles.slice(0, 3).map((relatedArticle, index) => (
+                    <motion.div
+                      key={relatedArticle.id || index}
+                      className="w-full max-w-[370px] block"
+                      variants={fadeUp}
+                      custom={index}
+                    >
+                      <ArticleCard article={relatedArticle} index={index} />
+                    </motion.div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <div className="col-span-full flex items-center justify-center min-h-[300px] w-full">
+                <div className="text-center max-w-md mx-auto px-4">
+                  <div className="mb-4">
+                    <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-white text-xl font-medium mb-2">No Similar Articles Found</h3>
+                  <p className="text-gray-400 text-sm mb-4">
+                    We couldn&apos;t find any related articles at the moment. Check back later or explore more articles.
+                  </p>
+                  <Link 
+                    href="/articles" 
+                    className="inline-flex items-center px-4 py-2 bg-[#006DFF] text-white text-sm font-medium rounded-lg hover:bg-[#0056cc] transition-colors duration-300"
                   >
-                    <ArticleCard article={relatedArticle} index={index} />
-                  </motion.div>
-                ))}
-            </div>
+                    Browse All Articles
+                  </Link>
+                </div>
+              </div>
+            )}
           </motion.div>
         </div>
 
-        <motion.div
-          className="relative flex justify-center z-20"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeUp}
-          custom={3}
-        >
-          <Button href="/articles">View All</Button>
-        </motion.div>
+        {relatedArticles.length > 0 && (
+          <motion.div
+            className="relative flex justify-center z-20"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeUp}
+            custom={3}
+          >
+            <Button href="/articles">View All</Button>
+          </motion.div>
+        )}
       </section>
     </Layout>
   );
