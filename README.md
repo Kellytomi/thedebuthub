@@ -2,7 +2,7 @@
 
 **The Debut Hub** is a modern music discovery platform built with Next.js, showcasing the latest Nigerian music through real-time Spotify Web API integration. Discover top Nigerian albums, trending songs, and immerse yourself in the vibrant Nigerian music scene.
 
-![The Debut Hub](public/images/The%20Debut%20Hub.png)
+![The Debut Hub](public/images/The%20Debut%20Hub-black.png)
 
 ## 🌟 Features
 
