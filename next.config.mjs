@@ -14,11 +14,14 @@ const nextConfig = {
         port: '',
       },
     ],
-    // Image optimization settings
+    // Enhanced image optimization settings for performance
     formats: ['image/webp', 'image/avif'],
-    minimumCacheTTL: 60,
+    minimumCacheTTL: 86400, // 24 hours
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Enable modern image optimization
+    dangerouslyAllowSVG: false,
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
   // Add headers for debugging and caching
   async headers() {
@@ -97,30 +100,72 @@ const nextConfig = {
   poweredByHeader: false,
   generateEtags: true,
   compress: true,
+  // Enhanced build configuration with SWC
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+    // Modern browser targeting with SWC
+    styledComponents: true,
+    // Remove React DevTools in production
+    reactRemoveProperties: process.env.NODE_ENV === 'production' ? { properties: ['^data-testid$'] } : false,
+  },
   // Experimental features for performance
   experimental: {
-    optimizePackageImports: ['framer-motion', 'iconsax-react'],
+    optimizePackageImports: ['framer-motion', 'iconsax-react', '@tanstack/react-query'],
   },
-  // Webpack optimizations
-  webpack: (config, { isServer }) => {
+  // Enhanced Webpack optimizations
+  webpack: (config, { isServer, dev }) => {
+    // Production-only optimizations
+    if (!dev) {
+      // Enable tree shaking
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
+    }
+
     // Optimize bundle splitting
     if (!isServer) {
       config.optimization.splitChunks = {
         ...config.optimization.splitChunks,
         chunks: 'all',
+        maxSize: 200000, // 200KB chunks
         cacheGroups: {
-          ...config.optimization.splitChunks.cacheGroups,
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
+          default: false,
+          vendors: false,
+          // React and framework chunks
+          framework: {
             chunks: 'all',
+            name: 'framework',
+            test: /[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
+            priority: 40,
             enforce: true,
           },
+          // Large third-party libraries
+          vendor: {
+            test: /[\\/]node_modules[\\/](?!(react|react-dom|scheduler|prop-types|use-subscription|framer-motion|@tanstack)).*[\\/]/,
+            name: 'vendor',
+            chunks: 'all',
+            priority: 30,
+          },
+          // Framer Motion separate chunk
           framer: {
             test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
             name: 'framer-motion',
             chunks: 'all',
-            enforce: true,
+            priority: 35,
+          },
+          // React Query separate chunk
+          query: {
+            test: /[\\/]node_modules[\\/]@tanstack[\\/]react-query[\\/]/,
+            name: 'react-query',
+            chunks: 'all',
+            priority: 35,
+          },
+          // Common code across pages
+          common: {
+            name: 'common',
+            minChunks: 2,
+            priority: 20,
+            chunks: 'all',
+            reuseExistingChunk: true,
           },
         },
       };

@@ -247,6 +247,8 @@ export default function HeroSection() {
                       objectPosition: "center",
                     }}
                     className="absolute inset-0 rounded-lg"
+                    sizes="120px"
+                    loading="lazy"
                   />
                 </motion.div>
               ) : null}
@@ -286,6 +288,8 @@ export default function HeroSection() {
                       objectPosition: "center",
                     }}
                     className="absolute inset-0 rounded-lg"
+                    sizes="190px"
+                    loading="lazy"
                   />
                 </motion.div>
               ) : null}
@@ -349,6 +353,8 @@ export default function HeroSection() {
                         objectPosition: "center",
                       }}
                       className="absolute inset-0 rounded-2xl"
+                      sizes="300px"
+                      loading="lazy"
                     />
                   </motion.div>
                 ) : null}
@@ -408,6 +414,8 @@ export default function HeroSection() {
                         objectPosition: "center",
                       }}
                       className="absolute inset-0 rounded-2xl"
+                      sizes="300px"
+                      loading="lazy"
                     />
                   </motion.div>
                 ) : null}
@@ -445,6 +453,9 @@ export default function HeroSection() {
                         objectPosition: "center",
                       }}
                       className="absolute inset-0 rounded-2xl"
+                      sizes="(max-width: 768px) 328px, 360px"
+                      priority
+                      fetchPriority="high"
                     />
                   </motion.div>
                 ) : null}
@@ -458,6 +469,8 @@ export default function HeroSection() {
                   height={100}
                   width={100}
                   className="absolute -top-12 -right-3 md:-right-12"
+                  loading="lazy"
+                  sizes="100px"
                 />
               </div>
             </motion.div>
@@ -496,6 +509,8 @@ export default function HeroSection() {
                       objectPosition: "center",
                     }}
                     className="absolute inset-0 rounded-lg"
+                    sizes="190px"
+                    loading="lazy"
                   />
                 </motion.div>
               ) : null}
@@ -535,6 +550,8 @@ export default function HeroSection() {
                       objectPosition: "center",
                     }}
                     className="absolute inset-0 rounded-lg"
+                    sizes="120px"
+                    loading="lazy"
                   />
                 </motion.div>
               ) : null}

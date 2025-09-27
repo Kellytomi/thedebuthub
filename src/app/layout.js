@@ -160,8 +160,28 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
+        {/* Critical CSS inlined to prevent render blocking */}
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            :root{--background:#0a0a0a;--foreground:#ededed;--font-sans:var(--font-geist-sans);--font-mono:var(--font-geist-mono);--font-montserrat:var(--font-montserrat);--font-dancing-script:var(--font-dancing-script);--font-dm-sans:var(--font-dm-sans)}
+            body{background:#0a0a0a;color:#ededed;font-family:var(--font-dm-sans),system-ui,-apple-system,BlinkMacSystemFont,sans-serif;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-display:swap;margin:0;padding:0}
+            .font-montserrat{font-family:var(--font-montserrat),system-ui,-apple-system,sans-serif}
+            .font-dancing-script{font-family:var(--font-dancing-script),cursive}
+            .scrollbar-hide{-ms-overflow-style:none;scrollbar-width:none}
+            .scrollbar-hide::-webkit-scrollbar{display:none}
+          `
+        }} />
+        
+        {/* Preconnect to external domains */}
+        <link rel="preconnect" href="https://i.scdn.co" />
+        <link rel="preconnect" href="https://p.scdn.co" />
+        <link rel="preconnect" href="https://va.vercel-scripts.com" />
+        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        
         {/* Preload critical resources */}
-        <link rel="preload" href="/images/tdh-logo.svg" as="image" />
+        <link rel="preload" href="/images/The Debut Hub.png" as="image" type="image/png" />
+        <link rel="preload" href="/images/grid-layers.svg" as="image" type="image/svg+xml" />
         
         {/* Favicons - with cache busting */}
         <link rel="icon" type="image/x-icon" href="/favicon.ico?v=3" />
@@ -177,9 +197,8 @@ export default function RootLayout({ children }) {
         <meta name="theme-color" content="#006dff" />
         <meta name="msapplication-TileColor" content="#006dff" />
         
-        {/* DNS prefetch for external domains */}
-        <link rel="dns-prefetch" href="//i.scdn.co" />
-        <link rel="dns-prefetch" href="//p.scdn.co" />
+        {/* Viewport optimization */}
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         
         {/* Structured Data for Google */}
         <script

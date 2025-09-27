@@ -84,11 +84,16 @@ export default function WhoWeAreSection() {
     >
       <Image
         src="/images/star-section-decor.svg"
-        alt="grid pattern background"
-        width={36}
-        height={39}
-        priority
-        className="absolute w-full h-auto object-contain top-0 left-0 z-0"
+        alt="decorative background pattern"
+        fill
+        className="absolute inset-0 object-cover z-0"
+        loading="lazy"
+        sizes="100vw"
+        style={{
+          opacity: 0.5,
+          objectFit: 'cover',
+          objectPosition: 'center'
+        }}
       />
       <div className="relative w-full h-full bg-black/50">
           <IntroBody
