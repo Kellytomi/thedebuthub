@@ -176,8 +176,8 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://i.scdn.co" />
         <link rel="preconnect" href="https://p.scdn.co" />
         <link rel="preconnect" href="https://va.vercel-scripts.com" />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         
         {/* Preload critical resources */}
         <link rel="preload" href="/images/The Debut Hub.png" as="image" type="image/png" />
