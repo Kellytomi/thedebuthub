@@ -18,12 +18,11 @@ export default function ActionButton({
   ...props
 }: ActionButtonProps) {
   const classes =
-    "w-full h-full flex cursor-pointer items-center bg-gradient-to-b from-[#006DFF] to-[#004199] px-7 py-3 justify-center text-white transition-colors rounded-md";
+    "soft-shimmer w-full h-full flex cursor-pointer items-center bg-gradient-to-b from-[#006DFF] to-[#004199] px-7 py-3 justify-center text-white transition-all duration-300 rounded-md shadow-[0_10px_32px_rgba(0,109,255,0.18)] hover:-translate-y-0.5 hover:from-[#1D7BFF] hover:to-[#0051BF] hover:shadow-[0_18px_46px_rgba(0,109,255,0.28)] active:translate-y-0";
 
-  // ✅ If `href` is provided → render as a link
   if (href) {
     return (
-      <Link href={href} aria-label={ariaLabel} {...props}>
+      <Link href={href} aria-label={ariaLabel} className="inline-flex" {...props}>
         <div className={classes}>
           {children}
         </div>
@@ -31,9 +30,8 @@ export default function ActionButton({
     );
   }
 
-  // ✅ Otherwise → render as a button
   return (
-    <button onClick={onClick} aria-label={ariaLabel} {...props}>
+    <button onClick={onClick} aria-label={ariaLabel} className="inline-flex" {...props}>
       <div className={classes}>
         {children}
       </div>

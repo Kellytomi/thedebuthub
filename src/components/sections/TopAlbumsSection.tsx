@@ -89,8 +89,8 @@ export default function TopAlbumsSection() {
   );
 
   const AlbumCard = ({ album, index }: { album: any; index: number; }) => (
-    <div className="group relative flex flex-col xl:flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2 cursor-pointer">
-      <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-white">
+    <div className="group relative flex flex-col xl:flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-3 cursor-pointer transition-transform duration-300 hover:-translate-y-2">
+      <div className="relative w-full h-[350px] overflow-hidden rounded-xl border border-white/70 bg-white/[0.03] shadow-[0_18px_60px_rgba(0,0,0,0.35)] transition-all duration-300 group-hover:border-[#00ccff]/70 group-hover:shadow-[0_22px_70px_rgba(0,109,255,0.16)]">
         {/* Chart Position Badge */}
         <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-sm text-white px-3 py-1.5 rounded-full z-10 border border-white/20">
           <span className="font-bold text-sm">#{index + 1}</span>
@@ -118,13 +118,13 @@ export default function TopAlbumsSection() {
             href={album.spotifyUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity rounded-md"
+            className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-md"
             aria-label={`View ${album.title} on Spotify`}
           />
         )}
       </div>
-      <div className="text-white text-[20px] flex flex-col gap-1">
-        <h3 className="truncate" title={album.title}>
+      <div className="text-white text-[20px] flex flex-col gap-1 transition-colors duration-300 group-hover:text-[#EAF5FF]">
+        <h3 className="truncate font-medium" title={album.title}>
           {album.title}
         </h3>
         <div className="text-sm text-[#CCCCCC] flex flex-row items-center xl:items-center xl:flex-row gap-2">

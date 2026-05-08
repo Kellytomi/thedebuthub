@@ -6,3 +6,4 @@ export { default as IntroBody } from './IntroBody';
 export { default as IntroTitle } from './IntroTitle';
 export { default as ArticleCard } from './ArticleCard';
 export { default as ArticleCardSkeleton } from './ArticleCardSkeleton';
+export { default as SectionReveal } from './SectionReveal';

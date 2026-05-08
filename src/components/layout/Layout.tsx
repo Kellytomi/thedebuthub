@@ -13,7 +13,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen bg-gradient-to-t from-[#040507] to-[#040507f8]">
       {/* Grid Pattern Background */}
-      <div className="fixed inset-0 z-0">
+      <div className="fixed inset-0 z-0 ambient-grid">
         <Image
           src="/images/grid-layers.svg"
           alt="grid pattern background"

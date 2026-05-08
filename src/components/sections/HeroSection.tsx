@@ -216,7 +216,7 @@ export default function HeroSection() {
         <div className="relative mb-10">
           {/* Far left artist image */}
           <div
-            className="xl:inline hidden absolute rounded-lg"
+              className="xl:inline hidden absolute rounded-lg hero-card-float-slow"
             style={{
               top: "100px",
               left: "-450px",
@@ -248,7 +248,7 @@ export default function HeroSection() {
                     }}
                     className="absolute inset-0 rounded-lg"
                     sizes="120px"
-                    priority
+                    loading="eager"
                   />
                 </motion.div>
               ) : null}
@@ -257,7 +257,7 @@ export default function HeroSection() {
 
           {/* Left main artist image */}
           <div
-            className="absolute hidden lg:block"
+            className="absolute hidden lg:block hero-card-float"
             style={{
               top: "80px",
               left: "-300px",
@@ -289,7 +289,7 @@ export default function HeroSection() {
                     }}
                     className="absolute inset-0 rounded-lg"
                     sizes="190px"
-                    priority
+                    loading="eager"
                   />
                 </motion.div>
               ) : null}
@@ -303,7 +303,7 @@ export default function HeroSection() {
               {/* Back Card 1 - Left rotated */}
               <motion.div
                 key={`back1-${currentArtistIndex}`}
-                className="absolute hidden md:block w-[300px] h-[356px] rounded-2xl -left-[75px] bottom-0 overflow-hidden"
+                className="absolute hidden md:block w-[300px] h-[356px] rounded-2xl -left-[75px] bottom-0 overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.45)]"
                 initial="initial"
                 animate="animate"
                 variants={{
@@ -354,7 +354,7 @@ export default function HeroSection() {
                       }}
                       className="absolute inset-0 rounded-2xl"
                       sizes="300px"
-                      priority
+                      loading="eager"
                     />
                   </motion.div>
                 ) : null}
@@ -363,7 +363,7 @@ export default function HeroSection() {
               {/* Back Card 2 - Right rotated */}
               <motion.div
                 key={`back2-${currentArtistIndex}`}
-                className="absolute hidden md:block w-[300px] h-[356px] rounded-2xl -right-20 bottom-14 overflow-hidden"
+                className="absolute hidden md:block w-[300px] h-[356px] rounded-2xl -right-20 bottom-14 overflow-hidden shadow-[0_24px_80px_rgba(0,0,0,0.45)]"
                 initial="initial"
                 animate="animate"
                 exit="exit"
@@ -415,7 +415,7 @@ export default function HeroSection() {
                       }}
                       className="absolute inset-0 rounded-2xl"
                       sizes="300px"
-                      priority
+                      loading="eager"
                     />
                   </motion.div>
                 ) : null}
@@ -423,7 +423,7 @@ export default function HeroSection() {
             </div>
 
             <motion.div
-              className="relative"
+              className="relative hero-card-float"
               style={{ height: "min(427px, calc(100vw - 48px))", width: "min(360px, calc(100vw - 48px))" }}
               initial="initial"
               animate="animate"
@@ -454,7 +454,7 @@ export default function HeroSection() {
                       }}
                       className="absolute inset-0 rounded-2xl"
                       sizes="(max-width: 768px) 328px, 360px"
-                      priority
+                      loading="eager"
                       fetchPriority="high"
                     />
                   </motion.div>
@@ -479,7 +479,7 @@ export default function HeroSection() {
 
           {/* Right main artist image */}
           <div
-            className="absolute hidden lg:block"
+            className="absolute hidden lg:block hero-card-float"
             style={{
               top: "80px",
               right: "-300px",
@@ -511,7 +511,7 @@ export default function HeroSection() {
                     }}
                     className="absolute inset-0 rounded-lg"
                     sizes="190px"
-                    priority
+                    loading="eager"
                   />
                 </motion.div>
               ) : null}
@@ -520,7 +520,7 @@ export default function HeroSection() {
 
           {/* Far right artist image */}
           <div
-            className="xl:inline hidden absolute rounded-lg"
+            className="xl:inline hidden absolute rounded-lg hero-card-float-slow"
             style={{
               top: "100px",
               right: "-450px",
@@ -552,7 +552,7 @@ export default function HeroSection() {
                     }}
                     className="absolute inset-0 rounded-lg"
                     sizes="120px"
-                    priority
+                    loading="eager"
                   />
                 </motion.div>
               ) : null}

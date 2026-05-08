@@ -135,7 +135,7 @@ export default function StayInformedSection() {
               rel="noopener noreferrer"
               className="text-[#92989F]/80 hover:text-white transition-colors underline"
             >
-              Etoma.dev
+              Itsjustkevs
             </a>
           </p>
         </div>

@@ -87,8 +87,8 @@ export default function TopTracksSection() {
   );
 
   const TrackCard = ({ track, index }: { track: any; index: number; }) => (
-    <div className="group relative flex flex-col xl:flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-2 cursor-pointer">
-      <div className="relative w-full h-[350px] overflow-hidden rounded-xl border-[1px] border-white">
+    <div className="group relative flex flex-col xl:flex-col w-[330px] md:w-[370px] xl:w-[370px] h-[360px] md:h-[418px] gap-3 cursor-pointer transition-transform duration-300 hover:-translate-y-2">
+      <div className="relative w-full h-[350px] overflow-hidden rounded-xl border border-white/70 bg-white/[0.03] shadow-[0_18px_60px_rgba(0,0,0,0.35)] transition-all duration-300 group-hover:border-[#00ccff]/70 group-hover:shadow-[0_22px_70px_rgba(0,109,255,0.16)]">
         {/* Chart Position Badge */}
         <div className="absolute top-3 left-3 bg-black/80 backdrop-blur-sm text-white px-3 py-1.5 rounded-full z-20 border border-white/20">
           <span className="font-bold text-sm">#{index + 1}</span>
@@ -114,7 +114,7 @@ export default function TopTracksSection() {
         <div className="absolute inset-0 bg-black bg-opacity-40 md:opacity-0 md:group-hover:opacity-50 opacity-50 transition-opacity duration-300 rounded-md" />
 
         <div className="absolute inset-0 flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 opacity-100 transition-opacity duration-300">
-          <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg">
+          <div className="w-24 h-24 rounded-full bg-white flex items-center justify-center shadow-lg transition-transform duration-300 group-hover:scale-110">
             <Play size="42" color="black" variant="TwoTone" />
           </div>
         </div>
@@ -130,8 +130,8 @@ export default function TopTracksSection() {
         )}
       </div>
       
-      <div className="text-white text-[20px] flex flex-col gap-1">
-        <h3 className="truncate" title={track.title}>
+      <div className="text-white text-[20px] flex flex-col gap-1 transition-colors duration-300 group-hover:text-[#EAF5FF]">
+        <h3 className="truncate font-medium" title={track.title}>
           {track.title}
         </h3>
         <div className="text-sm text-[#CCCCCC] flex flex-row items-center xl:items-center xl:flex-row gap-2">

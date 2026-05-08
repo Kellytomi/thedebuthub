@@ -90,7 +90,7 @@ export default function Footer() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Email address"
-              className="w-full sm:flex-1 px-6 py-4 bg-[#252525]/30 border border-slate-700 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+            className="w-full sm:flex-1 px-6 py-4 bg-[#252525]/30 border border-slate-700 rounded-lg text-white placeholder-slate-400 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent focus:bg-[#252525]/50"
               required
             />
             <Button onClick={() => alert("Action triggered!")} ariaLabel="Subscribe to newsletter">
@@ -114,7 +114,7 @@ export default function Footer() {
                 href={link.href}
                 target={link.href.startsWith("http") ? "_blank" : undefined}
                 rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                className="text-base sm:text-[18px] hover:text-[#B3B3B3] text-white transition-colors font-medium whitespace-nowrap"
+                className="text-base sm:text-[18px] text-white transition-all duration-300 font-medium whitespace-nowrap hover:-translate-y-1 hover:text-[#B3B3B3]"
               >
                 {link.name}
               </Link>
@@ -138,7 +138,7 @@ export default function Footer() {
               rel="noopener noreferrer"
               className="text-[#92989F]/80 hover:text-white transition-colors underline"
             >
-              Etoma.dev
+              Itsjustkevs
             </a>
           </p>
         </div>

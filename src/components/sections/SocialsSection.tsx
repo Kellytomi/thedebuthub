@@ -52,7 +52,7 @@ import Image from "next/image";
                 <Link
                   key={social.name}
                   href={social.url}
-                  className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white hover:-translate-y-3 hover:border-[#00ccff]/50 hover:shadow-[0_0_20px_rgba(0,204,255,0.3)] transition-all duration-300 ${social.transform}`}
+                  className={`soft-shimmer flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border border-white/10 hover:text-white hover:-translate-y-2 hover:scale-[1.03] hover:border-[#00ccff]/50 hover:shadow-[0_0_24px_rgba(0,204,255,0.28)] transition-all duration-300 ${social.transform}`}
                 >
                   <Image
                     src={social.icon}
@@ -70,7 +70,7 @@ import Image from "next/image";
                 <Link
                   key={social.name}
                   href={social.url}
-                  className={`flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border-[1px] border-white/8 hover:text-white hover:-translate-y-3 hover:border-[#00ccff]/50 hover:shadow-[0_0_20px_rgba(0,204,255,0.3)] transition-all duration-300 ${social.transform}`}
+                  className={`soft-shimmer flex items-center gap-2 bg-gradient-to-b from-[#1A1A1A] to-[#141414] p-2 rounded-lg border border-white/10 hover:text-white hover:-translate-y-2 hover:scale-[1.03] hover:border-[#00ccff]/50 hover:shadow-[0_0_24px_rgba(0,204,255,0.28)] transition-all duration-300 ${social.transform}`}
                 >
                   <Image
                     src={social.icon}

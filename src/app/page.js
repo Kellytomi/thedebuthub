@@ -10,20 +10,35 @@ import {
   SocialsSection
 } from '@/components';
 import TopArticlesSection from '@/components/sections/TopArticlesSection';
+import { SectionReveal } from '@/components/ui';
 
 export default function Home() {
   return (
     <Layout>
       <main className="min-h-screen">
         <HeroSection />
-        <TopAlbumsSection />
-        <TopArticlesSection />
-        <CoverStorySection />
+        <SectionReveal>
+          <TopAlbumsSection />
+        </SectionReveal>
+        <SectionReveal>
+          <TopArticlesSection />
+        </SectionReveal>
+        <SectionReveal>
+          <CoverStorySection />
+        </SectionReveal>
         {/* <AudioPlayerSection /> */}
-        <MusicPulseSection />
-        <TopTrackSection />
-        <WhoWeAreSection />
-        <SocialsSection />
+        <SectionReveal>
+          <MusicPulseSection />
+        </SectionReveal>
+        <SectionReveal>
+          <TopTrackSection />
+        </SectionReveal>
+        <SectionReveal>
+          <WhoWeAreSection />
+        </SectionReveal>
+        <SectionReveal>
+          <SocialsSection />
+        </SectionReveal>
       </main>
     </Layout>
   );
