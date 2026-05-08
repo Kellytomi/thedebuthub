@@ -36,31 +36,8 @@ export default function PerformanceOptimizer() {
       deferYouTube();
     };
 
-    // Add passive event listeners optimization
-    const addPassiveListeners = () => {
-      const originalAddEventListener = EventTarget.prototype.addEventListener;
-      EventTarget.prototype.addEventListener = function(type, listener, options) {
-        if (['touchstart', 'touchmove', 'wheel', 'mousewheel'].includes(type)) {
-          if (typeof options === 'boolean') {
-            options = { passive: true, capture: options };
-          } else if (typeof options === 'object' && options !== null) {
-            options.passive = options.passive !== false;
-          } else {
-            options = { passive: true };
-          }
-        }
-        return originalAddEventListener.call(this, type, listener, options);
-      };
-    };
-
     preloadCriticalImages();
     optimizeThirdPartyScripts();
-    addPassiveListeners();
-
-
-    return () => {
-      // Clean up any observers if needed
-    };
   }, []);
 
   return null;

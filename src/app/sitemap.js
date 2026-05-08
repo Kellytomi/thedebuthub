@@ -26,9 +26,9 @@ export default async function sitemap() {
   try {
     const articles = await getAllArticles();
     articlePages = articles
-      .filter(article => article.slug && article.slug.current) // Only articles with valid slugs
+      .filter(article => article.slug) // Only articles with valid slugs
       .map(article => ({
-        url: `${baseUrl}/articles/${article.slug.current}`,
+        url: `${baseUrl}/articles/${article.slug}`,
         lastModified: new Date(article._updatedAt || article._createdAt || now),
         changeFrequency: 'weekly',
         priority: 0.7,

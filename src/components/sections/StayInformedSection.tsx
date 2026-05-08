@@ -28,24 +28,19 @@ export default function StayInformedSection() {
   ];
 
   return (
-    <section className="relative bg-black h-[1276px] sm:h-[1296px] md:h-[1326px] lg:h-[1356px] xl:h-[1376px]">
+    <section className="relative bg-black min-h-[760px] overflow-hidden py-24 sm:py-28">
       <Image
         src="/images/grid-layers.svg"
         alt="grid pattern background"
-        width={36}
-        height={39}
+        fill
         priority
+        sizes="100vw"
         style={{
-          position: "absolute",
-          width: "100%",
-          height: "100%",
           objectFit: "cover",
-          top: 0,
-          left: 0,
           zIndex: 0
         }}
       />
-      <div className="relative max-w-4xl mx-auto flex flex-col justify-center items-center w-full text-center z-20 px-4" style={{ height: '1076px' }}>
+      <div className="relative max-w-4xl mx-auto flex flex-col justify-center items-center w-full text-center z-20 px-4">
         <div className="mb-8">
           <div className="inline-flex items-center justify-center rounded-full mb-6">
             <Image
@@ -53,7 +48,8 @@ export default function StayInformedSection() {
               alt="Main Artist"
               height={100}
               width={100}
-              className=""
+              className="h-auto w-[100px]"
+              sizes="100px"
             />
           </div>
 
@@ -134,7 +130,7 @@ export default function StayInformedSection() {
             </a>
             {" "}and developed by{" "}
             <a 
-              href="https://x.com/kelvin_dart" 
+              href="https://x.com/itsjustkevs" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-[#92989F]/80 hover:text-white transition-colors underline"

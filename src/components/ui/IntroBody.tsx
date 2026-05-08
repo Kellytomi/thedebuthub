@@ -20,10 +20,12 @@ const IntroSection = ({
             alt="wave line"
             width={56} 
             height={25} 
+            sizes="56px"
+            style={{ width: "56px", height: "25px" }}
           />
         </div>
 
-        <p className="text-white/70 w-[350px] md:w-[606px] lg:w-[880px] max-w-4xl mx-auto font-dm-sans text-[18px] leading-[1.6]">
+        <p className="text-white/70 w-full max-w-[350px] md:max-w-[606px] lg:max-w-[880px] mx-auto px-4 font-dm-sans text-[18px] leading-[1.6]">
           {description}
         </p>
       </div>

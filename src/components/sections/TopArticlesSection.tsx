@@ -106,7 +106,7 @@ const TopArticlesSection = () => {
         {/* Articles Container */}
         <div className="w-full">
           {/* Desktop: Grid Layout */}
-          <div className="grid grid-cols-[330px] sm:grid-cols-[370px] lg:grid-cols-[370px_370px] xl:grid-cols-[370px_370px_370px] gap-[33px] justify-center">
+          <div className={`${articles.length === 1 ? "grid grid-cols-[330px] sm:grid-cols-[370px]" : "grid grid-cols-[330px] sm:grid-cols-[370px] lg:grid-cols-[370px_370px] xl:grid-cols-[370px_370px_370px]"} gap-[33px] justify-center`}>
             {articles.length > 0 ? (
               articles.map((article, index) => (
                 <div

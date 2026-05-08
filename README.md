@@ -49,13 +49,13 @@
 ### **Development**
 - **ESLint** - Code linting and formatting
 - **PostCSS** - CSS processing
-- **npm** - Package management
+- **Bun** - Package management
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 - Node.js 18+ installed
-- npm or yarn package manager
+- Bun 1.3+ package manager
 - Spotify Developer Account (for live data)
 
 ### 1. Clone the Repository
@@ -66,9 +66,7 @@ cd thedebuthub
 
 ### 2. Install Dependencies
 ```bash
-npm install
-# or
-yarn install
+bun install
 ```
 
 ### 3. Setup Spotify API (Required)
@@ -104,9 +102,7 @@ To display real Nigerian albums and tracks, you need Spotify Web API credentials
 
 ### 4. Run Development Server
 ```bash
-npm run dev
-# or
-yarn dev
+bun run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the application.

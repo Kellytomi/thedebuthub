@@ -7,20 +7,20 @@ import Image from "next/image";
   export default function SocialsSection() {
     const socialLinks = [
       {
-        name: "Twitter",
-        url: "https://x.com/thedebuthub?s=21",
+        name: "X",
+        url: "https://x.com/thedebuthub",
         icon: "/socials/twitter-icon.svg",
         transform: "",
       },
       {
         name: "Instagram",
-        url: "https://www.instagram.com/thedebuthub?igsh=bnkwdmdjdzNuZmF6",
+        url: "https://www.instagram.com/thedebuthub",
         icon: "/socials/instagram-icon.svg",
         transform: "transform -rotate-12",
       },
       {
         name: "Facebook",
-        url: "https://web.facebook.com/people/The-Debut-Hub/61567008111041/?__mmr=1&_rdc=1&_rdr",
+        url: "https://web.facebook.com/people/The-Debut-Hub/61567008111041/",
         icon: "/socials/facebook-icon.svg",
         transform: "",
       },

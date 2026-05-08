@@ -1,4 +1,8 @@
 @import "tailwindcss";
+@config "../../tailwind.config.js";
+@source "../app";
+@source "../components";
+@source "../lib";
 
 /* Critical CSS Variables - Inlined for performance */
 :root {

@@ -226,7 +226,7 @@ export default function RootLayout({ children }) {
               }
               },
               "sameAs": [
-                "https://twitter.com/thedebuthub",
+                "https://x.com/thedebuthub",
                 "https://instagram.com/thedebuthub"
               ]
             })

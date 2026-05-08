@@ -20,7 +20,10 @@ export function transformSanityArticle(sanityArticle: SanityArticle) {
     featured: sanityArticle.featured || false,
     tags: sanityArticle.tags || [],
     estimatedReadingTime: sanityArticle.estimatedReadingTime || 5,
-    seo: sanityArticle.seo
+    seo: sanityArticle.seo,
+    publishedAt: sanityArticle.publishedAt,
+    _createdAt: sanityArticle._createdAt,
+    _updatedAt: sanityArticle._updatedAt
   }
 }
 

@@ -6,7 +6,7 @@ The Sanity Studio is now accessible at two routes:
 - `/studio` - Alternative studio route (legacy support)
 
 ## Access the Admin Panel
-1. Make sure your development server is running: `npm run dev`
+1. Make sure your development server is running: `bun run dev`
 2. Navigate to `http://localhost:3000/admin`
 3. Sign in with your Sanity account credentials
 

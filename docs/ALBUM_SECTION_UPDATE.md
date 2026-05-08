@@ -70,7 +70,7 @@ SPOTIFY_CLIENT_SECRET=your_client_secret
 ## Verification
 
 To verify the changes:
-1. Run `npm run dev` or `yarn dev`
+1. Run `bun run dev`
 2. Navigate to http://localhost:3000
 3. Check the album section displays "Top Albums of the Week"
 4. Verify albums are loading from the Spotify API

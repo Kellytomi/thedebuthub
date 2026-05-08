@@ -1,13 +1,15 @@
 import { createClient } from '@sanity/client'
 import imageUrlBuilder from '@sanity/image-url'
 
-// Force rebuild to update environment variables
+const sanityProjectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'kc23wdnh'
+const sanityDataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
+const sanityApiVersion = process.env.NEXT_PUBLIC_SANITY_API_VERSION || '2024-01-01'
 
 export const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET!,
+  projectId: sanityProjectId,
+  dataset: sanityDataset,
   useCdn: process.env.NODE_ENV === 'production',
-  apiVersion: '2024-01-01',
+  apiVersion: sanityApiVersion,
   token: process.env.SANITY_API_TOKEN, // Only needed for write operations
 })
 
@@ -103,4 +105,3 @@ export const queries = {
     tags
   }`
 }
-

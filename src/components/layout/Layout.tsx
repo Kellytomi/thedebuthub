@@ -17,37 +17,34 @@ export default function Layout({ children }: LayoutProps) {
         <Image
           src="/images/grid-layers.svg"
           alt="grid pattern background"
-          width={36}
-          height={39}
+          fill
           priority
+          sizes="100vw"
           style={{
-            position: "absolute",
-            width: "100%",
-            height: "auto",
-            objectFit: "contain",
+            objectFit: "cover",
           }}
         />
       </div>
 
       {/* Header Navigation */}
       <div className="absolute top-4 sm:top-8 left-0 right-0 z-50">
-        <div className="flex justify-between items-center px-4 sm:px-8 lg:px-12 max-w-[1440px] mx-auto">
+        <div className="flex w-full justify-between items-center px-4 sm:px-8 lg:px-12 max-w-[1440px] mx-auto">
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="relative flex h-[39px] w-9 items-center sm:h-[52px] sm:w-12">
             <Image
               src="/images/The Debut Hub.png"
               alt="The Debut Hub Logo"
-              width={48}
-              height={52}
+              fill
               priority
-              className="w-9 h-10 sm:w-12 sm:h-14 object-contain"
+              sizes="(max-width: 640px) 36px, 48px"
+              className="object-contain"
             />
           </Link>
 
           <div className="flex items-center">
-            {/* Subscribe Button - Links to Twitter */}
+            {/* Follow Button */}
             <a
-              href="https://twitter.com/thedebuthub"
+              href="https://x.com/thedebuthub"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white/70 hover:text-white font-medium relative overflow-hidden text-xs sm:text-sm px-3 py-2 sm:px-4 rounded-md h-8 sm:h-9 font-dm-sans inline-flex items-center justify-center transition-colors duration-200"
@@ -72,7 +69,7 @@ export default function Layout({ children }: LayoutProps) {
                   }}
                 />
               </div>
-              Subscribe
+              Follow
             </a>
           </div>
         </div>

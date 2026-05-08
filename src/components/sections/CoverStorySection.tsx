@@ -159,13 +159,13 @@ export default function CoverStorySection() {
   return (
     <motion.section
       ref={ref}
-      className="relative overflow-hidden mx-auto w-full h-[1440px] md:h-[1280px] xl:h-[1024px] bg-[#030303]"
+      className="relative overflow-hidden mx-auto w-full bg-[#030303] py-20 xl:py-24"
       initial="hidden"
       animate={controls}
     >
       <div className="absolute w-8 h-[1024px] top-[14px] left-[1298px] bg-[#006DFF] backdrop-blur-[300px] blur-[150px]" />
 
-      <div className="relative z-10 h-full">
+      <div className="relative z-10">
         <IntroTitle line1="Where words fail," line2="Music speaks" />
 
         <IntroBody
@@ -173,13 +173,13 @@ export default function CoverStorySection() {
           description="Meet the artist who broke the charts this week. Get an exclusive look into their journey, inspirations, and what's next for them."
         />
 
-        <div className="flex flex-col xl:flex-row items-center justify-center px-4 md:px-16 mt-16 gap-16">
+        <div className="flex flex-col xl:flex-row items-center justify-center px-4 md:px-16 mt-14 gap-10 xl:gap-16">
           {/* Dynamic Artist Image */}
           <motion.div
             className="relative"
             style={{
-              height: "427px",
-              width: "360px",
+              height: "min(427px, calc(100vw - 48px))",
+              width: "min(360px, calc(100vw - 48px))",
             }}
             variants={imageVariants}
             whileHover="hover"
@@ -197,6 +197,7 @@ export default function CoverStorySection() {
                     objectPosition: "center",
                   }}
                   className="absolute inset-0 rounded-lg"
+                  sizes="(max-width: 768px) calc(100vw - 48px), 360px"
                 />
               ) : null}
             </div>
@@ -214,6 +215,8 @@ export default function CoverStorySection() {
                 height={100}
                 width={100}
                 className="absolute -top-12 -left-3 mg:-left-12"
+                sizes="100px"
+                style={{ width: "100px", height: "100px" }}
               />
             </motion.div>
 
@@ -275,7 +278,7 @@ export default function CoverStorySection() {
                   className="mb-8 flex justify-center sm:justify-start"
                   variants={childVariants}
                 >
-                  <Button onClick={() => window.open("https://twitter.com/thedebuthub", "_blank")} ariaLabel="Read More">
+                  <Button onClick={() => window.open("https://x.com/thedebuthub", "_blank")} ariaLabel="Read More">
                     Read More
                   </Button>
                 </motion.div>

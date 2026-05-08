@@ -78,7 +78,7 @@ export default function WhoWeAreSection() {
   return (
     <motion.section
       ref={ref}
-      className="relative overflow-hidden mx-auto w-full h-[955px] sm:h-[875px] xl:h-[665px] bg-[#030303] pt-20"
+      className="relative overflow-hidden mx-auto w-full bg-[#030303] py-20"
       initial="hidden"
       animate={controls}
     >
@@ -95,15 +95,15 @@ export default function WhoWeAreSection() {
           objectPosition: 'center'
         }}
       />
-      <div className="relative w-full h-full bg-black/50">
+      <div className="relative w-full bg-black/50">
           <IntroBody
             title="Empowering Sound. Elevating Stories"
             description="DebutHub is a global music community built by artists, for artists. We believe in authenticity, creativity, and giving power back to creators"
           />
 
-        <div className="max-w-[1350px] mx-auto flex flex-col xl:flex-row h-auto pt-16 gap-20">
+        <div className="max-w-[1350px] mx-auto flex flex-col xl:flex-row items-center justify-between pt-12 gap-10 xl:gap-16 px-4 md:px-10">
           <motion.div
-            className="flex flex-col px-2 md:px-10 xl:px-0 items-center xl:items-start justify-center gap-6 order-1 xl:order-1"
+            className="flex flex-col items-center xl:items-start justify-center gap-6 order-1 xl:order-1 flex-1 min-w-0"
             variants={containerVariants}
           >
             <motion.h2
@@ -113,7 +113,7 @@ export default function WhoWeAreSection() {
               Who We Are
             </motion.h2>
             <motion.p
-              className="text-white/70 w-[330px] md:w-[526px] font-dm-sans text-[20px] text-center xl:text-left"
+              className="text-white/70 w-full max-w-[526px] font-dm-sans text-[20px] text-center xl:text-left"
               variants={childVariants}
             >
               We&apos;re on a mission to amplify voices in music — whether you&apos;re
@@ -121,20 +121,21 @@ export default function WhoWeAreSection() {
               music landscape
             </motion.p>
             <motion.div variants={buttonVariants} whileHover="hover">
-              <Button onClick={() => window.open("https://twitter.com/thedebuthub", "_blank")} ariaLabel="Learn more about us">
+              <Button onClick={() => window.open("https://x.com/thedebuthub", "_blank")} ariaLabel="Learn more about us">
                 Know More
               </Button>
             </motion.div>
           </motion.div>
 
-          <motion.div variants={imageVariants} className="flex-1 order-2 xl:order-2">
+          <motion.div variants={imageVariants} className="flex-1 order-2 xl:order-2 min-w-0 w-full">
             <div className="flex justify-center xl:justify-end">
               <Image
                 src="/images/tdh-section-pt.svg"
                 alt="Asake Tweet Card"
                 width={740}
                 height={367}
-                className="rounded-lg shadow-xl w-[500px] px-2 sm:pr-10 xl:w-[740px] xl:h-[367px]"
+                className="rounded-lg shadow-xl w-full max-w-[740px] h-auto"
+                sizes="(max-width: 1280px) calc(100vw - 32px), 740px"
               />
             </div>
           </motion.div>

@@ -106,6 +106,8 @@ export interface SanityArticle {
   body: SanityBlockContent[];
   mainImage: SanityImage;
   publishedAt: string;
+  _createdAt?: string;
+  _updatedAt?: string;
   category: string;
   author: string;
   featured?: boolean;

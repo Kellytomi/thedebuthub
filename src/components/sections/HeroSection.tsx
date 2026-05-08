@@ -162,17 +162,17 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative h-[1080px] sm:h-[1024px]"
+      className="relative overflow-hidden min-h-[900px] sm:min-h-[960px] py-20 sm:py-24"
       style={{
         width: "100%",
         backgroundColor: "",
       }}
     >
       {/* Main Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
+      <div className="relative z-10 flex min-h-[760px] sm:min-h-[820px] flex-col items-center justify-center text-center px-4">
         {/* Tagline */}
         <h2
-          className="mb-8 text-lg"
+          className="mb-6 text-lg"
           style={{
             fontFamily: "'Dancing Script', cursive",
             fontSize: "24px",
@@ -188,7 +188,7 @@ export default function HeroSection() {
 
         {/* Main Title */}
         <h1
-          className="text-white font-bold mb-8"
+          className="text-white font-bold mb-6"
           style={{
             fontFamily: "'Montserrat', sans-serif",
             fontSize: "clamp(48px, 8vw, 96px)",
@@ -201,7 +201,7 @@ export default function HeroSection() {
 
         {/* Description */}
         <p
-          className="text-white/70 mb-16 max-w-4xl"
+          className="text-white/70 mb-12 max-w-4xl"
           style={{
             fontFamily: "'DM Sans', sans-serif",
             fontSize: "18px",
@@ -236,7 +236,7 @@ export default function HeroSection() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="w-full h-full"
+                  className="relative w-full h-full"
                 >
                   <Image
                     src={farLeftArtist.image}
@@ -248,7 +248,7 @@ export default function HeroSection() {
                     }}
                     className="absolute inset-0 rounded-lg"
                     sizes="120px"
-                    loading="lazy"
+                    priority
                   />
                 </motion.div>
               ) : null}
@@ -277,7 +277,7 @@ export default function HeroSection() {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="w-full h-full"
+                  className="relative w-full h-full"
                 >
                   <Image
                     src={leftMainArtist.image}
@@ -289,7 +289,7 @@ export default function HeroSection() {
                     }}
                     className="absolute inset-0 rounded-lg"
                     sizes="190px"
-                    loading="lazy"
+                    priority
                   />
                 </motion.div>
               ) : null}
@@ -342,7 +342,7 @@ export default function HeroSection() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
-                    className="w-full h-full"
+                    className="relative w-full h-full"
                   >
                     <Image
                       src={backCard1Artist.image}
@@ -354,7 +354,7 @@ export default function HeroSection() {
                       }}
                       className="absolute inset-0 rounded-2xl"
                       sizes="300px"
-                      loading="lazy"
+                      priority
                     />
                   </motion.div>
                 ) : null}
@@ -403,7 +403,7 @@ export default function HeroSection() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.5 }}
-                    className="w-full h-full"
+                    className="relative w-full h-full"
                   >
                     <Image
                       src={backCard2Artist.image}
@@ -415,7 +415,7 @@ export default function HeroSection() {
                       }}
                       className="absolute inset-0 rounded-2xl"
                       sizes="300px"
-                      loading="lazy"
+                      priority
                     />
                   </motion.div>
                 ) : null}
@@ -424,7 +424,7 @@ export default function HeroSection() {
 
             <motion.div
               className="relative"
-              style={{ height: "427px", width: "360px" }}
+              style={{ height: "min(427px, calc(100vw - 48px))", width: "min(360px, calc(100vw - 48px))" }}
               initial="initial"
               animate="animate"
               variants={imageVariants}
@@ -442,7 +442,7 @@ export default function HeroSection() {
                     animate="center"
                     exit="exit"
                     variants={carouselVariants}
-                    className="w-full h-full"
+                    className="relative w-full h-full"
                   >
                     <Image
                       src={currentArtist.image}
@@ -471,6 +471,7 @@ export default function HeroSection() {
                   className="absolute -top-12 -right-3 md:-right-12"
                   loading="lazy"
                   sizes="100px"
+                  style={{ width: 100, height: "auto" }}
                 />
               </div>
             </motion.div>
@@ -498,7 +499,7 @@ export default function HeroSection() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="w-full h-full"
+                  className="relative w-full h-full"
                 >
                   <Image
                     src={rightMainArtist.image}
@@ -510,7 +511,7 @@ export default function HeroSection() {
                     }}
                     className="absolute inset-0 rounded-lg"
                     sizes="190px"
-                    loading="lazy"
+                    priority
                   />
                 </motion.div>
               ) : null}
@@ -539,7 +540,7 @@ export default function HeroSection() {
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5 }}
-                  className="w-full h-full"
+                  className="relative w-full h-full"
                 >
                   <Image
                     src={farRightArtist.image}
@@ -551,7 +552,7 @@ export default function HeroSection() {
                     }}
                     className="absolute inset-0 rounded-lg"
                     sizes="120px"
-                    loading="lazy"
+                    priority
                   />
                 </motion.div>
               ) : null}

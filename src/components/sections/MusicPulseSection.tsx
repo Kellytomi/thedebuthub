@@ -96,6 +96,8 @@ export default function MusicPulseSection() {
                   alt="Badge"
                   width={100}
                   height={100}
+                  className="h-auto w-[100px]"
+                  sizes="100px"
                 />
               </motion.div>
               <Image
@@ -103,7 +105,8 @@ export default function MusicPulseSection() {
                 alt="Rema Tweet Card"
                 width={373}
                 height={372}
-                className="relative rounded-lg shadow-2xl w-[340px] h-[360px] md:w-[373px] md:h-[372px]"
+                className="relative rounded-lg shadow-2xl w-[340px] md:w-[373px] h-auto"
+                sizes="(max-width: 768px) 340px, 373px"
               />
             </motion.div>
           </div>
@@ -123,7 +126,8 @@ export default function MusicPulseSection() {
                 alt="Asake Tweet Card"
                 width={373}
                 height={302}
-                className="hidden md:block rounded-lg shadow-xl w-[273px] h-[202px] lg:w-[373px] lg:h-[302px]"
+                className="hidden md:block rounded-lg shadow-xl w-[273px] lg:w-[373px] h-auto"
+                sizes="(max-width: 1024px) 273px, 373px"
               />
             </motion.div>
 
@@ -142,6 +146,8 @@ export default function MusicPulseSection() {
                   alt="Badge"
                   width={100}
                   height={100}
+                  className="h-auto w-[100px]"
+                  sizes="100px"
                 />
               </motion.div>
               <Image
@@ -150,6 +156,7 @@ export default function MusicPulseSection() {
                 width={373}
                 height={372}
                 className="rounded-lg shadow-2xl"
+                sizes="373px"
               />
             </motion.div>
 
@@ -163,7 +170,8 @@ export default function MusicPulseSection() {
                 alt="Crayon Tweet Card"
                 width={373}
                 height={302}
-                className="hidden md:block rounded-lg shadow-xl w-[273px] h-[202px] lg:w-[373px] lg:h-[302px]"
+                className="hidden md:block rounded-lg shadow-xl w-[273px] lg:w-[373px] h-auto"
+                sizes="(max-width: 1024px) 273px, 373px"
               />
             </motion.div>
           </motion.div>

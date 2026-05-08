@@ -39,7 +39,7 @@ For write operations (if you plan to create articles programmatically):
 Start the Sanity Studio for content management:
 
 ```bash
-npm run studio
+bun run studio
 ```
 
 This will open Sanity Studio at `http://localhost:3333`
@@ -49,12 +49,12 @@ This will open Sanity Studio at `http://localhost:3333`
 Deploy your studio to Sanity's hosting:
 
 ```bash
-npm run deploy-studio
+bun run deploy-studio
 ```
 
 ## 📝 Creating Your First Article
 
-1. Open Sanity Studio (`npm run studio`)
+1. Open Sanity Studio (`bun run studio`)
 2. Click "Create" → "Article"
 3. Fill in the required fields:
    - **Title**: Your article title
@@ -90,16 +90,16 @@ The project automatically fetches articles from Sanity via:
 
 ```bash
 # Start Next.js development server
-npm run dev
+bun run dev
 
 # Start Sanity Studio
-npm run studio
+bun run studio
 
 # Build for production
-npm run build
+bun run build
 
 # Deploy Sanity Studio
-npm run deploy-studio
+bun run deploy-studio
 ```
 
 ## 📁 File Structure
