@@ -63,7 +63,11 @@ export default function ArticlesPage() {
   }, []);
 
   useEffect(() => {
-    fetchArticles();
+    const timeout = window.setTimeout(() => {
+      void fetchArticles();
+    }, 0);
+
+    return () => window.clearTimeout(timeout);
   }, [fetchArticles]);
 
   // Handle search functionality

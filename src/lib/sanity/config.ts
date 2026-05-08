@@ -1,5 +1,5 @@
 import { createClient } from '@sanity/client'
-import imageUrlBuilder from '@sanity/image-url'
+import { createImageUrlBuilder } from '@sanity/image-url'
 
 const sanityProjectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'kc23wdnh'
 const sanityDataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production'
@@ -14,7 +14,7 @@ export const client = createClient({
 })
 
 // Get a pre-configured url-builder from your sanity client
-const builder = imageUrlBuilder(client)
+const builder = createImageUrlBuilder(client)
 
 // Helper function to generate image URLs
 export function urlFor(source: any) {

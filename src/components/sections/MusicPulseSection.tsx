@@ -64,7 +64,7 @@ export default function MusicPulseSection() {
   return (
     <motion.section
       ref={ref}
-      className="relative overflow-hidden mx-auto w-full h-[796px] md:h-[1180px] xl:h-[875px] bg-[#030303]"
+      className="relative overflow-hidden mx-auto w-full bg-[#030303] py-16 sm:py-20"
       initial="hidden"
       animate={controls}
     >
@@ -72,7 +72,7 @@ export default function MusicPulseSection() {
       <div className="absolute w-8 h-[1024px] top-[14px] left-[1298px] bg-[#006DFF] backdrop-blur-[300px] blur-[150px]" />
 
       {/* Main content container */}
-      <div className="relative z-10 h-full flex flex-col items-center">
+      <div className="relative z-10 flex flex-col items-center">
         <IntroTitle line1="Top songs" line2="From Nigeria" />
 
         <IntroBody
@@ -81,7 +81,7 @@ export default function MusicPulseSection() {
         />
 
         <motion.div variants={containerVariants}>
-          <div className="relative xl:hidden w-full mt-16 flex justify-center">
+          <div className="relative xl:hidden w-full mt-12 flex justify-center">
             <motion.div
               className="relative w-[340px] md:w-[373px] h-auto"
               variants={cardVariants}
@@ -107,6 +107,7 @@ export default function MusicPulseSection() {
                 height={372}
                 className="relative rounded-lg shadow-2xl w-[340px] md:w-[373px] h-auto"
                 sizes="(max-width: 768px) 340px, 373px"
+                style={{ height: "auto" }}
               />
             </motion.div>
           </div>
@@ -120,14 +121,13 @@ export default function MusicPulseSection() {
             <motion.div
               variants={cardVariants}
               custom={0}
+              className="hidden md:block w-[273px] lg:w-[373px]"
             >
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src="/images/mpulse-card-1.png"
                 alt="Asake Tweet Card"
-                width={373}
-                height={302}
-                className="hidden md:block rounded-lg shadow-xl w-[273px] lg:w-[373px] h-auto"
-                sizes="(max-width: 1024px) 273px, 373px"
+                className="rounded-lg shadow-xl w-full h-auto"
               />
             </motion.div>
 
@@ -157,6 +157,7 @@ export default function MusicPulseSection() {
                 height={372}
                 className="rounded-lg shadow-2xl"
                 sizes="373px"
+                style={{ width: "373px", height: "372px" }}
               />
             </motion.div>
 
@@ -164,14 +165,13 @@ export default function MusicPulseSection() {
             <motion.div
               variants={cardVariants}
               custom={2}
+              className="hidden md:block w-[273px] lg:w-[373px]"
             >
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src="/images/mpulse-card-2.png"
                 alt="Crayon Tweet Card"
-                width={373}
-                height={302}
-                className="hidden md:block rounded-lg shadow-xl w-[273px] lg:w-[373px] h-auto"
-                sizes="(max-width: 1024px) 273px, 373px"
+                className="rounded-lg shadow-xl w-full h-auto"
               />
             </motion.div>
           </motion.div>

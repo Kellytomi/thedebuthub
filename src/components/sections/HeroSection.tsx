@@ -72,8 +72,8 @@ export default function HeroSection() {
   // Process artists data from tRPC
   const artists = (() => {
     if (isSuccess && artistsData?.artists?.length > 0) {
-      return artistsData.artists.map((artist: any) => ({
-        id: artist.id || `artist-${Date.now()}-${Math.random()}`,
+      return artistsData.artists.map((artist: any, index: number) => ({
+        id: artist.id || `artist-${index}`,
         name: artist.name,
         image: artist.image || "/images/placeholder.svg",
         fallback: "/images/placeholder.svg",
@@ -162,14 +162,14 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative overflow-hidden min-h-[900px] sm:min-h-[960px] py-20 sm:py-24"
+      className="relative overflow-hidden min-h-[820px] sm:min-h-[880px] py-16 sm:py-20"
       style={{
         width: "100%",
         backgroundColor: "",
       }}
     >
       {/* Main Content */}
-      <div className="relative z-10 flex min-h-[760px] sm:min-h-[820px] flex-col items-center justify-center text-center px-4">
+      <div className="relative z-10 flex min-h-[700px] sm:min-h-[760px] flex-col items-center justify-center text-center px-4">
         {/* Tagline */}
         <h2
           className="mb-6 text-lg"
@@ -201,7 +201,7 @@ export default function HeroSection() {
 
         {/* Description */}
         <p
-          className="text-white/70 mb-12 max-w-4xl"
+          className="text-white/70 mb-10 max-w-4xl"
           style={{
             fontFamily: "'DM Sans', sans-serif",
             fontSize: "18px",
@@ -213,7 +213,7 @@ export default function HeroSection() {
         </p>
 
         {/* Artist Images Layout - Carousel of 7 Nigerian Artists */}
-        <div className="relative mb-12">
+        <div className="relative mb-10">
           {/* Far left artist image */}
           <div
             className="xl:inline hidden absolute rounded-lg"
@@ -560,7 +560,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <Button ariaLabel="Explore more news">
+        <Button href="/articles" ariaLabel="Explore more news">
           Explore More News
         </Button>
       </div>

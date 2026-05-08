@@ -48,8 +48,8 @@ export default function StayInformedSection() {
               alt="Main Artist"
               height={100}
               width={100}
-              className="h-auto w-[100px]"
               sizes="100px"
+              style={{ width: "100px", height: "100px" }}
             />
           </div>
 

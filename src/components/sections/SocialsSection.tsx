@@ -39,14 +39,14 @@ import Image from "next/image";
     ];
 
     return (
-      <section className="relative overflow-hidden mx-auto w-full h-[765px] bg-[#030303] pt-20">
+      <section className="relative overflow-hidden mx-auto w-full bg-[#030303] py-16 sm:py-20">
         <IntroBody
           title="Our Socials"
           description="Be the first to know about chart updates, exclusive artist drops, behind-the-scenes content, and live sessions."
         />
         <FlankDecoration />
-        <div className="relative z-20 flex flex-col items-center mt-12 sm:mt-28 text-white/80 font-dm-sans text-[18px]">
-          <div className="flex flex-col gap-8 sm:gap-28 mb-8 justify-center items-center">
+        <div className="relative z-20 flex flex-col items-center mt-12 sm:mt-16 text-white/80 font-dm-sans text-[18px]">
+          <div className="flex flex-col gap-8 sm:gap-12 justify-center items-center">
             <div className="flex flex-col md:flex-row gap-8 md:gap-14">
               {socialLinks.slice(0, 3).map((social) => (
                 <Link

@@ -137,7 +137,7 @@ export default function TopAlbumsSection() {
   );
 
   return (
-    <section className="relative overflow-hidden py-10 flex flex-col gap-10 w-full xl:h-[666px] bg-[#040507]">
+    <section className="relative overflow-hidden py-14 sm:py-16 flex flex-col gap-10 w-full xl:min-h-[620px] bg-[#040507]">
       <FlankDecoration />
 
       <div className="relative z-20 w-full text-center">

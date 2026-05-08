@@ -87,7 +87,7 @@ export default function WhoWeAreSection() {
         alt="decorative background pattern"
         fill
         className="absolute inset-0 object-cover z-0"
-        loading="lazy"
+        loading="eager"
         sizes="100vw"
         style={{
           opacity: 0.5,

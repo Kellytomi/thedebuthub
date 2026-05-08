@@ -112,66 +112,6 @@ const nextConfig = {
   experimental: {
     optimizePackageImports: ['framer-motion', 'iconsax-react', '@tanstack/react-query'],
   },
-  // Enhanced Webpack optimizations
-  webpack: (config, { isServer, dev }) => {
-    // Production-only optimizations
-    if (!dev) {
-      // Enable tree shaking
-      config.optimization.usedExports = true;
-      config.optimization.sideEffects = false;
-    }
-
-    // Optimize bundle splitting
-    if (!isServer) {
-      config.optimization.splitChunks = {
-        ...config.optimization.splitChunks,
-        chunks: 'all',
-        maxSize: 200000, // 200KB chunks
-        cacheGroups: {
-          default: false,
-          vendors: false,
-          // React and framework chunks
-          framework: {
-            chunks: 'all',
-            name: 'framework',
-            test: /[\\/]node_modules[\\/](react|react-dom|scheduler|prop-types|use-subscription)[\\/]/,
-            priority: 40,
-            enforce: true,
-          },
-          // Large third-party libraries
-          vendor: {
-            test: /[\\/]node_modules[\\/](?!(react|react-dom|scheduler|prop-types|use-subscription|framer-motion|@tanstack)).*[\\/]/,
-            name: 'vendor',
-            chunks: 'all',
-            priority: 30,
-          },
-          // Framer Motion separate chunk
-          framer: {
-            test: /[\\/]node_modules[\\/]framer-motion[\\/]/,
-            name: 'framer-motion',
-            chunks: 'all',
-            priority: 35,
-          },
-          // React Query separate chunk
-          query: {
-            test: /[\\/]node_modules[\\/]@tanstack[\\/]react-query[\\/]/,
-            name: 'react-query',
-            chunks: 'all',
-            priority: 35,
-          },
-          // Common code across pages
-          common: {
-            name: 'common',
-            minChunks: 2,
-            priority: 20,
-            chunks: 'all',
-            reuseExistingChunk: true,
-          },
-        },
-      };
-    }
-    return config;
-  },
 };
 
 export default nextConfig;
