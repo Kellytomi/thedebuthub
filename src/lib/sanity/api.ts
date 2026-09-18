@@ -47,6 +47,15 @@ export async function getArticleBySlug(slug: string) {
   }
 }
 
+// Get the article fields needed to build page metadata (Open Graph / Twitter cards)
+export async function getArticleMetadata(slug: string) {
+  try {
+    return await client.fetch(queries.getArticleMetadata, { slug })
+  } catch (error) {
+    return null
+  }
+}
+
 // Get related articles
 export async function getRelatedArticles(category: string, currentId: string) {
   try {

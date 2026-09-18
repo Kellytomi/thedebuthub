@@ -50,6 +50,21 @@ export const queries = {
     tags,
     "estimatedReadingTime": round(length(pt::text(body)) / 5 / 200)
   }`,
+
+  // Slim projection for page metadata (Open Graph / Twitter cards).
+  // Deliberately excludes `body` so metadata requests stay cheap.
+  getArticleMetadata: `*[_type == "article" && slug.current == $slug][0] {
+    _id,
+    title,
+    slug,
+    excerpt,
+    mainImage,
+    publishedAt,
+    category,
+    author,
+    tags,
+    seo
+  }`,
   
   // Get related articles (same category, excluding current article)
   getRelatedArticles: `*[_type == "article" && category == $category && _id != $currentId] | order(publishedAt desc) [0...3] {
